@@ -1,0 +1,10 @@
+BLL/bin
+BLL/obj
+DAL/bin
+DAL/obj
+IDAL/bin
+IDAL/obj
+packages/
+Web/bin
+Web/obj
+.vs/
