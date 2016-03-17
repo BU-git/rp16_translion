@@ -3,8 +3,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Models;
 using IDAL.Interfaces;
-using IDAL.Models;
 
 namespace DAL.Repositories
 {

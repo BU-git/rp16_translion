@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IDAL.Models
+namespace Domain.Models
 {
     public class Role
     {

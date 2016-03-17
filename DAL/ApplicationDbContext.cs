@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 using DAL.Configurations;
-using IDAL.Models;
+using Domain.Models;
 
 namespace DAL
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Models;
+using Domain.Models;
 
 namespace IDAL.Interfaces
 {

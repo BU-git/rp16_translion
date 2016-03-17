@@ -58,6 +58,10 @@
       <Project>{6ead2c13-512f-4d10-8c7d-cd93f2675d4c}</Project>
       <Name>DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{e56d3af5-d187-4a17-827a-6ca40c5df324}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IDAL\IDAL.csproj">
       <Project>{3718b920-17bc-4cf0-a323-d534c1c820aa}</Project>
       <Name>IDAL</Name>

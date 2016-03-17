@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BLL.Identity.Models;
 using IDAL.Interfaces;
-using IDAL.Models;
+using Domain.Models;
 using Microsoft.AspNet.Identity;
 
 namespace BLL.Identity.Stores

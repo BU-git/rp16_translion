@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IDAL.Models
+namespace Domain.Models
 {
     public class Claim
     {
