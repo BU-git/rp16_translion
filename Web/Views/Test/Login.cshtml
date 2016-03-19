@@ -1,0 +1,29 @@
+﻿@model Web.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+<div>
+    @using (Html.BeginForm("Login", "Test", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.DisplayFor(m => m.LoginName)
+        @Html.TextBoxFor(m => m.LoginName)
+        <br/>
+        @Html.DisplayFor(m => m.UserPassword)
+        @Html.TextBoxFor(m => m.UserPassword)
+        <br/>
+        <input type="submit" value="Login" name="btnLogin"/>
+    }
+    <a href="@Url.Action("Register", "Test")">Register</a>
+</div>
+</body>
+</html>
