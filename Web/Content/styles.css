@@ -1,0 +1,19 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #eee;
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+footer {
+    height: 80px;
+    line-height: 80px;
+}
+
+footer p {
+    color: rgba(0,0,0,0.5);
+}
