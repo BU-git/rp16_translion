@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Web.ViewModels;
 
+using BLL.Services.MailingService;
 namespace Web.Controllers
 {
     public class HomeController : Controller
@@ -19,10 +20,13 @@ namespace Web.Controllers
         public HomeController(IUserStore<IdentityUser, Guid> userStore)
         {
             _userManager = new UserManager<IdentityUser, Guid>(userStore);
+            _userManager.EmailService = new MailingService();
+            
         }
         // GET: Home
         public ActionResult Index()
         {
+            MailingService srv = new MailingService();
             return View();
         }
 
@@ -39,9 +43,13 @@ namespace Web.Controllers
             {
                 var user = new IdentityUser { UserName = model.LoginName };
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
+
                 if (result.Succeeded)
                 {
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    await _userManager.SendEmailAsync(user.Id, "asdasdasdasd", "asdasdasdasd");
                     await SignInAsync(user, false);
+                    
 
                     return RedirectToAction("Succeed");
                 }
