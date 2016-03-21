@@ -18,7 +18,7 @@ namespace DAL
         #endregion
 
         #region Constructors
-        public UnitOfWork(string nameOrConnectionString = "TLRDb")
+        public UnitOfWork(string nameOrConnectionString)
         {
             _context = new ApplicationDbContext(nameOrConnectionString);
         }

@@ -13,5 +13,13 @@ namespace Web.Controllers
         {
             return View();
         }
+
+
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
     }
 }
