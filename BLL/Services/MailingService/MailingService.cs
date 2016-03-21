@@ -232,7 +232,7 @@ namespace BLL.Services.MailingService
         /// </summary>
         public Task SendAsync(IdentityMessage message)
         {
-            MailMessage created = message == null ? CreateMessage(message.Subject, message.Body, null, message.Destination) : null;
+            MailMessage created = message != null ? CreateMessage(message.Subject, message.Body, null, message.Destination) : null;
 
             return SendMailAsync(created);
         }
