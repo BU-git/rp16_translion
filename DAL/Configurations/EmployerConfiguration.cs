@@ -8,11 +8,11 @@ using Domain.Models;
 
 namespace DAL.Configurations
 {
-    public class ClaimMap : EntityTypeConfiguration<Claim>
+    public class EmployerConfiguration : EntityTypeConfiguration<Employer>
     {
-        public ClaimMap()
+        public EmployerConfiguration()
         {
-            //TODO wtite mapping
+            ToTable("Employers");
         }
     }
 }

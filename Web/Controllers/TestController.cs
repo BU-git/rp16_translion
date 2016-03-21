@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
-using IDAL.Interfaces;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Web.ViewModels;
@@ -20,15 +17,15 @@ namespace Web.Controllers
         public TestController(IUserStore<IdentityUser, Guid> userStore)
         {
             _userManager = new UserManager<IdentityUser, Guid>(userStore);
-
         }
+
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+            AuthenticationManager.SignIn(new AuthenticationProperties {IsPersistent = isPersistent}, identity);
         }
 
         [AllowAnonymous]
@@ -69,7 +66,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            var user = new IdentityUser() { UserName = model.LoginName};
+            var user = new IdentityUser {UserName = model.LoginName};
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {

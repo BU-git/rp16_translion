@@ -10,18 +10,18 @@ namespace DAL
             : base(nameOrConnectionString)
         {
         }
-
-        //TODO check, Do we need here IDbSet<Claim> ?
         internal IDbSet<User> Users { get; set; }
         internal IDbSet<Role> Roles { get; set; }
         internal IDbSet<ExternalLogin> Logins { get; set; }
+        internal IDbSet<Employer> Employers { get; set; } 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new ClaimMap());
-            modelBuilder.Configurations.Add(new ExternalLoginMap());
-            modelBuilder.Configurations.Add(new RoleMap());
-            modelBuilder.Configurations.Add(new UserMap());
+            modelBuilder.Configurations.Add(new ClaimConfiguration());
+            modelBuilder.Configurations.Add(new ExternalLoginConfiguration());
+            modelBuilder.Configurations.Add(new RoleConfiguration());
+            modelBuilder.Configurations.Add(new UserConfiguration());
+            modelBuilder.Configurations.Add(new EmployerConfiguration());
         }
     }
 }

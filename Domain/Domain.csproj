@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Claim.cs" />
+    <Compile Include="Models\Employer.cs" />
     <Compile Include="Models\ExternalLogin.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
