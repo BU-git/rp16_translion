@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Net.Mail;
+using Microsoft.AspNet.Identity;
 
 using BLL.Services.MailingService.Types;
 
 namespace BLL.Services.MailingService.Interfaces
 {
-    public interface IMailingService : IDisposable
+    public interface IMailingService : IIdentityMessageService, IDisposable
     {
         /// <summary>
         /// Send email to someone

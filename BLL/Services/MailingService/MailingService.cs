@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Configuration;
-using Microsoft.AspNet.Identity; //identity message service
+using Microsoft.AspNet.Identity;
 
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.Types;
@@ -15,7 +15,7 @@ namespace BLL.Services.MailingService
     /// <summary>
     /// Service that sends emails to users
     /// </summary>
-    public sealed class MailingService : IMailingService, IIdentityMessageService
+    public sealed class MailingService : IMailingService
     {
         MailQueue m_queue; //mailing queue
 
