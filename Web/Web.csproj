@@ -171,6 +171,8 @@
     <Compile Include="ViewModels\ForgotUsernameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
+    <Compile Include="ViewModels\PasswordTokenRecoveryViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
