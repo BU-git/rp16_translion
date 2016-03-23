@@ -167,6 +167,8 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AccountEmployerViewModel.cs" />
+    <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
+    <Compile Include="ViewModels\ForgotUsernameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
@@ -184,6 +186,10 @@
     <Content Include="Views\Test\Login.cshtml" />
     <Content Include="Views\Test\Register.cshtml" />
     <Content Include="Views\Test\Succeed.cshtml" />
+    <Content Include="Views\Home\ForgotPassword.cshtml" />
+    <Content Include="Views\Home\ForgotUsername.cshtml" />
+    <Content Include="Views\Home\ForgotUsernameEnd.cshtml" />
+    <Content Include="Views\Home\ForgotPasswordEnd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

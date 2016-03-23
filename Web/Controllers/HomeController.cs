@@ -59,6 +59,17 @@ namespace Web.Controllers
             
         }
 
+        public ActionResult ForgotUsername()
+        {
+            return View();
+        }
+
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
 
         //password remindering methods
         [HttpGet]

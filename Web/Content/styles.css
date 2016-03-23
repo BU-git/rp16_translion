@@ -80,3 +80,21 @@ span.footer {
     vertical-align: middle;
     float: none;
 }
+
+.tb-forgot {
+    padding-left: 0;
+}
+
+.form-forgot {
+    margin-bottom: 0;
+}
+.col-centered{
+    float: none;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.lb-forgot {
+    margin-bottom: 15px;
+    padding-left: 0;
+}
