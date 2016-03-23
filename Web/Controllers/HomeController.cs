@@ -58,6 +58,17 @@ namespace Web.Controllers
             
         }
 
+        public ActionResult ForgotUsername()
+        {
+            return View();
+        }
+
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)
         {
