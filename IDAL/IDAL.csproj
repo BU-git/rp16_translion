@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IAdminRepository.cs" />
     <Compile Include="Interfaces\IEmployerRepository.cs" />
     <Compile Include="Interfaces\IExternalLoginRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />

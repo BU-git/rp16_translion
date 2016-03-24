@@ -15,13 +15,14 @@ namespace DAL
         private IExternalLoginRepository _externalLoginRepository;
         private IRoleRepository _roleRepository;
         private IUserRepository _userRepository;
+        private IEmployerRepository _employerRepository;
+        private IAdminRepository _adminRepository;
         #endregion
 
         #region Constructors
-
-        public UnitOfWork() : this("TLRDb")
+        public UnitOfWork() : this("DefaultConnection")
         {
-            
+
         }
         public UnitOfWork(string nameOrConnectionString)
         {
@@ -43,6 +44,16 @@ namespace DAL
         public IUserRepository UserRepository
         {
             get { return _userRepository ?? (_userRepository = new UserRepository(_context)); }
+        }
+
+        public IEmployerRepository EmployerRepository
+        {
+            get { return _employerRepository ?? (_employerRepository = new EmployerRepository(_context)); }
+        }
+
+        public IAdminRepository AdminRepository
+        {
+            get { return _adminRepository ?? (_adminRepository = new AdminRepository(_context)); }
         }
 
         public int SaveChanges()
