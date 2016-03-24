@@ -1,0 +1,19 @@
+﻿@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Account Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="accountConfirm">
+    <div class="row row-centered">
+        <div class="alert alert-success col-centered">
+            <strong>Gefeliciteerd!</strong> Uw account is succesvol aangemaakt.
+        </div>
+    </div>
+    <div class="row row-centered">
+        <div class="col-centered">
+            @Html.ActionLink("Klik hier om aan de slag te gaan met uw account", "Index", "Home", new { @class = "btn btn-success" })
+        </div>
+    </div>
+</div>
+
