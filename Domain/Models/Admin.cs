@@ -10,7 +10,6 @@ namespace Domain.Models
     {
         #region Scalar Properties
         public string Name { get; set; }
-        public string Email { get; set; }
         #endregion
     }
 }

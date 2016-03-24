@@ -441,7 +441,7 @@ namespace BLL.Identity.Stores
             employer.Adress = identityUser.Employer.Adress;
             employer.City = identityUser.Employer.City;
             employer.CompanyName = identityUser.Employer.CompanyName;
-            employer.EmailAdress = identityUser.Employer.EmailAdress;
+            employer.Email = identityUser.Email;
             employer.FirstName = identityUser.Employer.FirstName;
             employer.LastName = identityUser.Employer.LastName;
             employer.PostalCode = identityUser.Employer.PostalCode;

@@ -10,7 +10,6 @@ namespace Domain.Models
         public string Prefix { get; set; }
         public string LastName { get; set; }
         public string TelephoneNumber { get; set; }
-        public string EmailAdress { get; set; }
         public string PostalCode { get; set; }
         public string Adress { get; set; }
         public string City { get; set; }

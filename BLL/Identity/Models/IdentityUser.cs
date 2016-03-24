@@ -23,15 +23,15 @@ namespace BLL.Identity.Models
         }
         #endregion
         
-        public virtual string PasswordHash { get; set; }
-        public virtual string SecurityStamp { get; set; }
-        public Roles Roles { get; set; }
-        public virtual Employer Employer { get; set; }
-        public virtual string Email { get; set; }
-        public virtual bool EmailConfirmed { get; set; }
-        public virtual Admin Admin { get; set; }
         public Guid Id { get; set; }
         public string UserName { get; set; }
+        public virtual string PasswordHash { get; set; }
+        public virtual string SecurityStamp { get; set; }
+        public virtual string Email { get; set; }
+        public virtual bool EmailConfirmed { get; set; }
+        public Roles Roles { get; set; }
+        public virtual Employer Employer { get; set; }
+        public virtual Admin Admin { get; set; }
         }
 
     public enum Roles
