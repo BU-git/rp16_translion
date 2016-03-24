@@ -11,15 +11,16 @@
         </div>
         <div class="form-group form-forgot">
             <div class="col-md-8 pull-right tb-forgot">
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
             </div>
         </div>
 
         <br />
         <div class="row">
             <div class="col-md-5">
-                <input type="submit" value="Annuleren" class="btn btn-danger pull-right" />
+                @Html.ActionLink("Annuleren", "Index", "Home", null, new { @class = "btn btn-danger pull-right" })
+                <!--<input type="submit" value="Annuleren" class="btn btn-danger pull-right" />-->
             </div>
             <div class="col-md-6 col-md-offset-1 tb-forgot">
                 <input type="submit" value="Verzenden" class="btn btn-success" />

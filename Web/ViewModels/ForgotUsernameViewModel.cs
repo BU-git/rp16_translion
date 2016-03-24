@@ -5,8 +5,9 @@ namespace Web.ViewModels
 {
     public class ForgotUsernameViewModel
     {
-        [Required]
         [Display(Name = "Emailadres")]
+        [Required(ErrorMessage = "This is required field")]
+        [Remote("CheckEmail", "Home", ErrorMessage = "Uw emailadres is incorrect, controleer dit aub")]
         [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Ongeldig emailadres")]
         public string Email { get; set; }
     }

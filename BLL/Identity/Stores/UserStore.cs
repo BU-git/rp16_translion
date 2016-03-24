@@ -12,7 +12,7 @@ namespace BLL.Identity.Stores
 {
     public class UserStore : IUserLoginStore<IdentityUser, Guid>, IUserClaimStore<IdentityUser, Guid>,
         IUserRoleStore<IdentityUser, Guid>, IUserPasswordStore<IdentityUser, Guid>,
-        IUserSecurityStampStore<IdentityUser, Guid>, IUserStore<IdentityUser, Guid>, IDisposable
+        IUserSecurityStampStore<IdentityUser, Guid>, IUserStore<IdentityUser, Guid>, IUserEmailStore<IdentityUser, Guid>, IDisposable
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -324,6 +324,79 @@ namespace BLL.Identity.Stores
 
         #endregion
 
+        #region IEmailStore<IdentityUser, Guid> Members
+
+        public async Task SetEmailAsync(IdentityUser user, string email)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (String.IsNullOrWhiteSpace(email))
+                throw new ArgumentException($"Argument cannot be null, empty, or whitespace: {nameof(email)}.");
+
+            User foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+
+            if (foundUser == null)
+                throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
+
+            foundUser.Email = email;
+
+            _unitOfWork.UserRepository.Update(foundUser);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public Task<string> GetEmailAsync(IdentityUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return _unitOfWork.UserRepository.FindByIdAsync(user.Id)
+                .ContinueWith(u => u.Result.Email ?? null, TaskContinuationOptions.ExecuteSynchronously);
+        }
+
+        public Task<bool> GetEmailConfirmedAsync(IdentityUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return _unitOfWork.UserRepository.FindByIdAsync(user.Id)
+                .ContinueWith(u =>
+                {
+                    if (u.Result == null)
+                        throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
+                    else
+                        return u.Result.EmailConfirmed;
+                }, TaskContinuationOptions.ExecuteSynchronously);
+        }
+
+        public async Task SetEmailConfirmedAsync(IdentityUser user, bool confirmed)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            User foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+
+            if (foundUser == null)
+                throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
+
+            foundUser.EmailConfirmed = confirmed;
+
+            _unitOfWork.UserRepository.Update(foundUser);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public Task<IdentityUser> FindByEmailAsync(string email)
+        {
+            if (String.IsNullOrWhiteSpace(email))
+                throw new ArgumentException($"Argument cannot be null, empty, or whitespace: { nameof(email) }.");
+
+            return _unitOfWork.UserRepository.FindByEmailAsync(email)
+                .ContinueWith(u => getIdentityUser(u.Result), TaskContinuationOptions.ExecuteSynchronously);
+        }
+        #endregion
+
         #region Private Methods
 
         private User getUser(IdentityUser identityUser)
@@ -343,6 +416,8 @@ namespace BLL.Identity.Stores
             user.UserName = identityUser.UserName;
             user.PasswordHash = identityUser.PasswordHash;
             user.SecurityStamp = identityUser.SecurityStamp;
+            user.Email = identityUser.Email;
+            user.EmailConfirmed = identityUser.EmailConfirmed;
         }
 
         private IdentityUser getIdentityUser(User user)
@@ -362,6 +437,8 @@ namespace BLL.Identity.Stores
             identityUser.UserName = user.UserName;
             identityUser.PasswordHash = user.PasswordHash;
             identityUser.SecurityStamp = user.SecurityStamp;
+            identityUser.Email = user.Email;
+            identityUser.EmailConfirmed = user.EmailConfirmed;
         }
 
         #endregion

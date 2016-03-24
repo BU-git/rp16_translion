@@ -8,8 +8,10 @@ using BLL.Identity.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Web.ViewModels;
-
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security.DataProtection;
 using BLL.Services.MailingService.Interfaces;
+
 
 namespace Web.Controllers
 {
@@ -21,13 +23,13 @@ namespace Web.Controllers
         public HomeController(IUserStore<IdentityUser, Guid> userStore, IMailingService emailService)
         {
             _userManager = new UserManager<IdentityUser, Guid>(userStore);
+            //bad solutions
             _userManager.EmailService = emailService;
-            
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
         }
         // GET: Home
         public ActionResult Index()
         {
-            //MailingService srv = new MailingService();
             return View();
         }
 
@@ -42,16 +44,13 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.LoginName };
+                var user = new IdentityUser { UserName = model.LoginName, Email = model.EmailAdress };
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
 
                 if (result.Succeeded)
                 {
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    await _userManager.SendEmailAsync(user.Id, "asdasdasdasd", "asdasdasdasd");
+                    await _userManager.SendEmailAsync(user.Id, "Thank for your registration", $"Thank, you, {model.LoginName} for registration");
                     await SignInAsync(user, false);
-                    
-
                     return RedirectToAction("Succeed");
                 }
             }
@@ -78,7 +77,7 @@ namespace Web.Controllers
             String errorSummary = String.Empty; //summary error message
 
             if (!ModelState.IsValid)
-                errorSummary = "Some message on dutch about error with user's name!";
+                ModelState.AddModelError(nameof(passwForgot.UserName), "Error with username");
             else
             {
                 IdentityUser user = await _userManager.FindByNameAsync(passwForgot.UserName); //searching user by name
@@ -90,7 +89,7 @@ namespace Web.Controllers
 
                     String passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user.Id); //generating password reset token
 
-                    if (!String.IsNullOrEmpty(passResetToken)) //generation of token failed
+                    if (String.IsNullOrEmpty(passResetToken)) //generation of token failed
                         errorSummary = "Server Error. Try later";
                     else
                     {
@@ -128,24 +127,20 @@ namespace Web.Controllers
         [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")] 
         public async Task<ActionResult> ForgotUserName(ForgotUsernameViewModel unameForgot)
         {
-            String errorSummary = String.Empty; //summary error message
-
             if (!ModelState.IsValid)
-                errorSummary = "Some message on dutch about error with user's email!";
+                ModelState.AddModelError(nameof(unameForgot.Email), "Uw emailadres is incorrect, controleer dit aub");
             else
             {
                 IdentityUser user = await _userManager.FindByEmailAsync(unameForgot.Email); //searching user by name
 
                 if (user == null) //user not found
-                    errorSummary = "Can't find user. Try later or register.";
+                    ModelState.AddModelError(nameof(unameForgot.Email), "Uw emailadres is incorrect, controleer dit aub");
                 else
                 {
                     await _userManager.SendEmailAsync(user.Id, "User name remindering", $"Hello, dear user. Your username is {user.UserName}");
-                    return RedirectToAction("RemindUserNameSuccess"); //succeeded
+                    return RedirectToAction("ForgotUserNameEnd"); //succeeded
                 }
             }
-
-            ModelState.AddModelError("", errorSummary);
             return View();
         }
 
@@ -159,7 +154,7 @@ namespace Web.Controllers
         //password recovery (after remindering and revieving of email with token)
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult PasswordRecovery(PasswordTokenRecoveryViewModel passwRecovery)
+        public ActionResult PasswordRecovery(Guid userId, String token)
         {
             if (!ModelState.IsValid)
             {
@@ -167,7 +162,7 @@ namespace Web.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {  Token = passwRecovery.Token, Id = passwRecovery.Id }); //bad way
+            return View(new PasswordRecoveryViewModel { Token = token, Id = userId }); //bad way
         }
 
         [HttpPost]
@@ -177,7 +172,6 @@ namespace Web.Controllers
         public async Task<ActionResult> PasswordRecovery(PasswordRecoveryViewModel passwRecovery)
         {
             String errorMessage = String.Empty; //error message
-
             if (String.CompareOrdinal(passwRecovery.Password, passwRecovery.ConfirmationalPassword) != 0)  //comapres passwords if not match
                 errorMessage = "Password and confirmation password are not match";
             else //if match
@@ -198,6 +192,26 @@ namespace Web.Controllers
             ModelState.AddModelError("", errorMessage);
             return View();
         }
+        
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<JsonResult> CheckUserName(String userName)
+        {
+            if (ModelState.IsValid && await _userManager.FindByNameAsync(userName) != null)
+                    return Json(true, JsonRequestBehavior.AllowGet);
+            
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<JsonResult> CheckEmail(String email)
+        {
+            if (ModelState.IsValid && await _userManager.FindByEmailAsync(email) != null)
+                return Json(true, JsonRequestBehavior.AllowGet);
+
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)
         {

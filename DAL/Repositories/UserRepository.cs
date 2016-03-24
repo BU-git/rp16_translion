@@ -17,20 +17,17 @@ namespace DAL.Repositories
 
         public User FindByEmail(string email)
         {
-            //TODO Need to be implemented
-            throw new NotImplementedException();
+            return Set.FirstOrDefault(u => u.Email == email);
         }
 
         public Task<User> FindByEmailAsync(string email)
         {
-            //TODO Need to be implemented
-            throw new NotImplementedException();
+            return Set.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public Task<User> FindByEmailAsync(CancellationToken cancellationToken, string email)
         {
-            //TODO Need to be implemented
-            throw new NotImplementedException();
+            return Set.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
         public User FindByUserName(string username)
