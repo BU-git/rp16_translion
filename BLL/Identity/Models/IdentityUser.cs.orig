@@ -1,9 +1,5 @@
 ﻿using System;
 using Domain.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace BLL.Identity.Models
@@ -13,22 +9,21 @@ namespace BLL.Identity.Models
         #region CTOR
         public IdentityUser()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public IdentityUser(string userName)
             : this()
         {
-            this.UserName = userName;
+            UserName = userName;
         }
         #endregion
         
         public virtual string PasswordHash { get; set; }
         public virtual string SecurityStamp { get; set; }
+<<<<<<< HEAD
         public Roles Roles { get; set; }
         public virtual Employer Employer { get; set; }
-        public virtual string Email { get; set; }
-        public virtual bool EmailConfirmed { get; set; }
         public virtual Admin Admin { get; set; }
         public Guid Id { get; set; }
         public string UserName { get; set; }
@@ -38,5 +33,9 @@ namespace BLL.Identity.Models
     {
         Admin,
         Employer
+=======
+        public virtual string Email { get; set; }
+        public virtual bool EmailConfirmed { get; set; }
+>>>>>>> master
     }
 }

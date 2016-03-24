@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,22 +13,25 @@ using Microsoft.Owin.Security.DataProtection;
 using BLL.Services.MailingService.Interfaces;
 
 
-using BLL.Services.MailingService;
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
-        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         public HomeController(IUserStore<IdentityUser, Guid> userStore, IMailingService emailService)
         {
             _userManager = new UserManager<IdentityUser, Guid>(userStore);
+<<<<<<< HEAD
+            _userManager.EmailService = new MailingService();
+=======
             //bad solutions
-            
             _userManager.EmailService = emailService;
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+>>>>>>> master
         }
+
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
         // GET: Home
         
         [AllowAnonymous]
@@ -69,16 +70,27 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.LoginName, Email = model.EmailAdress };
+<<<<<<< HEAD
                 var employer = AccountEmployerViewModelToEmloyer(model);
                 var user = new IdentityUser {UserName = model.LoginName, Roles = Roles.Employer, Employer = employer};
+=======
+                var user = new IdentityUser { UserName = model.LoginName, Email = model.EmailAdress };
+>>>>>>> master
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.SendEmailAsync(user.Id, "Thank for your registration", $"Thank, you, {model.LoginName} for registration");
+<<<<<<< HEAD
+                    //var token = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //await _userManager.SendEmailAsync(user.Id, "asdasdasdasd", "asdasdasdasd");
                     await SignInAsync(user, true);
+
                     return RedirectToAction("Result");
+=======
+                    await _userManager.SendEmailAsync(user.Id, "Thank for your registration", $"Thank, you, {model.LoginName} for registration");
+                    await SignInAsync(user, false);
+                    return RedirectToAction("Succeed");
+>>>>>>> master
                 }
             }
             return View(model);
@@ -91,6 +103,20 @@ namespace Web.Controllers
             return View("Index");
         }
 
+        private Employer AccountEmployerViewModelToEmloyer(AccountEmployerViewModel model)
+        {
+            var employer = new Employer();
+            employer.Adress = model.Adress;
+            employer.City = model.City;
+            employer.CompanyName = model.CompanyName;
+            employer.EmailAdress = model.EmailAdress;
+            employer.FirstName = model.FirstName;
+            employer.LastName = model.LastName;
+            employer.Prefix = model.Prefix;
+            employer.PostalCode = model.PostalCode;
+            employer.TelephoneNumber = model.TelephoneNumber;
+            return employer;
+        }
 
         //password remindering methods
         [HttpGet]
@@ -245,20 +271,6 @@ namespace Web.Controllers
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
-        private Employer AccountEmployerViewModelToEmloyer(AccountEmployerViewModel model)
-        {
-            var employer = new Employer();
-            employer.Adress = model.Adress;
-            employer.City = model.City;
-            employer.CompanyName = model.CompanyName;
-            employer.EmailAdress = model.EmailAdress;
-            employer.FirstName = model.FirstName;
-            employer.LastName = model.LastName;
-            employer.Prefix = model.Prefix;
-            employer.PostalCode = model.PostalCode;
-            employer.TelephoneNumber = model.TelephoneNumber;
-            return employer;
-        }
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)
         {
