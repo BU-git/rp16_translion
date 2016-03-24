@@ -12,31 +12,23 @@
 <body>
     <header>
         <div class="container">
-            <a href='@Url.Action("Index", "Home")'><img src="~/Content/Images/logoTransLion.png" /></a>
+            <div class="row">
+                <div class="siteBranding col-md-3 col-sm-3 col-xs-3">
+                    <a href='@Url.Action("Index", "Home")'><img src="~/Content/Images/logoTransLion.png" /></a>
+                </div>
+            </div>
         </div>
     </header>
-        @*<div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
-            </div>
-        </div>
-    </div>*@
 
     <div class="container">
         @RenderBody()        
     </div>
-    <span class="footer">Trans Lion, Admiraal Helfrichweg 2P, 2901 AB Copelle aan den IJssel, T 010 - 264 30 30, E info@translion.nl <span style="color: red">pre alpha 0.0.0.1</span> </span>
     
-    
+    <footer>
+        <p>
+            Trans Lion, Admiraal Helfrichweg 2P, 2901 AB Copelle aan den IJssel, T 010 - 264 30 30, E info@translion.nl <span style="color: #538cb8">pre alpha 0.0.0.1</span>
+        </p>
+    </footer>
 
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>

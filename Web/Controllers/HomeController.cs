@@ -51,14 +51,20 @@ namespace Web.Controllers
                 {
                     await _userManager.SendEmailAsync(user.Id, "Thank for your registration", $"Thank, you, {model.LoginName} for registration");
                     await SignInAsync(user, false);
-                    return RedirectToAction("Succeed");
+
+                    return View("AccountConfirmation");
                 }
             }
             return View(model);
             
         }
 
-
+        // debug only
+        //public ActionResult AccountConfirmation()
+        //{
+        //    return View();
+        //}
+        
         //password remindering methods
         [HttpGet]
         [AllowAnonymous]
