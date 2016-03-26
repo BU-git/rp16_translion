@@ -92,7 +92,7 @@
                 <br/>
                 <div class="row">
                     <div class="col-md-5">
-                        <input type="submit" value="Annuleren" class="btn btn-danger pull-right"/>
+                        @Html.ActionLink("Annuleren", "Index", "Home", null, new { @class = "btn btn-danger pull-right" })
                     </div>
                     <div class="col-md-7" >
                         <input type="submit" value="Account aanmaaken" class="btn btn-success"/>
