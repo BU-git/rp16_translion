@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace Web.ViewModels
 {
-    public class AccountEmployerViewModel
+    public class RegistrationEmployerViewModel
     {
         [Required]
         [Display(Name = "Bedrijfsnaam")]
@@ -22,11 +22,14 @@ namespace Web.ViewModels
         public string LastName { get; set; }
 
         [Required]
+        [DataType(DataType.PhoneNumber)]
         [Display(Name = "Telefoon")]
         public string TelephoneNumber { get; set; }
 
         [Required]
+        [DataType(DataType.EmailAddress)]
         [Display(Name = "Email-adres")]
+        [EmailAddress]
         public string EmailAdress { get; set; }
 
         [Required]
@@ -46,10 +49,12 @@ namespace Web.ViewModels
         public string LoginName { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [Display(Name = "Wachtwoord")]
         public string UserPassword { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [Display(Name = "Herhaal wachtwoord")]
         public string RepeatUserPassword { get; set; }
     }

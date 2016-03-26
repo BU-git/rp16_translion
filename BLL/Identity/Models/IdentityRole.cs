@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace BLL.Identity.Models
@@ -11,19 +7,19 @@ namespace BLL.Identity.Models
     {
         public IdentityRole()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public IdentityRole(string name)
             : this()
         {
-            this.Name = name;
+            Name = name;
         }
 
         public IdentityRole(string name, Guid id)
         {
-            this.Name = name;
-            this.Id = id;
+            Name = name;
+            Id = id;
         }
 
         public Guid Id { get; set; }

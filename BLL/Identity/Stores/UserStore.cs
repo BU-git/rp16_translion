@@ -36,10 +36,21 @@ namespace BLL.Identity.Stores
         {
             if (user == null)
                 throw new ArgumentNullException("user");
+            switch (user.Roles)
+            {
+                case Roles.Employer:
+                    var employer = createEmployer(user);
+                    _unitOfWork.EmployerRepository.Add(employer);
+                    break;
 
-            var u = getUser(user);
+                case Roles.Admin:
+                    Admin admin = createAdmin(user);
+                    _unitOfWork.AdminRepository.Add(admin);
+                    break;
 
-            _unitOfWork.UserRepository.Add(u);
+                default:
+                    throw new ArgumentNullException("wrong roles");
+            }
             return _unitOfWork.SaveChangesAsync();
         }
 
@@ -408,6 +419,51 @@ namespace BLL.Identity.Stores
             populateUser(user, identityUser);
 
             return user;
+        }
+
+        private Employer createEmployer(IdentityUser identityUser)
+        {
+            if (identityUser == null)
+                return null;
+
+            var employer = new Employer();
+            mapToEmploter(employer, identityUser);
+
+            return employer;
+        }
+
+        private void mapToEmploter(Employer employer, IdentityUser identityUser)
+        {
+            employer.UserId = identityUser.Id;
+            employer.UserName = identityUser.UserName;
+            employer.PasswordHash = identityUser.PasswordHash;
+            employer.SecurityStamp = identityUser.SecurityStamp;
+            employer.Adress = identityUser.Employer.Adress;
+            employer.City = identityUser.Employer.City;
+            employer.CompanyName = identityUser.Employer.CompanyName;
+            employer.Email = identityUser.Email;
+            employer.FirstName = identityUser.Employer.FirstName;
+            employer.LastName = identityUser.Employer.LastName;
+            employer.PostalCode = identityUser.Employer.PostalCode;
+            employer.Prefix = identityUser.Employer.Prefix;
+            employer.TelephoneNumber = identityUser.Employer.TelephoneNumber;
+        }
+
+        private Admin createAdmin(IdentityUser identityUser)
+        {
+            if (identityUser == null)
+                return null;
+
+            Admin admin = new Admin();
+            mapToAdmin(admin, identityUser);
+
+            return admin;
+        }
+
+        private void mapToAdmin(Admin admin, IdentityUser identityUser)
+        {
+            admin.Email = identityUser.Admin.Email;
+            admin.Name = identityUser.Admin.Name;
         }
 
         private void populateUser(User user, IdentityUser identityUser)

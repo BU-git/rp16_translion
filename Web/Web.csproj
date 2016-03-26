@@ -176,25 +176,22 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewModels\AccountEmployerViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\ForgotUsernameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
-    <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Registration.cshtml" />
     <Content Include="Views\Test\Failed.cshtml" />
@@ -207,6 +204,7 @@
     <Content Include="Views\Home\ForgotUsernameEnd.cshtml" />
     <Content Include="Views\Home\ForgotPasswordEnd.cshtml" />
     <Content Include="Views\Home\AccountConfirmation.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -221,6 +219,10 @@
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{8f594626-2a59-4697-9b5c-6f436fc96070}</Project>
       <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{e56d3af5-d187-4a17-827a-6ca40c5df324}</Project>
+      <Name>Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\IDAL\IDAL.csproj">
       <Project>{3718b920-17bc-4cf0-a323-d534c1c820aa}</Project>

@@ -1,49 +1,8 @@
-﻿@model Web.ViewModels.LoginViewModel
+﻿
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-        <section class="loginForm">
-            @using (Html.BeginForm("Index", "Home", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new {@class = "text-danger"})
-                <div class="form-group">
-                    @Html.LabelFor(m => m.LoginName, new {@class = "col-md-5 control-label"})
-                    <div class="col-md-3">
-                        @Html.TextBoxFor(m => m.LoginName, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(m => m.LoginName, "", new {@class = "text-danger"})
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.UserPassword, new {@class = "col-md-5 control-label"})
-                    <div class="col-md-3">
-                        @Html.PasswordFor(m => m.UserPassword, new {@class = "form-control"})
-                        @Html.ValidationMessageFor(m => m.UserPassword, "", new {@class = "text-danger"})
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-5 col-md-6">
-                        <input type="submit" value="Inloggen" class="btn btn-default"/>
-                    </div>
-                </div>
-                <p class="col-md-offset-5 col-md-6">
-                    @Html.ActionLink("Gebruikersnaam vergeten?", "ForgotUserName")
-                </p>
-                <p class="col-md-offset-5 col-md-6">
-                    @Html.ActionLink("Wachtwoord vergeten?", "ForgotPassword")
-                </p>
-                <br>
-                <div class="form-group account_registration">
-                    @Html.Label("Nog geen account?", new {@class = "col-md-5 control-label"})
-                    <div class="col-md-6" >
-                        <input type="button" value="Account aanmaken" class="btn btn-default" onclick="location.href = '@Url.Action("Registration", "Home")'"/>
-                    </div>
-                </div>
-                
-                        @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
-            }
-        </section>
+<h2>Home/Index</h2>
+

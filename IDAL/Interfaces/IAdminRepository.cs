@@ -7,7 +7,7 @@ using Domain.Models;
 
 namespace IDAL.Interfaces
 {
-    public interface IEmployerRepository : IRepository<Employer>
+    public interface IAdminRepository : IRepository<Admin>
     {
     }
 }
