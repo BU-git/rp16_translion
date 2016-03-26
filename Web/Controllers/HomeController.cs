@@ -128,13 +128,13 @@ namespace Web.Controllers
             var errorSummary = string.Empty; //summary error message
 
             if (!ModelState.IsValid)
-                ModelState.AddModelError(nameof(passwForgot.UserName), "Error with username");
+                errorSummary = "Uw gebruikersnaam is incorrect, controleer dit aub.";
             else
             {
                 var user = await _userManager.FindByNameAsync(passwForgot.UserName); //searching user by name
 
                 if (user == null) //user not found
-                    errorSummary = "Can't find user. Try later or register.";
+                    errorSummary = "Uw gebruikersnaam is incorrect, controleer dit aub.";
                 else
                 {
                     var passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
@@ -149,7 +149,7 @@ namespace Web.Controllers
                         await
                             _userManager.SendEmailAsync(user.Id, "Password recovery",
                                 $"To recover your password <a href=\"{callbackUrl}\" target=\"_blank\">click here</a>");
-                        return RedirectToAction("ForgotPasswordEnd"); //succeeded
+                        return View("ForgotPasswordEnd"); //succeeded
                     }
                 }
             }
@@ -159,12 +159,6 @@ namespace Web.Controllers
             return View();
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public ViewResult ForgotPasswordEnd()
-        {
-            return View();
-        }
 
 
         //username changing methods
@@ -179,7 +173,7 @@ namespace Web.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> ForgotUserName(ForgotUsernameViewModel unameForgot)
+        public async Task<ViewResult> ForgotUserName(ForgotUsernameViewModel unameForgot)
         {
             if (!ModelState.IsValid)
                 ModelState.AddModelError(nameof(unameForgot.Email), "Uw emailadres is incorrect, controleer dit aub");
@@ -194,18 +188,12 @@ namespace Web.Controllers
                     await
                         _userManager.SendEmailAsync(user.Id, "User name remindering",
                             $"Hello, dear user. Your username is {user.UserName}");
-                    return RedirectToAction("ForgotUserNameEnd"); //succeeded
+                    return View("ForgotUserNameEnd"); //succeeded
                 }
             }
             return View();
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public ViewResult ForgotUserNameEnd()
-        {
-            return View();
-        }
 
         //password recovery (after remindering and revieving of email with token)
         [HttpGet]
@@ -214,11 +202,11 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "URL for reset is invalid");
+                ModelState.AddModelError("", "URL for resetting password is invalid");
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {Token = token, Id = userId}); //bad way
+            return View(new PasswordRecoveryViewModel {Token = token, Id = userId}); 
         }
 
         [HttpPost]
@@ -230,13 +218,13 @@ namespace Web.Controllers
             var errorMessage = string.Empty; //error message
             if (string.CompareOrdinal(passwRecovery.Password, passwRecovery.ConfirmationalPassword) != 0)
                 //comapres passwords if not match
-                errorMessage = "Password and confirmation password are not match";
+                errorMessage = "Wachtwoord kom niet overeen";
             else //if match
             {
                 if (!ModelState.IsValid && !string.IsNullOrWhiteSpace(passwRecovery.Password) &&
                     !string.IsNullOrWhiteSpace(passwRecovery.ConfirmationalPassword))
                     //if not valid data and passwords not null or white space, etc..
-                    errorMessage = "Error with reseting url. Try to generate new token for confirmation.";
+                    errorMessage = "URL for passwort reset is invalid. Try to generate new or check url.";
                 else //if data valid
                 {
                     var result =
@@ -247,7 +235,7 @@ namespace Web.Controllers
                     if (result.Succeeded)
                         return RedirectToAction("Index"); //redirecting to index if succeded
                     errorMessage =
-                        "Error with reseting password, please, try later. Or generate new token for confirmation.";
+                        "URL for passwort reset is invalid. Try to generate new or check url.";
                         //password reset 
                 }
             }

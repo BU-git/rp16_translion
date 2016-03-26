@@ -5,13 +5,13 @@ namespace Web.ViewModels
 {
     public class PasswordRecoveryViewModel
     {
-        [Required(ErrorMessage = "This is required field")]
+        [Required(ErrorMessage = "Vul nieuw wachtwoord in")]
         [Display(Name = "Nieuwe wachtwoord")]
         public String Password { get; set; }
 
-        [Required(ErrorMessage = "This is required field")]
+        [Required(ErrorMessage = "Wachtwoord kom niet overeen")]
         [Display(Name = "Bevestig wachtwoord")]
-        [Compare(nameof(Password), ErrorMessage = "Password and conf. password not match")]
+        [Compare(nameof(Password), ErrorMessage = "Wachtwoord kom niet overeen")]
         public String ConfirmationalPassword { get; set; }
 
         [Required]
