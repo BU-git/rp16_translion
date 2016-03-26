@@ -13,7 +13,7 @@ namespace Web
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            Bootstrapper.Run();
+            UnityConfig.RegisterComponents();
         }
     }
 }

@@ -20,13 +20,15 @@ namespace Web.Controllers
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
-        public HomeController(IUserStore<IdentityUser, Guid> userStore, IMailingService emailService)
+        public HomeController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
         {
-            _userManager = new UserManager<IdentityUser, Guid>(userStore);
-            //bad solutions
+            _userManager = userManager;
+
+            ////bad solutions
             _userManager.EmailService = emailService;
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
         }
+
         // GET: Home
         public ActionResult Index()
         {
@@ -58,12 +60,6 @@ namespace Web.Controllers
             return View(model);
             
         }
-
-        // debug only
-        //public ActionResult AccountConfirmation()
-        //{
-        //    return View();
-        //}
         
         //password remindering methods
         [HttpGet]

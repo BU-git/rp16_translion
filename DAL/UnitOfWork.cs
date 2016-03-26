@@ -21,8 +21,9 @@ namespace DAL
 
         public UnitOfWork() : this("TLRDb")
         {
-            
+
         }
+
         public UnitOfWork(string nameOrConnectionString)
         {
             _context = new ApplicationDbContext(nameOrConnectionString);
