@@ -77,3 +77,11 @@ textarea {
     max-width: 280px;
 }
 
+/* Input validation error */
+input.input-validation-error,
+textarea.input-validation-error,
+select.input-validation-error
+{
+    border: 1px solid #CD0A0A;
+}
+

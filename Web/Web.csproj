@@ -192,6 +192,7 @@
     <Content Include="Views\Home\ForgotPasswordEnd.cshtml" />
     <Content Include="Views\Home\Result.cshtml" />
     <Content Include="Views\Home\AccountConfirmation.cshtml" />
+    <Content Include="Views\Home\PasswordRecovery.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

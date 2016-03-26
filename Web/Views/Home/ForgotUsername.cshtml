@@ -3,7 +3,8 @@
     @using (Html.BeginForm("ForgotUsername", "Home", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger col-centered" })
         <div class="row">
             <div class="col-md-12 col-centered lb-forgot">
                 Om uw gebruikersnaam te herstellen vult u hieronder alsttublief uw e-mail adres in.
