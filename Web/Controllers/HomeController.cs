@@ -36,6 +36,7 @@ namespace Web.Controllers
         }
 
         // GET: Home
+        [Authorize]
         public ActionResult Index()
         {
             return View();
@@ -56,8 +57,8 @@ namespace Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.LoginName);
-                bool loginIsSuccessful = await _userManager.CheckPasswordAsync(user, model.UserPassword);
-                if (loginIsSuccessful == true)
+                bool isLoginSuccessful = await _userManager.CheckPasswordAsync(user, model.UserPassword);
+                if (isLoginSuccessful)
                 {
                     await SignInAsync(user, true);
                     return RedirectToAction("Index");
