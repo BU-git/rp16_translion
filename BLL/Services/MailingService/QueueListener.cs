@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-
+using System.Threading.Tasks;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.Types;
 
@@ -18,7 +18,11 @@ namespace BLL.Services.MailingService
 
         static Int32 m_maxSendTries;
 
-        static Thread m_backgrndWorker;
+        static Task m_backgrndWorker;
+
+        static CancellationTokenSource m_backgrndWorkerCancellationTokenSource;
+
+        static CancellationToken m_backgrndWorkerCancellationToken;
         #endregion
 
 
@@ -27,15 +31,19 @@ namespace BLL.Services.MailingService
             m_sender = mailingService;
             m_sender.IgnoreQueue(); //doesn't add message to queue
             m_logger = logger;
-            m_backgrndWorker = new Thread(() => BackgrndAction()); //setting thread action
-            m_backgrndWorker.IsBackground = true; //this thread will work in background
+            ////m_backgrndWorker = new Thread(() => BackgrndAction()); //setting thread action
+            ////m_backgrndWorker.IsBackground = true; //this thread will work in background
+            m_backgrndWorkerCancellationTokenSource = new CancellationTokenSource();
+            m_backgrndWorkerCancellationToken = m_backgrndWorkerCancellationTokenSource.Token;
+            m_backgrndWorker = new Task(BackgrndAction, m_backgrndWorkerCancellationToken);
             m_maxSendTries = 3;
             StartBackgrndProcessing(); //starts listener
         }
 
         public static void Stop()
         {
-            m_backgrndWorker.Abort();
+            ////m_backgrndWorker.Abort();
+            m_backgrndWorkerCancellationTokenSource.Cancel();
             MailQueue.Stop();
             m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Listener stopped.");
             m_logger?.Dispose();
@@ -52,12 +60,14 @@ namespace BLL.Services.MailingService
         /// </summary>
         private static void BackgrndAction()
         {
-            try
+            ////try
             {
                 QueuedMessage message = null; //message to resend
                 SendStatus sendResult;
                 while (true)
                 {
+                    if (IsCancelledBackgrndAction())
+                        break;
 
                     message = MailQueue.Queue.GetMessage(); //getting message from queue
 
@@ -65,6 +75,9 @@ namespace BLL.Services.MailingService
                     {
                         if (message.TimeToRemove > DateTime.Now && message.SendingAttempts < m_maxSendTries) //checks if it can send message
                         {
+                            if (IsCancelledBackgrndAction())
+                                break;
+
                             sendResult = m_sender.SendMail(message.Message);
 
                             if (sendResult.Status == MessageStatus.Error && ++message.SendingAttempts <= m_maxSendTries) //another sending fail
@@ -77,10 +90,19 @@ namespace BLL.Services.MailingService
                     }
                 }
             }
-            catch (ThreadAbortException)
-            {
-                m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Thread stopped.");
-            }
+            ////catch (ThreadAbortException)
+            ////{
+            ////    m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Thread stopped.");
+            ////}
+        }
+
+        private static bool IsCancelledBackgrndAction()
+        {
+            if (!m_backgrndWorkerCancellationToken.IsCancellationRequested)
+                return false;
+
+            m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Thread stopped.");
+            return true;
         }
     }
 }

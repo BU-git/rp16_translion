@@ -1,42 +1,44 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - TransLion</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/styles.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Content/styles.css" rel="stylesheet" type="text/css"/>
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
 </head>
 <body>
-    <div class="wrapper">
-        <header>
-            <div class="container">
-                <div class="row">
-                    <div class="siteBranding col-md-3 col-sm-3 col-xs-3">
-                        <a href='@Url.Action("Index", "Home")'><img src="~/Content/Images/logoTransLion.png" /></a>
-                    </div>
+<div class="wrapper">
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="siteBranding col-md-3 col-sm-3 col-xs-3">
+                    <a href='@Url.Action("Index", "Home")'>
+                        <img src="~/Content/Images/logoTransLion.png"/>
+                    </a>
                 </div>
             </div>
-        </header>
-
-        <div class="containerWrapper">
-            <div class="container">
-                @RenderBody()
-            </div>
         </div>
+    </header>
 
-        <footer>
-            <p>
-                Trans Lion, Admiraal Helfrichweg 2P, 2901 AB Copelle aan den IJssel, T 010 - 264 30 30, E info@translion.nl <span style="color: #538cb8">pre alpha 0.0.0.1</span>
-            </p>
-        </footer>
+    <div class="containerWrapper">
+        <div class="container">
+            @RenderBody()
+        </div>
     </div>
 
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    <footer>
+        <p>
+            Trans Lion, Admiraal Helfrichweg 2P, 2901 AB Copelle aan den IJssel, T 010 - 264 30 30, E info@translion.nl <span style="color: #538cb8">pre alpha 0.0.0.1</span>
+        </p>
+    </footer>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,28 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Configuration;
-using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
+using BLL.Services.MailingService.MailMessageBuilders;
 using Domain.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
-using Web.ViewModels;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
 using Web.ViewModels;
-using Claim = Domain.Models.Claim;
 
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
-        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         public HomeController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
         {
@@ -34,6 +28,8 @@ namespace Web.Controllers
                 new DataProtectorTokenProvider<IdentityUser, Guid>(
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
         }
+
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         // GET: Home
         [Authorize]
@@ -57,7 +53,7 @@ namespace Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.LoginName);
-                bool isLoginSuccessful = await _userManager.CheckPasswordAsync(user, model.UserPassword);
+                var isLoginSuccessful = await _userManager.CheckPasswordAsync(user, model.UserPassword);
                 if (isLoginSuccessful)
                 {
                     await SignInAsync(user, true);
@@ -93,8 +89,7 @@ namespace Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _userManager.SendEmailAsync(user.Id, "Thank for your registration",
-                            $"Thank, you, {model.LoginName} for registration");
+                    await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
                     await SignInAsync(user, true);
 
                     return View("AccountConfirmation");
@@ -131,7 +126,7 @@ namespace Web.Controllers
                 else
                 {
                     var passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
-                        //generating password reset token
+                    //generating password reset token
 
                     if (string.IsNullOrEmpty(passResetToken)) //generation of token failed
                         errorSummary = "Server Error. Try later";
@@ -139,9 +134,9 @@ namespace Web.Controllers
                     {
                         var callbackUrl = Url.Action("PasswordRecovery", "Home",
                             new {userId = user.Id, token = passResetToken}, Request.Url.Scheme); //sets recovery url
-                        await
-                            _userManager.SendEmailAsync(user.Id, "Password recovery",
-                                $"To recover your password <a href=\"{callbackUrl}\" target=\"_blank\">click here</a>");
+
+                        await SendEmail(user.Id, new ForgotPasswordMailMessageBuilder(callbackUrl));
+
                         return View("ForgotPasswordEnd"); //succeeded
                     }
                 }
@@ -149,9 +144,8 @@ namespace Web.Controllers
 
             //error occured
             ModelState.AddModelError("", errorSummary);
-            return View();            
+            return View();
         }
-
 
 
         //username changing methods
@@ -178,9 +172,7 @@ namespace Web.Controllers
                     ModelState.AddModelError(nameof(unameForgot.Email), "Uw emailadres is incorrect, controleer dit aub");
                 else
                 {
-                    await
-                        _userManager.SendEmailAsync(user.Id, "User name remindering",
-                            $"Hello, dear user. Your username is {user.UserName}");
+                    await SendEmail(user.Id, new ForgotUsernameMailMessageBuilder(user.UserName));
                     return View("ForgotUserNameEnd"); //succeeded
                 }
             }
@@ -199,7 +191,7 @@ namespace Web.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {Token = token, Id = userId}); 
+            return View(new PasswordRecoveryViewModel {Token = token, Id = userId});
         }
 
         [HttpPost]
@@ -225,25 +217,25 @@ namespace Web.Controllers
                             _userManager.ResetPasswordAsync(passwRecovery.Id, passwRecovery.Token,
                                 passwRecovery.Password); //reseting password
 
-                    if (result.Succeeded) 
+                    if (result.Succeeded)
                         return RedirectToAction("Index"); //redirecting to index if succeded
                     errorMessage =
                         "URL for passwort reset is invalid. Try to generate new or check url.";
-                        //password reset 
+                    //password reset 
                 }
             }
             //error occured
             ModelState.AddModelError("", errorMessage);
             return View();
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<JsonResult> CheckUserName(string userName)
         {
             if (ModelState.IsValid && await _userManager.FindByNameAsync(userName) != null)
-                    return Json(true, JsonRequestBehavior.AllowGet);
-            
+                return Json(true, JsonRequestBehavior.AllowGet);
+
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
@@ -259,17 +251,24 @@ namespace Web.Controllers
 
         private Employer RegistrationEmployerViewModel(RegistrationEmployerViewModel model)
         {
-            var employer = new Employer();
+            var employer = new Employer
+            {
+                Adress = model.Adress,
+                City = model.City,
+                CompanyName = model.CompanyName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Prefix = model.Prefix,
+                PostalCode = model.PostalCode,
+                TelephoneNumber = model.TelephoneNumber
+            };
 
-            employer.Adress = model.Adress;
-            employer.City = model.City;
-            employer.CompanyName = model.CompanyName;
-            employer.FirstName = model.FirstName;
-            employer.LastName = model.LastName;
-            employer.Prefix = model.Prefix;
-            employer.PostalCode = model.PostalCode;
-            employer.TelephoneNumber = model.TelephoneNumber;
             return employer;
+        }
+
+        private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
+        {
+            await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
         }
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)

@@ -5,13 +5,10 @@ using BLL.Identity.Models;
 using BLL.Identity.Stores;
 using BLL.Services.MailingService;
 using BLL.Services.MailingService.Interfaces;
-using IDAL.Interfaces;
 using Microsoft.AspNet.Identity;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using Unity.Mvc5;
-using Web.App_Start;
 
 namespace Web
 {
@@ -19,7 +16,7 @@ namespace Web
     {
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+            var container = new UnityContainer();
             container.LoadConfiguration();
 
             container.RegisterType<IUserStore<IdentityUser, Guid>, UserStore>(new PerHttpRequestLifetimeManager());

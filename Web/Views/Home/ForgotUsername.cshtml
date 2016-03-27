@@ -1,10 +1,10 @@
 ﻿@model Web.ViewModels.ForgotUsernameViewModel
 <section class="forgotUserForm">
-    @using (Html.BeginForm("ForgotUsername", "Home", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("ForgotUsername", "Home", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
     {
         @Html.AntiForgeryToken()
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger col-centered" })
+        @Html.ValidationSummary(true, "", new {@class = "text-danger col-centered"})
         <div class="row">
             <div class="col-md-12 col-centered lb-forgot">
                 Om uw gebruikersnaam te herstellen vult u hieronder alsttublief uw e-mail adres in.
@@ -12,19 +12,19 @@
         </div>
         <div class="form-group form-forgot">
             <div class="col-md-8 pull-right tb-forgot">
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new {@class = "text-danger"})
+                @Html.TextBoxFor(m => m.Email, new {@class = "form-control"})
             </div>
         </div>
 
-        <br />
+        <br/>
         <div class="row">
             <div class="col-md-5">
-                @Html.ActionLink("Annuleren", "Index", "Home", null, new { @class = "btn btn-danger pull-right" })
-                <!--<input type="submit" value="Annuleren" class="btn btn-danger pull-right" />-->
+                @Html.ActionLink("Annuleren", "Index", "Home", null, new {@class = "btn btn-danger pull-right"})
+                <!--<input type="submit" value="Annuleren" class="btn btn-danger pull-right"/>-->
             </div>
             <div class="col-md-6 col-md-offset-1 tb-forgot">
-                <input type="submit" value="Verzenden" class="btn btn-success" />
+                <input type="submit" value="Verzenden" class="btn btn-success"/>
             </div>
         </div>
     }

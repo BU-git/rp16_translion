@@ -85,6 +85,10 @@
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />
     <Compile Include="Services\MailingService\MailingService.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\ForgotPasswordMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\MailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\RegistrationMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailQueue.cs" />
     <Compile Include="Services\MailingService\QueueListener.cs" />
     <Compile Include="Services\MailingService\Types\QueuedMessage.cs" />
