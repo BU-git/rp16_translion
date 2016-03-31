@@ -4,5 +4,38 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Employer Index</h2>
-
+<section id="tlr-usr-section">
+    <!--Header-->
+    <div class="row" id="tlr-usr-section-hdr">
+        <div class="col-sm-3 col-md-2 col-lg-2">
+            <h3>Werknemers</h3>
+        </div>
+        <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
+            @using (Html.BeginForm("action", "contrllr", null, FormMethod.Post, null))
+            {
+                <input type="submit" id="addWorker" value="Werkenemer toevoegen"/>
+            }
+        </div>
+        <div class="col-sm-4 col-md-3 col-lg-3">
+            <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
+            <input type="search" id="emplSearch" placeholder="search" autofocus/>
+        </div>
+    </div>
+    <!--Main panel with users-->
+    <div class="row" id="tlr-usr-section-main">
+        <!--user's info(image and name)-->
+        <!--Use this in foreach with your ViewModel-->  
+         @for (int i = 0; i < 20; i++)
+         {
+        <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
+            <a href="unknwn" class="tlr-usr-inner-info">
+                <img src="~/Content/Images/UserImg.png" alt="UserName">
+            </a>
+            <button class="tlr-usr-info-label-btn">
+                <span>User1</span>
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+        </div>
+         }
+    </div>
+</section>

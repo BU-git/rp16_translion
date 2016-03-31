@@ -35,6 +35,7 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            
             return View();
         }
 
@@ -42,6 +43,11 @@ namespace Web.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
+            var result = RedirectIfSignedIn();
+
+            if (result != null)
+                return result;
+
             return View();
         }
 
@@ -57,7 +63,8 @@ namespace Web.Controllers
                 if (isLoginSuccessful)
                 {
                     await SignInAsync(user, true);
-                    return RedirectToAction("Index");
+                    return await _userManager.IsInRoleAsync(user.Id, "Employer") ? RedirectToAction("Index", "Employer", new { id = user.Id }) 
+                        : RedirectToAction("Index", "Admin", new { id = user.Id });
                 }
             }
             return View(model);
@@ -67,6 +74,12 @@ namespace Web.Controllers
         [AllowAnonymous]
         public ActionResult Registration()
         {
+
+            var result = RedirectIfSignedIn();
+
+            if (result != null)
+                return result;
+
             return View();
         }
 
@@ -86,11 +99,11 @@ namespace Web.Controllers
                     Email = model.EmailAdress
                 };
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
-
+                
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user.Id, "Employer");
                     await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
-                    await SignInAsync(user, true);
 
                     return View("AccountConfirmation");
                 }
@@ -101,8 +114,13 @@ namespace Web.Controllers
         //password remindering methods
         [HttpGet]
         [AllowAnonymous]
-        public ViewResult ForgotPassword()
+        public ActionResult ForgotPassword()
         {
+            var result = RedirectIfSignedIn();
+
+            if (result != null)
+                return result;
+
             return View();
         }
 
@@ -129,7 +147,7 @@ namespace Web.Controllers
                     //generating password reset token
 
                     if (string.IsNullOrEmpty(passResetToken)) //generation of token failed
-                        errorSummary = "Server Error. Try later";
+                        errorSummary = "Server probleem ( Probeer a.u.b. later)";
                     else
                     {
                         var callbackUrl = Url.Action("PasswordRecovery", "Home",
@@ -151,8 +169,13 @@ namespace Web.Controllers
         //username changing methods
         [HttpGet]
         [AllowAnonymous]
-        public ViewResult ForgotUserName()
+        public ActionResult ForgotUserName()
         {
+            var result = RedirectIfSignedIn();
+
+            if (result != null)
+                return result;
+
             return View();
         }
 
@@ -183,15 +206,15 @@ namespace Web.Controllers
         //password recovery (after remindering and revieving of email with token)
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult PasswordRecovery(Guid userId, string token)
+        public ActionResult PasswordRecovery(Guid? userId, string token)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !userId.HasValue || String.IsNullOrWhiteSpace(token))
             {
                 ModelState.AddModelError("", "URL for resetting password is invalid");
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {Token = token, Id = userId});
+            return View(new PasswordRecoveryViewModel {Token = token, Id = userId.Value});
         }
 
         [HttpPost]
@@ -209,7 +232,7 @@ namespace Web.Controllers
                 if (!ModelState.IsValid && !string.IsNullOrWhiteSpace(passwRecovery.Password) &&
                     !string.IsNullOrWhiteSpace(passwRecovery.ConfirmationalPassword))
                     //if not valid data and passwords not null or white space, etc..
-                    errorMessage = "URL for passwort reset is invalid. Try to generate new or check url.";
+                    errorMessage = "URL for password reset is invalid. Try to generate new or check url.";
                 else //if data valid
                 {
                     var result =
@@ -218,9 +241,9 @@ namespace Web.Controllers
                                 passwRecovery.Password); //reseting password
 
                     if (result.Succeeded)
-                        return RedirectToAction("Index"); //redirecting to index if succeded
+                        return RedirectToAction("Login"); //redirecting to index if succeded
                     errorMessage =
-                        "URL for passwort reset is invalid. Try to generate new or check url.";
+                        "URL for password reset is invalid. Try to generate new or check url.";
                     //password reset 
                 }
             }
@@ -285,6 +308,16 @@ namespace Web.Controllers
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        [NonAction]
+        private RedirectToRouteResult RedirectIfSignedIn()
+        {
+            if (User.Identity.IsAuthenticated)
+                return User.IsInRole("Admin") ? RedirectToAction("Index", "Admin")
+                    : RedirectToAction("Index", "Employer");
+
+            return null;
         }
     }
 }

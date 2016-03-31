@@ -130,3 +130,131 @@ footer p {
 }
 
 /*Sticky footer end*/
+
+
+
+/*EMPLOYER AND ADMIN PAGES STYLE*/
+
+/*users(employees or employers) list style*/
+#tlr-usr-section
+{
+    margin-top: 30px;
+    padding-bottom: 10%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    vertical-align: central;
+}
+
+/*Header of section(with button and search)*/
+#tlr-usr-section-hdr {
+    margin-top: 5px;
+}
+
+/*Admin button which adds users style*/
+button#tlr-usr-section-hdr-adm-btn,
+button#tlr-usr-section-hdr-adm-btn:focus {
+    background-color: inherit;   
+    border: none;
+    outline: none;
+}
+
+/*Search field*/
+input#emplSearch {
+    max-width: 150px;
+    border-radius: 20px;
+    font-size: 14px;
+    border-color: black;
+    border-width: 1px;
+    margin-left: -25px; /*for search glyphicon  ?????*/
+    padding-left: 25px;
+}
+
+input#emplSearch:focus,
+input#emplSearch:hover  {
+    border-width: 2px;
+    outline: none;
+}
+
+/*Add workers button style*/
+input#addWorker {
+    background-color: inherit;
+    border: 1px solid black;
+}
+
+input#addWorker:hover, input#addWorker:focus {
+    font-weight: 500;
+    outline: none;
+}
+
+/*Section with images and user's names styles*/
+#tlr-usr-section-main {
+    overflow-y: auto;
+    margin: 20px;
+    padding: 10px;
+    height: 375px; /*change this value if image will change*/
+    border-top: 1px solid rgb(206, 206, 206);
+}
+
+
+/*user's info*/
+.tlr-usr-info {
+    margin-bottom: 50px;
+}
+
+a.tlr-usr-inner-info {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/*image in user's info styles*/
+a.tlr-usr-inner-info>img {
+    padding: 10px;
+    text-decoration: none;
+    border: 1px solid black;
+    max-height: 100%;
+    width: auto;
+    overflow: hidden;
+}
+
+a.tlr-usr-inner-info>img:hover {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/*Embloyees label styles*/
+.tlr-usr-info-label-btn {
+    background-color: inherit;
+    border: none;
+    outline: none;
+}
+
+
+/*LAYOUT PAGE USER'S INFO STYLE*/
+
+/*Admin messages number style*/
+.tlr-usr-adm-messgs-txt {
+    font-size: 20px;
+    color: red;
+    z-index: 10;
+    display: inline;
+    vertical-align: central;
+}
+
+/*user's info main style*/
+div.tlr-us-info-block {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+.tlr-logged-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a.tlr-us-info-link, 
+a.tlr-us-info-link:visited {
+    text-decoration: underline;
+    color: cornflowerblue;
+}

@@ -1,0 +1,34 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <div class=""></div>
+    <div class="col-sm-9 col-md-offset-2 col-lg-offset-4 col-md-7 col-lg-5 tlr-us-info-block">
+         <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+             @if (User.IsInRole("Admin"))
+             {
+                <a href="#">
+                    <img src="~/Content/Images/AdminMessages.png" class="tlr-logged-img" />
+                </a>
+             }
+        </div>
+        <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+            <a href="#">
+                <img src="~/Content/Images/UserHeader.png" alt="@User.Identity.Name" class="tlr-logged-img"/>
+            </a>
+        </div>
+        <div class="col-sm-8 col-md-8 col-lg-8">
+            @if (User.IsInRole("Admin"))
+            {
+                <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als administrator</p>
+            }
+            else
+            {
+                <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als werkgever</p>
+            }
+            <p>
+                @Html.ActionLink("Settings", "Settings", User.IsInRole("Admin") ? "Admin" : "Employer", new { name = User.Identity.Name }, new { @class = "tlr-us-info-link" })
+                <span id="trl-usr-logged-splitter">|</span>
+                @Html.ActionLink("Logout", "Logout", User.IsInRole("Admin") ? "Admin" : "Employer", new { name = User.Identity.Name }, new { @class = "tlr-us-info-link" })
+            </p>
+        </div>
+   </div>
+}

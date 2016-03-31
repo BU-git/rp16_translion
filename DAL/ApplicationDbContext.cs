@@ -13,6 +13,7 @@ namespace DAL
             // As it is installed in the GAC, Copy Local does not work. It is required for probing.
             // Fixed "Provider not loaded" error
            var ensureDLLIsCopied = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
+            Database.SetInitializer(new DBInitializer());
         }
         internal IDbSet<User> Users { get; set; }
         internal IDbSet<Role> Roles { get; set; }
