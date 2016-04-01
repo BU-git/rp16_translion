@@ -32,23 +32,16 @@ namespace Web.Controllers
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         // GET: Home
-        [Authorize]
         public ActionResult Index()
         {
-            
-            return View();
+            return RedirectIfSignedIn() ?? RedirectToAction("Login");
         }
 
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login()
         {
-            var result = RedirectIfSignedIn();
-
-            if (result != null)
-                return result;
-
-            return View();
+            return RedirectIfSignedIn() ?? View();
         }
 
         [HttpPost]
@@ -74,13 +67,7 @@ namespace Web.Controllers
         [AllowAnonymous]
         public ActionResult Registration()
         {
-
-            var result = RedirectIfSignedIn();
-
-            if (result != null)
-                return result;
-
-            return View();
+            return RedirectIfSignedIn() ?? View();
         }
 
         [HttpPost]
@@ -103,6 +90,7 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Employer");
+                    await SignInAsync(user, true);
                     await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
 
                     return View("AccountConfirmation");
@@ -171,12 +159,7 @@ namespace Web.Controllers
         [AllowAnonymous]
         public ActionResult ForgotUserName()
         {
-            var result = RedirectIfSignedIn();
-
-            if (result != null)
-                return result;
-
-            return View();
+            return RedirectIfSignedIn() ?? View();
         }
 
         [HttpPost]
@@ -311,7 +294,7 @@ namespace Web.Controllers
         }
 
         [NonAction]
-        private RedirectToRouteResult RedirectIfSignedIn()
+        private ActionResult RedirectIfSignedIn()
         {
             if (User.Identity.IsAuthenticated)
                 return User.IsInRole("Admin") ? RedirectToAction("Index", "Admin")
