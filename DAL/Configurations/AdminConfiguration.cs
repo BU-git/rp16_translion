@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity.ModelConfiguration;
-using Domain.Models;
+using IDAL.Models;
 
 namespace DAL.Configurations
 {

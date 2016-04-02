@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Models
+namespace IDAL.Models
 {
     public class User
     {

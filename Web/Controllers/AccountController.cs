@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
-using Domain.Models;
+using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;

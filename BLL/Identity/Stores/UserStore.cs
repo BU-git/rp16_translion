@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BLL.Identity.Models;
-using Domain.Models;
 using IDAL.Interfaces;
+using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Claim = System.Security.Claims.Claim;
 
@@ -107,7 +107,7 @@ namespace BLL.Identity.Stores
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
-            var c = new Domain.Models.Claim
+            var c = new IDAL.Models.Claim
             {
                 ClaimType = claim.Type,
                 ClaimValue = claim.Value,

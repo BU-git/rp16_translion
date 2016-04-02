@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Models
+namespace IDAL.Models
 {
     public class ExternalLogin
     {

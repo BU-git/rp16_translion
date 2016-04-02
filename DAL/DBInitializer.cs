@@ -1,7 +1,7 @@
 ﻿using DAL.Repositories;
 using System;
 using System.Data.Entity;
-using Domain.Models;
+using IDAL.Models;
 
 namespace DAL
 {
