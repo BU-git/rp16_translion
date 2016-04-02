@@ -50,6 +50,11 @@ namespace Web.Controllers
 
         }
 
+        public ActionResult AddEmployeeSuccess()
+        {
+            return View();
+        }
+
         //test logout method
         public ActionResult Logout()
         {

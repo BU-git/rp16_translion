@@ -16,6 +16,7 @@ namespace IDAL.Models
         public bool IsApprove { get; set; }
         public bool IsDeleted { get; set; }
         public Guid EmployerId { get; set; }
+
         #region Navigation Properties
         public virtual Employer Employer
         {

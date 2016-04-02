@@ -29,6 +29,8 @@ namespace BLL
 
             _unitOfWork.EmployeeRepository.Add(employee);
             _unitOfWork.SaveChanges();
+
+            //TODO: Add send mail to Trans Lion
         }
     }
 }

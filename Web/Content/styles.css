@@ -258,3 +258,17 @@ a.tlr-us-info-link:visited {
     text-decoration: underline;
     color: cornflowerblue;
 }
+
+.addEmployeeSuccessBorderWrapper {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 10px 15px;
+    border: 1px solid black;
+    -ms-border-radius: 20px;
+    border-radius: 20px;
+    text-align: center;   
+    word-wrap: break-word;
+}
+
+.addEmployeeSuccessHeader {
+    font-size: 1.5em;
+}
