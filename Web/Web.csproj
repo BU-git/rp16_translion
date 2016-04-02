@@ -187,6 +187,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AddEmployeeViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\ForgotUsernameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -212,6 +213,8 @@
     <Content Include="Views\Employer\Index.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Shared\_LoggedUserPartial.cshtml" />
+    <Content Include="Views\Employer\AddEmployee.cshtml" />
+    <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
