@@ -27,16 +27,10 @@ namespace Web.Controllers
         }
 
         //test logout method
-        public ActionResult Logout(string name)
+        public ActionResult Logout()
         {
-            if (ModelState.IsValid)
-            {
-                if (String.CompareOrdinal(name, User.Identity.Name) == 0)
-                    AuthenticationManager.SignOut();
-
-                return RedirectToAction("Login", "Home");
-            }
-            return View("Index");
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

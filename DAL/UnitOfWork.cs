@@ -76,6 +76,7 @@ namespace DAL
         #region IDisposable Members
         public void Dispose()
         {
+            //TODO Add dispose for _employerRepository and _adminRepository!!!
             _externalLoginRepository = null;
             _roleRepository = null;
             _userRepository = null;

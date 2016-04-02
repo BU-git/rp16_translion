@@ -25,9 +25,9 @@
                 <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als werkgever</p>
             }
             <p>
-                @Html.ActionLink("Settings", "Settings", User.IsInRole("Admin") ? "Admin" : "Employer", new { name = User.Identity.Name }, new { @class = "tlr-us-info-link" })
+                @Html.ActionLink("Settings", "Settings", User.IsInRole("Admin") ? "Admin" : "Employer",null, new { @class = "tlr-us-info-link" })
                 <span id="trl-usr-logged-splitter">|</span>
-                @Html.ActionLink("Logout", "Logout", User.IsInRole("Admin") ? "Admin" : "Employer", new { name = User.Identity.Name }, new { @class = "tlr-us-info-link" })
+                @Html.ActionLink("Logout", "Logout", User.IsInRole("Admin") ? "Admin" : "Employer",null, new { @class = "tlr-us-info-link" })
             </p>
         </div>
    </div>
