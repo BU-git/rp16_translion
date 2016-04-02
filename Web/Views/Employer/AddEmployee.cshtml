@@ -5,6 +5,13 @@
 }
 
 @model Web.ViewModels.AddEmployeeViewModel
+
+<div class="row">
+    <div class="col-md-12 col-centered addEmployeeHeader">
+        Werknemer toevoegen
+    </div>
+</div>
+
 <section class="registrationForm">
     @using (Html.BeginForm("AddEmployee", "Employer", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {

@@ -43,16 +43,14 @@ namespace Web.Controllers
         [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public ActionResult AddEmployee(AddEmployeeViewModel employeeViewModel)
         {
+            if (!ModelState.IsValid)
+                return View(employeeViewModel);
+
             var employerId = Guid.Parse(User.Identity.GetUserId());
             _employerManager.AddEmployee(employeeViewModel.FirstName, employeeViewModel.Prefix,
                 employeeViewModel.LastName, employerId);
             return View("AddEmployeeSuccess");
 
-        }
-
-        public ActionResult AddEmployeeSuccess()
-        {
-            return View();
         }
 
         //test logout method
