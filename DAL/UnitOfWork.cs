@@ -17,6 +17,7 @@ namespace DAL
         private IUserRepository _userRepository;
         private IEmployerRepository _employerRepository;
         private IAdminRepository _adminRepository;
+        private IEmployeeRepository _employeeRepository;
         #endregion
 
         #region Constructors
@@ -56,6 +57,11 @@ namespace DAL
         {
             get { return _adminRepository ?? (_adminRepository = new AdminRepository(_context)); }
         }
+        public IEmployeeRepository EmployeeRepository
+        {
+            get { return _employeeRepository ?? (_employeeRepository = new EmployeeRepository(_context)); }
+        }
+
 
         public int SaveChanges()
         {

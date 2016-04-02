@@ -12,6 +12,7 @@ namespace IDAL.Interfaces
         IUserRepository UserRepository { get; }
         IEmployerRepository EmployerRepository { get; }
         IAdminRepository AdminRepository { get; }
+        IEmployeeRepository EmployeeRepository { get; }
         #endregion
 
         #region Methods
