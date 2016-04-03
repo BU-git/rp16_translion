@@ -188,12 +188,13 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddEmployeeViewModel.cs" />
+    <Compile Include="ViewModels\CreateAdminViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
     <Compile Include="ViewModels\ForgotUsernameViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
-    <Compile Include="ViewModels\RegistrationEmployerViewModel.cs" />
+    <Compile Include="ViewModels\RegisterEmployerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -202,7 +203,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Account\Registration.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotUsername.cshtml" />
     <Content Include="Views\Account\ForgotUsernameEnd.cshtml" />
@@ -215,6 +215,8 @@
     <Content Include="Views\Shared\_LoggedUserPartial.cshtml" />
     <Content Include="Views\Employer\AddEmployee.cshtml" />
     <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
+    <Content Include="Views\Account\AddAdmin.cshtml" />
+    <Content Include="Views\Account\RegisterEmployer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

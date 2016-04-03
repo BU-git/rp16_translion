@@ -426,27 +426,24 @@ namespace BLL.Identity.Stores
             if (identityUser == null)
                 return null;
 
-            var employer = new Employer();
-            mapToEmploter(employer, identityUser);
+            var employer = new Employer
+            {
+                UserId = identityUser.Id,
+                UserName = identityUser.UserName,
+                PasswordHash = identityUser.PasswordHash,
+                SecurityStamp = identityUser.SecurityStamp,
+                Adress = identityUser.Employer.Adress,
+                City = identityUser.Employer.City,
+                CompanyName = identityUser.Employer.CompanyName,
+                Email = identityUser.Email,
+                FirstName = identityUser.Employer.FirstName,
+                LastName = identityUser.Employer.LastName,
+                PostalCode = identityUser.Employer.PostalCode,
+                Prefix = identityUser.Employer.Prefix,
+                TelephoneNumber = identityUser.Employer.TelephoneNumber
+            };
 
             return employer;
-        }
-
-        private void mapToEmploter(Employer employer, IdentityUser identityUser)
-        {
-            employer.UserId = identityUser.Id;
-            employer.UserName = identityUser.UserName;
-            employer.PasswordHash = identityUser.PasswordHash;
-            employer.SecurityStamp = identityUser.SecurityStamp;
-            employer.Adress = identityUser.Employer.Adress;
-            employer.City = identityUser.Employer.City;
-            employer.CompanyName = identityUser.Employer.CompanyName;
-            employer.Email = identityUser.Email;
-            employer.FirstName = identityUser.Employer.FirstName;
-            employer.LastName = identityUser.Employer.LastName;
-            employer.PostalCode = identityUser.Employer.PostalCode;
-            employer.Prefix = identityUser.Employer.Prefix;
-            employer.TelephoneNumber = identityUser.Employer.TelephoneNumber;
         }
 
         private Admin createAdmin(IdentityUser identityUser)
@@ -454,16 +451,18 @@ namespace BLL.Identity.Stores
             if (identityUser == null)
                 return null;
 
-            Admin admin = new Admin();
-            mapToAdmin(admin, identityUser);
+            Admin admin = new Admin
+            {
+                UserId = identityUser.Id,
+                UserName = identityUser.UserName,
+                Email = identityUser.Email,
+                PasswordHash = identityUser.PasswordHash,
+                SecurityStamp = identityUser.SecurityStamp,
+
+                Name = identityUser.Admin.Name
+            };
 
             return admin;
-        }
-
-        private void mapToAdmin(Admin admin, IdentityUser identityUser)
-        {
-            admin.Email = identityUser.Admin.Email;
-            admin.Name = identityUser.Admin.Name;
         }
 
         private void populateUser(User user, IdentityUser identityUser)
