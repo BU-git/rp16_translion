@@ -1,0 +1,106 @@
+﻿@model IDAL.Models.Employer
+
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="emplSettings">
+    <h3>Werkgever gegevens</h3>
+    <div class="row emplSettingsMain">
+        <!--Image and username-->
+        <div class="hidden-xs col-sm-3 col-md-2" id="emplSettingsMainImage">
+            <p>@Model.UserName</p>
+            <a href='@Url.Action("Employer", "Index")'>
+                <img src="~/Content/Images/UserImg.png" alt="User"/>
+            </a>
+        </div> 
+        <!--User info section-->
+        <div class="col-xs-12 col-sm-5 col-md-7">
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label>Asdasd</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    <label>asdasdasd</label>
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Voornaam</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.FirstName)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Tussenvoegsel</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.Prefix)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Achternaam</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.LastName)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Telefoon</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.TelephoneNumber)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Email adress</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.Email)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Postcode</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.PostalCode)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Adres</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.Adress)
+                </div>
+            </div>
+            <div class="emplSettingsMainData">
+                <div class="emplSettingsMainDataElem">
+                    <label class="emplSettingsMainData">Plaats</label>
+                </div>
+                <div class="emplSettingsMainDataElem">
+                    @Html.DisplayFor(m => m.City)
+                </div>
+            </div>
+        </div>  
+        <!--Left button-->
+        <div class="col-sm-4 col-md-3">
+            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new { @class= "emplSettingsButton" })
+        </div>
+    </div>
+
+    <!--Back-->
+    <div class="row emplSettingsBottom">
+        <div class="col-sm-6 col-md-3">
+            @Html.ActionLink("Terug", "Index", null, new { @class = "emplSettingsButton" })
+        </div>
+        
+    </div>
+</section>

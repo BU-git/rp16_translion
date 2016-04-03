@@ -7,6 +7,8 @@ namespace Web.ViewModels
     {
         [Required(ErrorMessage = "Vul nieuw wachtwoord in")]
         [Display(Name = "Nieuwe wachtwoord")]
+        [MinLength(8, ErrorMessage = "Wachtwoord voldoet niet aan eisen. Minimaal 1 hoofdletter, 1 symbool en 8 karakters")]
+        [RegularExpression(@"^([a-z]+)([A-Z]+)(\d+)", ErrorMessage = "Wachtwoord voldoet niet aan eisen. Minimaal 1 hoofdletter, 1 symbool en 8 karakters")]
         public String Password { get; set; }
 
         [Required(ErrorMessage = "Wachtwoord kom niet overeen")]

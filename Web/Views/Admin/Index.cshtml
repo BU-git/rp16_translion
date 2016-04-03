@@ -14,13 +14,10 @@
     
     <div class="row" id="tlr-usr-section-hdr">
         <div class="col-sm-5 col-md-4 col-lg-3">
-            @using (Html.BeginForm("action", "contrllr", null, FormMethod.Post, null))
-            {
-                <button type="submit" id="tlr-usr-section-hdr-adm-btn">
+                <a href='@Url.Action("CreateEmployer", "Account")' id="tlr-usr-section-hdr-adm-btn">
                     <img src="~/Content/Images/AdminCreateEmployer.png" />
                     <span>Werkgever toevoegen</span>
-                </button>
-            }
+                </a>
         </div>
         <div class="col-sm-offset-3 col-md-offset-5 col-lg-offset-6 col-sm-4 col-md-3 col-lg-3">
             <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
