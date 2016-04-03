@@ -181,14 +181,18 @@ input#emplSearch:hover  {
 }
 
 /*Add workers button style*/
-input#addWorker {
+a#addWorker {
     background-color: inherit;
     border: 1px solid black;
+    color: black;
+    padding: 0px 10px;
+    text-decoration: none;
 }
 
-input#addWorker:hover, input#addWorker:focus {
+a#addWorker:hover, a#addWorker:focus {
     font-weight: 500;
     outline: none;
+    text-decoration: none;
 }
 
 /*Section with images and user's names styles*/

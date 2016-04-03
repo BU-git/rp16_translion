@@ -9,11 +9,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-<<<<<<< HEAD
-=======
 using BLL.Interfaces;
-using IDAL.Interfaces;
->>>>>>> dd448355fbd9426c680855b94794b219dad238c3
 using Web.ViewModels;
 
 namespace Web.Controllers
@@ -25,26 +21,16 @@ namespace Web.Controllers
         private readonly IEmployerManager _employerManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        readonly IUnitOfWork _uow;
-
         IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
-
-<<<<<<< HEAD
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IUnitOfWork uow)
+        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager, IUnitOfWork unitOfWork)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
 
             _userManager.UserTokenProvider =
                    new DataProtectorTokenProvider<IdentityUser, Guid>(
                           new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
-            _uow = uow;
-=======
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager, IUnitOfWork unitOfWork)
-        {
-            _userManager = new UserManager<IdentityUser, Guid>(store);
             _employerManager = employerManager;
             _unitOfWork = unitOfWork;
->>>>>>> dd448355fbd9426c680855b94794b219dad238c3
         }
 
         // GET: Employer
@@ -54,9 +40,7 @@ namespace Web.Controllers
             return View();
         }
 
-<<<<<<< HEAD
         [HttpGet]
-=======
         public ActionResult AddEmployee()
         {
             return View();
@@ -78,7 +62,6 @@ namespace Web.Controllers
         }
 
         //test logout method
->>>>>>> dd448355fbd9426c680855b94794b219dad238c3
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();
@@ -92,7 +75,7 @@ namespace Web.Controllers
 
             if (user != null)
             {
-                var employer = await _uow.EmployerRepository.FindByIdAsync(user.Id);
+                var employer = await _unitOfWork.EmployerRepository.FindByIdAsync(user.Id);
 
                 if (employer != null)
                     return View(employer);
@@ -100,7 +83,6 @@ namespace Web.Controllers
 
             return View("Index");
         }
-
         #region PasswordChange
         [HttpGet]
         public async Task<ActionResult> PasswordChange()
