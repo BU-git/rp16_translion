@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using System.Web.Security;
 
 namespace Web.ViewModels
 {
-    public class RegistrationEmployerViewModel
+    public class RegisterEmployerViewModel
     {
         [Required]
         [Display(Name = "Bedrijfsnaam")]
@@ -46,16 +47,16 @@ namespace Web.ViewModels
 
         [Required]
         [Display(Name = "Gebruikersnaam")]
-        public string LoginName { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Wachtwoord")]
-        public string UserPassword { get; set; }
+        public string Password { get; set; } = "default";
 
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Herhaal wachtwoord")]
-        public string RepeatUserPassword { get; set; }
+        public string ConfirmPassword { get; set; } = "default";
     }
 }

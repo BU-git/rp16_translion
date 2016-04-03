@@ -77,10 +77,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmployerManager.cs" />
     <Compile Include="Identity\Models\IdentityRole.cs" />
     <Compile Include="Identity\Models\IdentityUser.cs" />
     <Compile Include="Identity\Stores\RoleStore.cs" />
     <Compile Include="Identity\Stores\UserStore.cs" />
+    <Compile Include="Interfaces\IEmployerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />

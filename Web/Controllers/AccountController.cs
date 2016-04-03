@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
@@ -11,6 +12,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
 using Web.ViewModels;
+using Roles = BLL.Identity.Models.Roles;
 
 namespace Web.Controllers
 {
@@ -94,7 +96,7 @@ namespace Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Registration()
+        public ActionResult RegisterEmployer()
         {
             return View();
         }
@@ -102,32 +104,106 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Registration(RegistrationEmployerViewModel model)
+        public async Task<ActionResult> RegisterEmployer(RegisterEmployerViewModel model)
         {
+            if (model.Password.Equals("default"))
+            {
+                model.Password = Membership.GeneratePassword(12, 4);
+                model.ConfirmPassword = model.Password;
+            }
+
             if (ModelState.IsValid)
             {
-                var employer = RegistrationEmployerViewModel(model);
+                var employer = new Employer
+                {
+                    Adress = model.Adress,
+                    City = model.City,
+                    CompanyName = model.CompanyName,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Prefix = model.Prefix,
+                    PostalCode = model.PostalCode,
+                    TelephoneNumber = model.TelephoneNumber
+                };
+
                 var user = new IdentityUser
                 {
-                    UserName = model.LoginName,
+                    UserName = model.UserName,
+                    Email = model.EmailAdress,
                     Roles = Roles.Employer,
-                    Employer = employer,
-                    Email = model.EmailAdress
+                    Employer = employer
                 };
-                var result = await _userManager.CreateAsync(user, model.UserPassword);
+
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Employer");
-                    await SignInAsync(user, true);
-                    await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
 
-                    return View("AccountConfirmation");
+                    if (!User.IsInRole("Admin"))
+                    {
+                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        await SignInAsync(user, true);
+
+                        return View("AccountConfirmation");
+                    }
+                    else
+                    {
+                        //TODO: Ensure that registered use will receive a letter with his username and pass
+                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
+
+                        return RedirectToAction("Index", "Home");
+                    }
+
                 }
             }
             return View(model);
         }
 
+        #endregion
+
+        #region Add new admin by admin
+        [HttpGet]
+        //[Authorize(Roles = "Admin")]
+        public ActionResult AddAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var admin = new Admin
+                {
+                    Name = model.Name
+                };
+
+                var user = new IdentityUser
+                {
+                    UserName = model.Username,
+                    Email = model.EmailAdress,
+                    Roles = Roles.Admin,
+                    Admin = admin
+                };
+
+                //TODO: delete password field from CreateAdminViewModel. Use instead randomly generated password. Then send it to the admin e-mail
+                //var password = Membership.GeneratePassword(12, 4);
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user.Id, "Admin");
+                    //await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.Username));
+
+                    return RedirectIfSignedIn();
+                }
+            }
+
+            return View(model);
+        }
         #endregion
 
         #region ForgotPassword
@@ -289,23 +365,6 @@ namespace Web.Controllers
         private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
         {
             await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
-        }
-
-        private Employer RegistrationEmployerViewModel(RegistrationEmployerViewModel model)
-        {
-            var employer = new Employer
-            {
-                Adress = model.Adress,
-                City = model.City,
-                CompanyName = model.CompanyName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Prefix = model.Prefix,
-                PostalCode = model.PostalCode,
-                TelephoneNumber = model.TelephoneNumber
-            };
-
-            return employer;
         }
 
         [NonAction]

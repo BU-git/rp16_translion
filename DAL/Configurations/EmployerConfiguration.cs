@@ -8,6 +8,10 @@ namespace DAL.Configurations
         public EmployerConfiguration()
         {
             ToTable("Employers");
+
+            HasMany(x => x.Employees)
+                .WithRequired(x => x.Employer)
+                .HasForeignKey(x => x.EmployerId);
         }
     }
 }
