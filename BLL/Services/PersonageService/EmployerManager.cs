@@ -49,7 +49,7 @@ namespace BLL.Services.PersonageService
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public override bool DeleteEmployee(Employee employee)
+        public override void DeleteEmployee(Employee employee, User user)
         {
             throw new NotImplementedException();
         }
