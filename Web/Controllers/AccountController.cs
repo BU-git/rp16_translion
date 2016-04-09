@@ -21,7 +21,6 @@ namespace Web.Controllers
         public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
         {
             _userManager = userManager;
-
             //bad solutions
             _userManager.EmailService = emailService;
             _userManager.UserTokenProvider =
@@ -63,8 +62,14 @@ namespace Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login()
+        public async Task<ActionResult> Login()
         {
+            //if (User.IsInRole("Admin"))
+            //{
+            //var name = User.Identity.Name;
+            //var user = await _userManager.FindByNameAsync(name);
+            // _userManager.GetAdmin(user);
+            //}
             return View();
         }
 
@@ -110,15 +115,13 @@ namespace Web.Controllers
                 var user = new IdentityUser
                 {
                     UserName = model.LoginName,
-                    Roles = Roles.Employer,
-                    Employer = employer,
                     Email = model.EmailAdress
                 };
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user.Id, "Employer");
+                    await _userManager.AddToRoleAsync(user.Id, "Admin");
                     await SignInAsync(user, true);
                     await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
 

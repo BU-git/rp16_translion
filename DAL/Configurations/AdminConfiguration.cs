@@ -7,7 +7,9 @@ namespace DAL.Configurations
     {
         public AdminConfiguration()
         {
-            ToTable("Admin");
+            ToTable("Admins");
+
+            HasKey(x => x.AdminId);
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IDAL.Models
 {
@@ -18,6 +14,7 @@ namespace IDAL.Models
         public Guid EmployerId { get; set; }
 
         #region Navigation Properties
+
         public virtual Employer Employer
         {
             get { return _employer; }
@@ -26,10 +23,10 @@ namespace IDAL.Models
                 if (value == null)
                     throw new ArgumentNullException("value");
                 _employer = value;
-                EmployerId = value.UserId;
+                EmployerId = value.EmployerId;
             }
         }
-        #endregion
 
+        #endregion
     }
 }

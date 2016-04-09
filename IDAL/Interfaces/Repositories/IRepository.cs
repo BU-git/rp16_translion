@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IDAL.Interfaces
+namespace IDAL.Interfaces.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {

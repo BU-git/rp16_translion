@@ -1,16 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using DAL.Repositories;
 using IDAL.Interfaces;
+using IDAL.Interfaces.Repositories;
 
 namespace DAL
 {
     public class UnitOfWork : IUnitOfWork
     {
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            _externalLoginRepository = null;
+            _roleRepository = null;
+            _userRepository = null;
+            _employerRepository = null;
+            _adminRepository = null;
+            _employeeRepository = null;
+            _advisorRepository = null;
+            _context.Dispose();
+        }
+
+        #endregion
+
         #region Fields
+
         private readonly ApplicationDbContext _context;
         private IExternalLoginRepository _externalLoginRepository;
         private IRoleRepository _roleRepository;
@@ -18,24 +33,31 @@ namespace DAL
         private IEmployerRepository _employerRepository;
         private IAdminRepository _adminRepository;
         private IEmployeeRepository _employeeRepository;
+        private IAdvisorRepository _advisorRepository;
+
         #endregion
 
         #region Constructors
+
         public UnitOfWork() : this("DefaultConnection")
         {
-
         }
 
         public UnitOfWork(string nameOrConnectionString)
         {
             _context = new ApplicationDbContext(nameOrConnectionString);
         }
+
         #endregion
 
         #region IUnitOfWork Members
+
         public IExternalLoginRepository ExternalLoginRepository
         {
-            get { return _externalLoginRepository ?? (_externalLoginRepository = new ExternalLoginRepository(_context)); }
+            get
+            {
+                return _externalLoginRepository ?? (_externalLoginRepository = new ExternalLoginRepository(_context));
+            }
         }
 
         public IRoleRepository RoleRepository
@@ -57,11 +79,16 @@ namespace DAL
         {
             get { return _adminRepository ?? (_adminRepository = new AdminRepository(_context)); }
         }
+
         public IEmployeeRepository EmployeeRepository
         {
             get { return _employeeRepository ?? (_employeeRepository = new EmployeeRepository(_context)); }
         }
 
+        public IAdvisorRepository AdvisorRepository
+        {
+            get { return _advisorRepository ?? (_advisorRepository = new AdvisorRepository(_context)); }
+        }
 
         public int SaveChanges()
         {
@@ -73,21 +100,11 @@ namespace DAL
             return _context.SaveChangesAsync();
         }
 
-        public Task<int> SaveChangesAsync(System.Threading.CancellationToken cancellationToken)
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             return _context.SaveChangesAsync(cancellationToken);
         }
-        #endregion
 
-        #region IDisposable Members
-        public void Dispose()
-        {
-            //TODO Add dispose for _employerRepository and _adminRepository!!!
-            _externalLoginRepository = null;
-            _roleRepository = null;
-            _userRepository = null;
-            _context.Dispose();
-        }
         #endregion
     }
 }

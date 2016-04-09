@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "AddEmployeeSuccess";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,7 +6,7 @@
 <div class="col-md-5 col-centered addEmployeeSuccessBorderWrapper">
     <span class="addEmployeeSuccessHeader">Verzoek ingediend!</span>
     <br/>
-    <br />
+    <br/>
     <span>
         Uw veroek om een nieuwe werknemer toe te voegen is verstuurd, 
         wanneer deze is goedgekeurd door Trans Lion kunt u aan de slag met 
@@ -16,6 +15,5 @@
     </span>
     <br/>
     <br/>
-         @Html.ActionLink("Terug naar dehomepage", "Index", "Employer", null, new { @class = "btn btn-default" })
+    @Html.ActionLink("Terug naar dehomepage", "Index", "Employer", null, new {@class = "btn btn-default"})
 </div>
-

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BLL.Interfaces;
 using IDAL.Interfaces;
+using IDAL.Interfaces.Managers;
 using IDAL.Models;
 
 namespace BLL
@@ -12,10 +8,12 @@ namespace BLL
     public class EmployerManager : IEmployerManager
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public EmployerManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+
         public void AddEmployee(string firstName, string prefix, string lastName, Guid employerId)
         {
             var employee = new Employee
@@ -24,7 +22,7 @@ namespace BLL
                 FirstName = firstName,
                 Prefix = prefix,
                 LastName = lastName,
-                EmployerId = employerId,
+                EmployerId = employerId
             };
 
             _unitOfWork.EmployeeRepository.Add(employee);

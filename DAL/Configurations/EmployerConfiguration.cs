@@ -9,6 +9,8 @@ namespace DAL.Configurations
         {
             ToTable("Employers");
 
+            HasKey(x => x.EmployerId);
+
             HasMany(x => x.Employees)
                 .WithRequired(x => x.Employer)
                 .HasForeignKey(x => x.EmployerId);

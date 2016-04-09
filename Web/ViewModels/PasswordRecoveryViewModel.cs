@@ -7,15 +7,15 @@ namespace Web.ViewModels
     {
         [Required(ErrorMessage = "Vul nieuw wachtwoord in")]
         [Display(Name = "Nieuwe wachtwoord")]
-        public String Password { get; set; }
+        public string Password { get; set; }
 
         [Required(ErrorMessage = "Wachtwoord kom niet overeen")]
         [Display(Name = "Bevestig wachtwoord")]
         [Compare(nameof(Password), ErrorMessage = "Wachtwoord kom niet overeen")]
-        public String ConfirmationalPassword { get; set; }
+        public string ConfirmationalPassword { get; set; }
 
         [Required]
-        public String Token { get; set; }
+        public string Token { get; set; }
 
         [Required]
         public Guid Id { get; set; }

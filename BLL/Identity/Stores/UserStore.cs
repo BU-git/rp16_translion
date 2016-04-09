@@ -12,7 +12,8 @@ namespace BLL.Identity.Stores
 {
     public class UserStore : IUserLoginStore<IdentityUser, Guid>, IUserClaimStore<IdentityUser, Guid>,
         IUserRoleStore<IdentityUser, Guid>, IUserPasswordStore<IdentityUser, Guid>,
-        IUserSecurityStampStore<IdentityUser, Guid>, IUserStore<IdentityUser, Guid>, IUserEmailStore<IdentityUser, Guid>, IDisposable
+        IUserSecurityStampStore<IdentityUser, Guid>, IUserStore<IdentityUser, Guid>, IUserEmailStore<IdentityUser, Guid>,
+        IDisposable
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -32,25 +33,14 @@ namespace BLL.Identity.Stores
 
         #region IUserStore<IdentityUser, Guid> Members
 
-        public Task CreateAsync(IdentityUser user)
+        public Task CreateAsync(IdentityUser identityUser)
         {
-            if (user == null)
-                throw new ArgumentNullException("user");
-            switch (user.Roles)
+            if (identityUser == null)
             {
-                case Roles.Employer:
-                    var employer = createEmployer(user);
-                    _unitOfWork.EmployerRepository.Add(employer);
-                    break;
-
-                case Roles.Admin:
-                    Admin admin = createAdmin(user);
-                    _unitOfWork.AdminRepository.Add(admin);
-                    break;
-
-                default:
-                    throw new ArgumentNullException("wrong roles");
+                throw new ArgumentNullException("user");
             }
+            var user = GetUser(identityUser);
+            _unitOfWork.UserRepository.Add(user);
             return _unitOfWork.SaveChangesAsync();
         }
 
@@ -59,7 +49,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var u = getUser(user);
+            var u = GetUser(user);
 
             _unitOfWork.UserRepository.Remove(u);
             return _unitOfWork.SaveChangesAsync();
@@ -86,7 +76,7 @@ namespace BLL.Identity.Stores
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
-            populateUser(u, user);
+            PopulateUser(u, user);
 
             _unitOfWork.UserRepository.Update(u);
             return _unitOfWork.SaveChangesAsync();
@@ -342,10 +332,10 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (String.IsNullOrWhiteSpace(email))
+            if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException($"Argument cannot be null, empty, or whitespace: {nameof(email)}.");
 
-            User foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+            var foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
 
             if (foundUser == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
@@ -376,8 +366,7 @@ namespace BLL.Identity.Stores
                 {
                     if (u.Result == null)
                         throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
-                    else
-                        return u.Result.EmailConfirmed;
+                    return u.Result.EmailConfirmed;
                 }, TaskContinuationOptions.ExecuteSynchronously);
         }
 
@@ -386,7 +375,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            User foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+            var foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
 
             if (foundUser == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
@@ -400,73 +389,29 @@ namespace BLL.Identity.Stores
 
         public Task<IdentityUser> FindByEmailAsync(string email)
         {
-            if (String.IsNullOrWhiteSpace(email))
-                throw new ArgumentException($"Argument cannot be null, empty, or whitespace: { nameof(email) }.");
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException($"Argument cannot be null, empty, or whitespace: {nameof(email)}.");
 
             return _unitOfWork.UserRepository.FindByEmailAsync(email)
                 .ContinueWith(u => getIdentityUser(u.Result), TaskContinuationOptions.ExecuteSynchronously);
         }
+
         #endregion
 
         #region Private Methods
 
-        private User getUser(IdentityUser identityUser)
+        private User GetUser(IdentityUser identityUser)
         {
             if (identityUser == null)
                 return null;
 
             var user = new User();
-            populateUser(user, identityUser);
+            PopulateUser(user, identityUser);
 
             return user;
         }
 
-        private Employer createEmployer(IdentityUser identityUser)
-        {
-            if (identityUser == null)
-                return null;
-
-            var employer = new Employer();
-            mapToEmploter(employer, identityUser);
-
-            return employer;
-        }
-
-        private void mapToEmploter(Employer employer, IdentityUser identityUser)
-        {
-            employer.UserId = identityUser.Id;
-            employer.UserName = identityUser.UserName;
-            employer.PasswordHash = identityUser.PasswordHash;
-            employer.SecurityStamp = identityUser.SecurityStamp;
-            employer.Adress = identityUser.Employer.Adress;
-            employer.City = identityUser.Employer.City;
-            employer.CompanyName = identityUser.Employer.CompanyName;
-            employer.Email = identityUser.Email;
-            employer.FirstName = identityUser.Employer.FirstName;
-            employer.LastName = identityUser.Employer.LastName;
-            employer.PostalCode = identityUser.Employer.PostalCode;
-            employer.Prefix = identityUser.Employer.Prefix;
-            employer.TelephoneNumber = identityUser.Employer.TelephoneNumber;
-        }
-
-        private Admin createAdmin(IdentityUser identityUser)
-        {
-            if (identityUser == null)
-                return null;
-
-            Admin admin = new Admin();
-            mapToAdmin(admin, identityUser);
-
-            return admin;
-        }
-
-        private void mapToAdmin(Admin admin, IdentityUser identityUser)
-        {
-            admin.Email = identityUser.Admin.Email;
-            admin.Name = identityUser.Admin.Name;
-        }
-
-        private void populateUser(User user, IdentityUser identityUser)
+        private void PopulateUser(User user, IdentityUser identityUser)
         {
             user.UserId = identityUser.Id;
             user.UserName = identityUser.UserName;

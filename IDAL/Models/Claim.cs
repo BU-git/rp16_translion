@@ -6,14 +6,8 @@ namespace IDAL.Models
     {
         private User _user;
 
-        #region Scalar Properties
-        public virtual int ClaimId { get; set; }
-        public virtual Guid UserId { get; set; }
-        public virtual string ClaimType { get; set; }
-        public virtual string ClaimValue { get; set; }
-        #endregion
-
         #region Navigation Properties
+
         public virtual User User
         {
             get { return _user; }
@@ -25,6 +19,16 @@ namespace IDAL.Models
                 UserId = value.UserId;
             }
         }
+
+        #endregion
+
+        #region Scalar Properties
+
+        public virtual int ClaimId { get; set; }
+        public virtual Guid UserId { get; set; }
+        public virtual string ClaimType { get; set; }
+        public virtual string ClaimValue { get; set; }
+
         #endregion
     }
 }

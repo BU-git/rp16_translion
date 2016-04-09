@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels
 {
@@ -12,9 +7,11 @@ namespace Web.ViewModels
         [Display(Name = "Voornaam")]
         [Required]
         public string FirstName { get; set; }
+
         [Display(Name = "Tussenvoegsel")]
         [Required]
         public string Prefix { get; set; }
+
         [Display(Name = "Achternaam")]
         [Required]
         public string LastName { get; set; }

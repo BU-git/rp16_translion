@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces;
+using IDAL.Interfaces.Repositories;
 using IDAL.Models;
 
 namespace DAL.Repositories

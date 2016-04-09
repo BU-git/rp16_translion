@@ -1,9 +1,8 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces;
+using IDAL.Interfaces.Repositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -28,6 +27,48 @@ namespace DAL.Repositories
         public Task<User> FindByEmailAsync(CancellationToken cancellationToken, string email)
         {
             return Set.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        }
+
+        public async void AddEmployerAsync(Employer employer, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Employer = employer;
+            Update(user);
+        }
+
+        public async void AddEmployerAsync(Employer employer, string userName)
+        {
+            var user = await FindByUserNameAsync(userName);
+            user.Employer = employer;
+            Update(user);
+        }
+
+        public async void AddAdminAsync(Admin admin, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Admin = admin;
+            Update(user);
+        }
+
+        public async void AddAdminAsync(Admin admin, string userName)
+        {
+            var user = await FindByUserNameAsync(userName);
+            user.Admin = admin;
+            Update(user);
+        }
+
+        public async void AddAdvisorAsync(Advisor advisor, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Advisor = advisor;
+            Update(user);
+        }
+
+        public async void AddAdvisorAsync(Advisor advisor, string userName)
+        {
+            var user = await FindByUserNameAsync(userName);
+            user.Advisor = advisor;
+            Update(user);
         }
 
         public User FindByUserName(string username)

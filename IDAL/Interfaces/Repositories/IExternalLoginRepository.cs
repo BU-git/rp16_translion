@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using IDAL.Models;
 
-namespace IDAL.Interfaces
+namespace IDAL.Interfaces.Repositories
 {
     public interface IExternalLoginRepository : IRepository<ExternalLogin>
     {

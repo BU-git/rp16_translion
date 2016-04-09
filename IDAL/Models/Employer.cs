@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IDAL.Models
 {
-    public class Employer : User
+    public class Employer
     {
-        private ICollection<Employee> _employees; 
+        #region Fields
+
+        private ICollection<Employee> _employees;
+
+        #endregion
 
         #region Scalar Properties
+
+        public Guid EmployerId { get; set; }
         public string CompanyName { get; set; }
         public string FirstName { get; set; }
         public string Prefix { get; set; }
@@ -15,12 +22,19 @@ namespace IDAL.Models
         public string PostalCode { get; set; }
         public string Adress { get; set; }
         public string City { get; set; }
+
         #endregion
+
+        #region Navigation Properties
 
         public virtual ICollection<Employee> Employees
         {
             get { return _employees ?? (_employees = new List<Employee>()); }
             set { _employees = value; }
         }
+
+        public virtual User User { get; set; }
+
+        #endregion
     }
 }

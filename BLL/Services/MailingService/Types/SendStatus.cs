@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services.MailingService.Types
 {
@@ -16,7 +12,7 @@ namespace BLL.Services.MailingService.Types
     }
 
     /// <summary>
-    /// Message sending operation status
+    ///     Message sending operation status
     /// </summary>
     public class SendStatus
     {
@@ -27,8 +23,8 @@ namespace BLL.Services.MailingService.Types
 
         internal MessageStatus Status { get; set; }
 
-        public Boolean HasError { get; internal set; }
+        public bool HasError { get; internal set; }
 
-        public String ErrorMessage { get; internal set; }
+        public string ErrorMessage { get; internal set; }
     }
 }

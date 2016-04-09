@@ -1,27 +1,15 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.Types;
 
 namespace BLL.Services.MailingService
 {
     /// <summary>
-    /// Adds and removes mails to queue
+    ///     Adds and removes mails to queue
     /// </summary>
     public static class QueueListener
     {
-        #region private
-        static IMailingService m_sender;
-
-        static ILogger m_logger;
-
-        static Int32 m_maxSendTries;
-
-        static Thread m_backgrndWorker;
-        #endregion
-
-
         public static void Start(IMailingService mailingService, ILogger logger)
         {
             m_sender = mailingService;
@@ -47,7 +35,7 @@ namespace BLL.Services.MailingService
         }
 
         /// <summary>
-        /// Action that executes in thread
+        ///     Action that executes in thread
         /// </summary>
         private static void BackgrndAction()
         {
@@ -61,17 +49,21 @@ namespace BLL.Services.MailingService
 
                     if (message != null)
                     {
-                        if (message.TimeToRemove > DateTime.Now && message.SendingAttempts < m_maxSendTries) //checks if it can send message
+                        if (message.TimeToRemove > DateTime.Now && message.SendingAttempts < m_maxSendTries)
+                            //checks if it can send message
                         {
                             sendResult = m_sender.SendMail(message.Message);
 
-                            if (sendResult.Status == MessageStatus.Error && ++message.SendingAttempts <= m_maxSendTries) //another sending fail
+                            if (sendResult.Status == MessageStatus.Error && ++message.SendingAttempts <= m_maxSendTries)
+                                //another sending fail
                                 MailQueue.Queue.AddMessage(message);
                             else if (sendResult.Status == MessageStatus.Sent)
-                                m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Successfully sent a message to {message.GetAllRecievers()}.");
+                                m_logger?.Log(
+                                    $"[{DateTime.Now.ToLongTimeString()}] Successfully sent a message to {message.GetAllRecievers()}.");
                         }
                         else
-                            m_logger?.Log($"[{DateTime.Now.ToLongTimeString()}] Sending of message to {message.GetAllRecievers()} failed.");
+                            m_logger?.Log(
+                                $"[{DateTime.Now.ToLongTimeString()}] Sending of message to {message.GetAllRecievers()} failed.");
                     }
                 }
             }
@@ -81,5 +73,16 @@ namespace BLL.Services.MailingService
             }
         }
 
+        #region private
+
+        private static IMailingService m_sender;
+
+        private static ILogger m_logger;
+
+        private static int m_maxSendTries;
+
+        private static Thread m_backgrndWorker;
+
+        #endregion
     }
 }

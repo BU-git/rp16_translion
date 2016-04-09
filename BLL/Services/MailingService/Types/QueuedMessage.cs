@@ -2,50 +2,39 @@
 using System.Net.Mail;
 using System.Text;
 
-
 namespace BLL.Services.MailingService.Types
 {
     /// <summary>
-    /// Standard .Net MailMessage wrapper
+    ///     Standard .Net MailMessage wrapper
     /// </summary>
     internal sealed class QueuedMessage
     {
-        readonly DateTime m_timeToRemove; //time when message will be remove(or later)
-
-        MailMessage m_mailMessage; //wrapped message
-
-        Int32 m_messageSendingAttempts; //message sending attempts
-
         public QueuedMessage(MailMessage message, TimeSpan timeDelta)
         {
-            m_timeToRemove = DateTime.Now.Add(timeDelta);
-            m_mailMessage = message;
+            TimeToRemove = DateTime.Now.Add(timeDelta);
+            Message = message;
         }
 
-        public MailMessage Message { get { return m_mailMessage; } }
+        public MailMessage Message { get; }
 
-        public DateTime TimeToRemove { get { return m_timeToRemove; } }
+        public DateTime TimeToRemove { get; }
 
-        public Int32 SendingAttempts
-        {
-            get { return m_messageSendingAttempts; }
-            set { m_messageSendingAttempts = value; }
-        }
+        public int SendingAttempts { get; set; }
 
         /// <summary>
-        /// Returns recievers string
+        ///     Returns recievers string
         /// </summary>
         /// <example>
-        /// aaa@gmail.com, azz@gmail.com
+        ///     aaa@gmail.com, azz@gmail.com
         /// </example>
-        public String GetAllRecievers(Char separator = ',')
+        public string GetAllRecievers(char separator = ',')
         {
-            StringBuilder sBuilder = new StringBuilder();
+            var sBuilder = new StringBuilder();
 
-            foreach (MailAddress address in m_mailMessage.To)
+            foreach (var address in Message.To)
                 sBuilder.Append(address.Address + separator);
 
-            String built = sBuilder.ToString();
+            var built = sBuilder.ToString();
 
             return built.Remove(built.Length - 1, 1);
         }

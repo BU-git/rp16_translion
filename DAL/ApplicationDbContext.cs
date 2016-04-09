@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using DAL.Configurations;
 using IDAL.Models;
 
@@ -12,14 +13,16 @@ namespace DAL
             // ROLA - This is a hack to ensure that Entity Framework SQL Provider is copied across to the output folder.
             // As it is installed in the GAC, Copy Local does not work. It is required for probing.
             // Fixed "Provider not loaded" error
-           var ensureDLLIsCopied = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
+            var ensureDLLIsCopied = SqlProviderServices.Instance;
             Database.SetInitializer(new DBInitializer());
         }
+
         internal IDbSet<User> Users { get; set; }
         internal IDbSet<Role> Roles { get; set; }
         internal IDbSet<ExternalLogin> Logins { get; set; }
         internal IDbSet<Employer> Employers { get; set; }
         internal IDbSet<Admin> Admins { get; set; }
+        internal IDbSet<Advisor> Advisors { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -29,6 +32,7 @@ namespace DAL
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new EmployerConfiguration());
             modelBuilder.Configurations.Add(new AdminConfiguration());
+            modelBuilder.Configurations.Add(new AdvisorConfiguration());
         }
     }
 }

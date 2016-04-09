@@ -1,6 +1,6 @@
 ﻿using IDAL.Models;
 
-namespace IDAL.Interfaces
+namespace IDAL.Interfaces.Repositories
 {
     public interface IAdminRepository : IRepository<Admin>
     {

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "AddEmployee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -13,41 +12,39 @@
 </div>
 
 <section class="registrationForm">
-    @using (Html.BeginForm("AddEmployee", "Employer", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("AddEmployee", "Employer", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
         <div class="form-group">
-            @Html.LabelFor(m => m.FirstName, new { @class = "col-md-5 control-label" })
+            @Html.LabelFor(m => m.FirstName, new {@class = "col-md-5 control-label"})
             <div class="col-md-6">
-                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.FirstName, "", new {@class = "text-danger"})
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(m => m.Prefix, new { @class = "col-md-5 control-label" })
+            @Html.LabelFor(m => m.Prefix, new {@class = "col-md-5 control-label"})
             <div class="col-md-6">
-                @Html.TextBoxFor(m => m.Prefix, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Prefix, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Prefix, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Prefix, "", new {@class = "text-danger"})
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(m => m.LastName, new { @class = "col-md-5 control-label" })
+            @Html.LabelFor(m => m.LastName, new {@class = "col-md-5 control-label"})
             <div class="col-md-6">
-                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.LastName, "", new {@class = "text-danger"})
             </div>
         </div>
-       
+
         <div class="row">
             <div class="col-md-5">
-                @Html.ActionLink("Annuleren", "Index", "Employer", null, new { @class = "btn btn-danger pull-right" })
+                @Html.ActionLink("Annuleren", "Index", "Employer", null, new {@class = "btn btn-danger pull-right"})
             </div>
             <div class="col-md-7">
-                <input type="submit" value="Account aanmaaken" class="btn btn-success" />
+                <input type="submit" value="Account aanmaaken" class="btn btn-success"/>
             </div>
         </div>
     }
 </section>
-
-

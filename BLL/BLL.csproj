@@ -82,7 +82,6 @@
     <Compile Include="Identity\Models\IdentityUser.cs" />
     <Compile Include="Identity\Stores\RoleStore.cs" />
     <Compile Include="Identity\Stores\UserStore.cs" />
-    <Compile Include="Interfaces\IEmployerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />
@@ -95,6 +94,10 @@
     <Compile Include="Services\MailingService\QueueListener.cs" />
     <Compile Include="Services\MailingService\Types\QueuedMessage.cs" />
     <Compile Include="Services\MailingService\Types\SendStatus.cs" />
+    <Compile Include="Services\PersonageService\AdminManager.cs" />
+    <Compile Include="Services\PersonageService\AdvisorManager.cs" />
+    <Compile Include="Services\PersonageService\BaseManager.cs" />
+    <Compile Include="Services\PersonageService\EmployerManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IDAL\IDAL.csproj">
@@ -105,6 +108,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

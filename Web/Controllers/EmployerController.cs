@@ -1,12 +1,11 @@
-﻿using BLL.Identity.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using System.Web;
 using System.Web.Mvc;
-using BLL.Interfaces;
+using BLL.Identity.Models;
 using IDAL.Interfaces;
+using IDAL.Interfaces.Managers;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 using Web.ViewModels;
 
 namespace Web.Controllers
@@ -14,18 +13,19 @@ namespace Web.Controllers
     [Authorize(Roles = "Employer")]
     public class EmployerController : Controller
     {
-        readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly IEmployerManager _employerManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
-
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager, IUnitOfWork unitOfWork)
+        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager,
+            IUnitOfWork unitOfWork)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
             _employerManager = employerManager;
             _unitOfWork = unitOfWork;
         }
+
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         // GET: Employer
         public ActionResult Index()
@@ -40,7 +40,7 @@ namespace Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
         public ActionResult AddEmployee(AddEmployeeViewModel employeeViewModel)
         {
             if (!ModelState.IsValid)
@@ -50,7 +50,6 @@ namespace Web.Controllers
             _employerManager.AddEmployee(employeeViewModel.FirstName, employeeViewModel.Prefix,
                 employeeViewModel.LastName, employerId);
             return View("AddEmployeeSuccess");
-
         }
 
         //test logout method

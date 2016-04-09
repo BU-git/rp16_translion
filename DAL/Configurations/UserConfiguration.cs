@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity.ModelConfiguration;
 using IDAL.Models;
 
 namespace DAL.Configurations
@@ -13,6 +8,8 @@ namespace DAL.Configurations
         public UserConfiguration()
         {
             ToTable("User");
+
+            #region Fields configuration
 
             HasKey(x => x.UserId)
                 .Property(x => x.UserId)
@@ -38,6 +35,19 @@ namespace DAL.Configurations
                 .HasMaxLength(256)
                 .IsRequired();
 
+            #endregion
+
+            #region Relationship configuration
+
+            HasOptional(x => x.Admin)
+                .WithRequired(z => z.User);
+
+            HasOptional(x => x.Advisor)
+                .WithRequired(z => z.User);
+
+            HasOptional(x => x.Employer)
+                .WithRequired(z => z.User);
+
             HasMany(x => x.Roles)
                 .WithMany(x => x.Users)
                 .Map(x =>
@@ -54,6 +64,8 @@ namespace DAL.Configurations
             HasMany(x => x.Logins)
                 .WithRequired(x => x.User)
                 .HasForeignKey(x => x.UserId);
+
+            #endregion
         }
     }
 }

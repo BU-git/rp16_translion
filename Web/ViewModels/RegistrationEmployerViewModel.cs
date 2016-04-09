@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net.Mime;
 
 namespace Web.ViewModels
 {
@@ -44,11 +43,17 @@ namespace Web.ViewModels
         [Display(Name = "Plaats")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "Uw gebruikersnaam komt niet overeen met de voorwaarden. Uw gebruikersnaam moet minimaal 8 karakters bevatten, u mag symbolen en cijfers gebruiken")]
+        [Required(
+            ErrorMessage =
+                "Uw gebruikersnaam komt niet overeen met de voorwaarden. Uw gebruikersnaam moet minimaal 8 karakters bevatten, u mag symbolen en cijfers gebruiken"
+            )]
         [Display(Name = "Gebruikersnaam")]
         public string LoginName { get; set; }
 
-        [Required(ErrorMessage = "Uw wachtwoord komt niet overeen met de voorwaarden. Uw wachtwoord moet minimaal 8 karakters bevatten, met minimaal 1 symbool, 1 cijfer en 1 hoofdletter")]
+        [Required(
+            ErrorMessage =
+                "Uw wachtwoord komt niet overeen met de voorwaarden. Uw wachtwoord moet minimaal 8 karakters bevatten, met minimaal 1 symbool, 1 cijfer en 1 hoofdletter"
+            )]
         [DataType(DataType.Password)]
         [Display(Name = "Wachtwoord")]
         public string UserPassword { get; set; }
