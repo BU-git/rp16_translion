@@ -3,6 +3,7 @@ using IDAL.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.DataProtection;
 using System;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
@@ -20,7 +21,7 @@ namespace Web.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager,
+        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager, IUnitOfWork unitOfWork)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
 

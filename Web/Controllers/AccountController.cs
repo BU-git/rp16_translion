@@ -24,8 +24,7 @@ namespace Web.Controllers
             _userManager = userManager;
             //bad solutions
             _userManager.EmailService = emailService;
-            _userManager.UserTokenProvider =
-                new DataProtectorTokenProvider<IdentityUser, Guid>(
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
         }
 
@@ -129,7 +128,7 @@ namespace Web.Controllers
                     UserName = model.UserName,
                     Email = model.EmailAdress,
                 };
-                var result = await _userManager.CreateAsync(user, model.UserPassword);
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -140,7 +139,8 @@ namespace Web.Controllers
                         await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
                         await SignInAsync(user, true);
 
-                    return View("AccountConfirmation");
+                        return View("AccountConfirmation");
+                    }
                 }
             }
             return View(model);
@@ -170,9 +170,7 @@ namespace Web.Controllers
                 var user = new IdentityUser
                 {
                     UserName = model.Username,
-                    Email = model.EmailAdress,
-                    Roles = Roles.Admin,
-                    Admin = admin
+                    Email = model.EmailAdress
                 };
 
                 //TODO: delete password field from CreateAdminViewModel. Use instead randomly generated password. Then send it to the admin e-mail
