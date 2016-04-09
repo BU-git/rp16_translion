@@ -7,7 +7,7 @@ using Microsoft.Owin.Security;
 
 namespace Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
@@ -28,7 +28,7 @@ namespace Web.Controllers
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

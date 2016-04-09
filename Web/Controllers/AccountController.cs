@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
@@ -62,14 +63,8 @@ namespace Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> Login()
+        public ActionResult Login()
         {
-            //if (User.IsInRole("Admin"))
-            //{
-            //var name = User.Identity.Name;
-            //var user = await _userManager.FindByNameAsync(name);
-            // _userManager.GetAdmin(user);
-            //}
             return View();
         }
 
@@ -99,7 +94,7 @@ namespace Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Registration()
+        public ActionResult RegisterEmployer()
         {
             return View();
         }
@@ -107,23 +102,43 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Registration(RegistrationEmployerViewModel model)
+        public async Task<ActionResult> RegisterEmployer(RegisterEmployerViewModel model)
         {
+            if (model.Password.Equals("default"))
+            {
+                model.Password = Membership.GeneratePassword(12, 4);
+                model.ConfirmPassword = model.Password;
+            }
+
             if (ModelState.IsValid)
             {
-                var employer = RegistrationEmployerViewModel(model);
+                var employer = new Employer
+                {
+                    Adress = model.Adress,
+                    City = model.City,
+                    CompanyName = model.CompanyName,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Prefix = model.Prefix,
+                    PostalCode = model.PostalCode,
+                    TelephoneNumber = model.TelephoneNumber
+                };
+
                 var user = new IdentityUser
                 {
-                    UserName = model.LoginName,
-                    Email = model.EmailAdress
+                    UserName = model.UserName,
+                    Email = model.EmailAdress,
                 };
                 var result = await _userManager.CreateAsync(user, model.UserPassword);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user.Id, "Admin");
-                    await SignInAsync(user, true);
-                    await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.LoginName));
+                    await _userManager.AddToRoleAsync(user.Id, "Employer");
+
+                    if (!User.IsInRole("Admin"))
+                    {
+                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        await SignInAsync(user, true);
 
                     return View("AccountConfirmation");
                 }
@@ -131,6 +146,50 @@ namespace Web.Controllers
             return View(model);
         }
 
+        #endregion
+
+        #region Add new admin by admin
+        [HttpGet]
+        //[Authorize(Roles = "Admin")]
+        public ActionResult AddAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var admin = new Admin
+                {
+                    Name = model.Name
+                };
+
+                var user = new IdentityUser
+                {
+                    UserName = model.Username,
+                    Email = model.EmailAdress,
+                    Roles = Roles.Admin,
+                    Admin = admin
+                };
+
+                //TODO: delete password field from CreateAdminViewModel. Use instead randomly generated password. Then send it to the admin e-mail
+                //var password = Membership.GeneratePassword(12, 4);
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user.Id, "Admin");
+                    //await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.Username));
+
+                    return RedirectIfSignedIn();
+                }
+            }
+
+            return View(model);
+        }
         #endregion
 
         #region ForgotPassword
