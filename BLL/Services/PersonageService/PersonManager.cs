@@ -17,7 +17,7 @@ namespace BLL.Services.PersonageService
         }
 
         public IUnitOfWork _unitOfWork { get; }
-        public abstract bool DeleteEmployee(Employee employee);
+        public abstract void DeleteEmployee(User user, Employee employee);
 
         #region GetAllEmployees
 
@@ -27,7 +27,7 @@ namespace BLL.Services.PersonageService
             {
                 throw new ArgumentException("User is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name == "Employer"))
+            if (user.Roles.Any(x => x.Name != "Employer"))
             {
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }

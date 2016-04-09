@@ -15,7 +15,7 @@ namespace BLL.Services.PersonageService
         }
 
 
-        public override bool DeleteEmployee(Employee employee)
+        public override void DeleteEmployee(User user, Employee employee)
         {
             throw new NotImplementedException();
         }

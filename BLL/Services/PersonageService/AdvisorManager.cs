@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IDAL.Interfaces;
@@ -14,84 +15,160 @@ namespace BLL.Services.PersonageService
         {
         }
 
-        public override bool DeleteEmployee(Employee employee)
+        public override void DeleteEmployee(User user, Employee employee)
         {
-            throw new NotImplementedException();
+
+            if (user == null || employee == null)
+            {
+                throw new ArgumentException("User is null, employee is absent. Wrong parameters");
+            }
+            if (user.Employer==null)
+            {
+                throw new ArgumentException("Only employer can have employees. User isn't employer");
+            }
+            user.Employer.Employees.Remove(employee);
+            _unitOfWork.SaveChanges();
         }
 
         public override List<Advisor> GetAll()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.AdvisorRepository.GetAll();
         }
 
-        public override Task<List<Advisor>> GetAllAsync()
+        public override async Task<List<Advisor>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.AdvisorRepository.GetAllAsync();
         }
 
-        public override Task<List<Advisor>> GetAllAsync(CancellationToken cancellationToken)
+        public override async Task<List<Advisor>> GetAllAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.AdvisorRepository.GetAllAsync(cancellationToken);
         }
 
         public override Advisor Get(User user)
         {
-            throw new NotImplementedException();
+            if (user == null )
+            {
+                throw new ArgumentException("User is null. Wrong parameters");
+            }
+            return _unitOfWork.AdvisorRepository.FindById(user.UserId);
         }
 
-        public override Task<Advisor> GetAsync(User user)
+        public override async Task<Advisor> GetAsync(User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentException("User is null. Wrong parameters");
+            }
+            return await _unitOfWork.AdvisorRepository.FindByIdAsync(user.UserId);
         }
 
-        public override Task<Advisor> GetAsync(CancellationToken cancellationToken, User user)
+        public override async Task<Advisor> GetAsync(CancellationToken cancellationToken, User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentException("User is null. Wrong parameters");
+            }
+            return await _unitOfWork.AdvisorRepository.FindByIdAsync(cancellationToken, user.UserId);
         }
 
         public override void Create(Advisor entity, User user)
         {
-            throw new NotImplementedException();
+            if (entity == null||user==null)
+            {
+                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+            }
+            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+            _unitOfWork.SaveChanges();
         }
 
-        public override void CreateAsync(Advisor entity, User user)
+        public override async void CreateAsync(Advisor entity, User user)
         {
-            throw new NotImplementedException();
+            if (entity == null || user == null)
+            {
+                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+            }
+
+            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public override void CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
+        public override async void CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
         {
-            throw new NotImplementedException();
+            if (entity == null || user == null)
+            {
+                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+            }
+
+            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Update(Advisor entity)
         {
-            throw new NotImplementedException();
+            if (entity == null )
+            {
+                throw new ArgumentException("Advisor is null. Wrong parameters");
+            }
+
+            _unitOfWork.AdvisorRepository.Update(entity);
+            _unitOfWork.SaveChanges();
+
         }
 
-        public override void UpdateAsync(Advisor entity)
+        public override async void UpdateAsync(Advisor entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentException("Advisor is null. Wrong parameters");
+            }
+
+            _unitOfWork.AdvisorRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public override void UpdateAsync(CancellationToken cancellationToken, Advisor entity)
+        public override async void UpdateAsync(CancellationToken cancellationToken, Advisor entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentException("Advisor is null. Wrong parameters");
+            }
+
+            _unitOfWork.AdvisorRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Delete(User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentException("user is null. Wrong parameters");
+            }
+
+            _unitOfWork.UserRepository.Remove(user);
+             _unitOfWork.SaveChanges();
         }
 
-        public override void DeleteAsync(User user)
+        public override async void DeleteAsync(User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentException("user is null. Wrong parameters");
+            }
+
+            _unitOfWork.UserRepository.Remove(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public override void DeleteAsync(CancellationToken cancellationToken, User user)
+        public override async void DeleteAsync(CancellationToken cancellationToken, User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentException("user is null. Wrong parameters");
+            }
+
+            _unitOfWork.UserRepository.Remove(user);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }
