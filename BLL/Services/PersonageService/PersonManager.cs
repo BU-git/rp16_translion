@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IDAL.Interfaces;
+using IDAL.Interfaces.Managers;
 using IDAL.Models;
 
 namespace BLL.Services.PersonageService
 {
-    public abstract class BaseManager
+    public abstract class PersonManager<TEntity> : IPersonageManager<TEntity> where TEntity : class
     {
-        public BaseManager(IUnitOfWork unitOfWork)
+        public PersonManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -169,6 +170,22 @@ namespace BLL.Services.PersonageService
             _unitOfWork.EmployeeRepository.Update(employee);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
+
+        public abstract List<TEntity> GetAll();
+        public abstract Task<List<TEntity>> GetAllAsync();
+        public abstract Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
+        public abstract TEntity Get(User user);
+        public abstract Task<TEntity> GetAsync(User user);
+        public abstract Task<TEntity> GetAsync(CancellationToken cancellationToken, User user);
+        public abstract void Create(TEntity entity, User user);
+        public abstract void CreateAsync(TEntity entity, User user);
+        public abstract void CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
+        public abstract void Update(TEntity entity);
+        public abstract void UpdateAsync(TEntity entity);
+        public abstract void UpdateAsync(CancellationToken cancellationToken, TEntity entity);
+        public abstract void Delete(User user);
+        public abstract void DeleteAsync(User user);
+        public abstract void DeleteAsync(CancellationToken cancellationToken, User user);
 
         #endregion
     }

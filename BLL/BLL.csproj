@@ -77,7 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmployerManager.cs" />
     <Compile Include="Identity\Models\IdentityRole.cs" />
     <Compile Include="Identity\Models\IdentityUser.cs" />
     <Compile Include="Identity\Stores\RoleStore.cs" />
@@ -96,7 +95,7 @@
     <Compile Include="Services\MailingService\Types\SendStatus.cs" />
     <Compile Include="Services\PersonageService\AdminManager.cs" />
     <Compile Include="Services\PersonageService\AdvisorManager.cs" />
-    <Compile Include="Services\PersonageService\BaseManager.cs" />
+    <Compile Include="Services\PersonageService\PersonManager.cs" />
     <Compile Include="Services\PersonageService\EmployerManager.cs" />
   </ItemGroup>
   <ItemGroup>

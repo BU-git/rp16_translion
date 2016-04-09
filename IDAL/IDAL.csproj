@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IUnitOfWork.cs" />
-    <Compile Include="Interfaces\Managers\IEmployerManager.cs" />
     <Compile Include="Interfaces\Managers\IPersonageManager.cs" />
     <Compile Include="Interfaces\Repositories\IAdminRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAdvisorRepository.cs" />

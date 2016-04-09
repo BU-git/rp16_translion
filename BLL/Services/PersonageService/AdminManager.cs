@@ -8,89 +8,89 @@ using IDAL.Models;
 
 namespace BLL.Services.PersonageService
 {
-    public class AdminManager : BaseManager, IPersonageManager<Admin>
+    public class AdminManager : PersonManager<Admin>
     {
         public AdminManager(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 
-        public List<Admin> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Admin>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Admin>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Admin Get(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Admin> GetAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Admin> GetAsync(CancellationToken cancellationToken, User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Create(Admin entity, User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CreateAsync(Admin entity, User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Admin entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateAsync(Admin entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateAsync(CancellationToken cancellationToken, Admin entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteAsync(CancellationToken cancellationToken, User user)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public override bool DeleteEmployee(Employee employee)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<Admin> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<List<Admin>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<List<Admin>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Admin Get(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<Admin> GetAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<Admin> GetAsync(CancellationToken cancellationToken, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Create(Admin entity, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void CreateAsync(Admin entity, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Update(Admin entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateAsync(Admin entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateAsync(CancellationToken cancellationToken, Admin entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Delete(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DeleteAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DeleteAsync(CancellationToken cancellationToken, User user)
         {
             throw new NotImplementedException();
         }

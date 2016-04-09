@@ -6,12 +6,15 @@ using BLL.Identity.Models;
 using BLL.Identity.Stores;
 using BLL.Services.MailingService;
 using BLL.Services.MailingService.Interfaces;
+using BLL.Services.PersonageService;
 using IDAL.Interfaces;
 using IDAL.Interfaces.Managers;
+using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using Unity.Mvc5;
+
 
 namespace Web
 {
@@ -30,7 +33,7 @@ namespace Web
                     ConfigurationManager.AppSettings["mailFrom"],
                     ConfigurationManager.AppSettings["mailPass"],
                     ConfigurationManager.AppSettings["mailHost"]));
-            container.RegisterType<IEmployerManager, EmployerManager>(new PerHttpRequestLifetimeManager(),
+            container.RegisterType<IPersonageManager<Employer>, EmployerManager>(new PerHttpRequestLifetimeManager(),
                 new InjectionConstructor(
                     container.Resolve<IUnitOfWork>()
                     ));

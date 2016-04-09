@@ -17,11 +17,11 @@ namespace Web.Controllers
     [Authorize(Roles = "Employer")]
     public class EmployerController : Controller
     {
-        private readonly IEmployerManager _employerManager;
+        private readonly IPersonageManager<Employer> _employerManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IEmployerManager employerManager, IUnitOfWork unitOfWork)
+        public EmployerController(IUserStore<IdentityUser, Guid> store, IPersonageManager<Employer> employerManager, IUnitOfWork unitOfWork)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
 
@@ -56,8 +56,9 @@ namespace Web.Controllers
                 return View(employeeViewModel);
 
             var employerId = Guid.Parse(User.Identity.GetUserId());
-            _employerManager.AddEmployee(employeeViewModel.FirstName, employeeViewModel.Prefix,
-                employeeViewModel.LastName, employerId);
+            //TODO Need fix
+            //_employerManager.AddEmployee(employeeViewModel.FirstName, employeeViewModel.Prefix,
+            //    employeeViewModel.LastName, employerId);
             return View("AddEmployeeSuccess");
         }
 
