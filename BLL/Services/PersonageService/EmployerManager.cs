@@ -74,7 +74,6 @@ namespace BLL.Services.PersonageService
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-<<<<<<< HEAD
         public override void DeleteEmployee(User user, Employee employee)
         {
             if (user == null || employee == null)
@@ -90,11 +89,6 @@ namespace BLL.Services.PersonageService
             emp.IsDeleted = true;
             this.UpdateEmployeeAsync(emp);
             _unitOfWork.SaveChanges();
-=======
-        public override void DeleteEmployee(Employee employee, User user)
-        {
-            throw new NotImplementedException();
->>>>>>> 2c5916570140ab313ca98c9e458212bfdfe9f453
         }
 
         #region GetAll()

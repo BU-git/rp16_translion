@@ -15,11 +15,7 @@ namespace BLL.Services.PersonageService
         }
 
 
-<<<<<<< HEAD
-        public override void DeleteEmployee(User user, Employee employee)
-=======
-        public override async void DeleteEmployee(Employee employee, User user)
->>>>>>> 2c5916570140ab313ca98c9e458212bfdfe9f453
+        public override async void DeleteEmployee(User user, Employee employee)
         {
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
@@ -47,13 +43,28 @@ namespace BLL.Services.PersonageService
 
         #region Get concrete admin
         public override Admin Get(User user)
-            => _unitOfWork.AdminRepository.FindById(user.UserId);
+        {
+            if (user.Admin == null)
+                throw new InvalidOperationException("User is not admin.");
+
+            return _unitOfWork.AdminRepository.FindById(user.UserId);
+        }
 
         public override Task<Admin> GetAsync(User user)
-            => _unitOfWork.AdminRepository.FindByIdAsync(user.UserId);
+        {
+            if (user.Admin == null)
+                throw new InvalidOperationException("User is not admin.");
+
+            return _unitOfWork.AdminRepository.FindByIdAsync(user.UserId);
+        }
 
         public override Task<Admin> GetAsync(CancellationToken cancellationToken, User user)
-            => _unitOfWork.AdminRepository.FindByIdAsync(cancellationToken, user.UserId);
+        {
+            if (user.Admin == null)
+                throw new InvalidOperationException("User is not admin.");
+
+            return _unitOfWork.AdminRepository.FindByIdAsync(cancellationToken, user.UserId);
+        }
         #endregion
 
         #region Create concrete admin

@@ -17,11 +17,8 @@ namespace BLL.Services.PersonageService
         }
 
         public IUnitOfWork _unitOfWork { get; }
-<<<<<<< HEAD
+
         public abstract void DeleteEmployee(User user, Employee employee);
-=======
-        public abstract void DeleteEmployee(Employee employee, User user);
->>>>>>> 2c5916570140ab313ca98c9e458212bfdfe9f453
 
         #region GetAllEmployees
 
