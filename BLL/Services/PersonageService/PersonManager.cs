@@ -20,8 +20,17 @@ namespace BLL.Services.PersonageService
 
         public abstract void DeleteEmployee(User user, Employee employee);
 
+
         #region Get user by username
-        public async Task<User> GetUser(string userName)
+        public User GetUserByName(string userName)
+        {
+            if (userName == null)
+                throw new ArgumentNullException(nameof(userName));
+
+            return _unitOfWork.UserRepository.FindByUserName(userName);
+        }
+
+        public async Task<User> GetUserByNameAsync(string userName)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
@@ -29,7 +38,7 @@ namespace BLL.Services.PersonageService
             return await _unitOfWork.UserRepository.FindByUserNameAsync(userName);
         }
 
-        public async Task<User> GetUser(string userName, CancellationToken cancellationToken)
+        public async Task<User> GetUserByNameAsync(CancellationToken cancellationToken, string userName)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
@@ -37,8 +46,27 @@ namespace BLL.Services.PersonageService
             return await _unitOfWork.UserRepository.FindByUserNameAsync(cancellationToken, userName);
         }
         #endregion
+
         #region Get user by id
-        public async Task<User> GetUser(Guid userId)
+        public User GetUserById(string userId)
+        {
+            Guid gUserId;
+
+            if (!Guid.TryParse(userId, out gUserId))
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return GetUserById(gUserId);
+        }
+
+        public User GetUserById(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return _unitOfWork.UserRepository.FindById(userId);
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid userId)
         {
             if (userId == Guid.Empty)
                 throw new ArgumentException($"User's id can't be {userId}");
@@ -46,14 +74,35 @@ namespace BLL.Services.PersonageService
             return await _unitOfWork.UserRepository.FindByIdAsync(userId);
         }
 
-        public async Task<User> GetUser(Guid userId, CancellationToken cancellationToken)
+        public async Task<User> GetUserByIdAsync(CancellationToken cancellationToken, Guid userId)
         {
             if (userId == Guid.Empty)
                 throw new ArgumentException($"User's id can't be {userId}");
 
             return await _unitOfWork.UserRepository.FindByIdAsync(cancellationToken, userId);
         }
+
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            Guid gUserId;
+
+            if (!Guid.TryParse(userId, out gUserId))
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return await GetUserByIdAsync(gUserId);
+        }
+
+        public async Task<User> GetUserByIdAsync(CancellationToken cancellationToken, string userId)
+        {
+            Guid gUserId;
+
+            if (!Guid.TryParse(userId, out gUserId))
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return await GetUserByIdAsync(cancellationToken, gUserId);
+        }
         #endregion
+
         #region GetAllEmployees
 
         public List<Employee> GetAllEmployees(User user)
