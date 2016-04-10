@@ -20,6 +20,40 @@ namespace BLL.Services.PersonageService
 
         public abstract void DeleteEmployee(User user, Employee employee);
 
+        #region Get user by username
+        public async Task<User> GetUser(string userName)
+        {
+            if (userName == null)
+                throw new ArgumentNullException(nameof(userName));
+
+            return await _unitOfWork.UserRepository.FindByUserNameAsync(userName);
+        }
+
+        public async Task<User> GetUser(string userName, CancellationToken cancellationToken)
+        {
+            if (userName == null)
+                throw new ArgumentNullException(nameof(userName));
+
+            return await _unitOfWork.UserRepository.FindByUserNameAsync(cancellationToken, userName);
+        }
+        #endregion
+        #region Get user by id
+        public async Task<User> GetUser(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return await _unitOfWork.UserRepository.FindByIdAsync(userId);
+        }
+
+        public async Task<User> GetUser(Guid userId, CancellationToken cancellationToken)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException($"User's id can't be {userId}");
+
+            return await _unitOfWork.UserRepository.FindByIdAsync(cancellationToken, userId);
+        }
+        #endregion
         #region GetAllEmployees
 
         public List<Employee> GetAllEmployees(User user)
