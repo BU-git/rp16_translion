@@ -26,24 +26,24 @@ namespace IDAL.Interfaces.Managers
         #region Create
 
         void Create(TEntity entity, User user);
-        void CreateAsync(TEntity entity, User user);
-        void CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
+        Task<int> CreateAsync(TEntity entity, User user);
+        Task<int> CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
 
         #endregion
 
         #region Update
 
         void Update(TEntity entity);
-        void UpdateAsync(TEntity entity);
-        void UpdateAsync(CancellationToken cancellationToken, TEntity entity);
+        Task<int> UpdateAsync(TEntity entity);
+        Task<int> UpdateAsync(CancellationToken cancellationToken, TEntity entity);
 
         #endregion
 
         #region Delete
 
         void Delete(User user);
-        void DeleteAsync(User user);
-        void DeleteAsync(CancellationToken cancellationToken, User user);
+        Task<int> DeleteAsync(User user);
+        Task<int> DeleteAsync(CancellationToken cancellationToken, User user);
 
         #endregion
     }

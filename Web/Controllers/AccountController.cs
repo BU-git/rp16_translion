@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -6,6 +7,7 @@ using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
+using BLL.Services.PersonageService;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -18,14 +20,16 @@ namespace Web.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
-
-        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
+        private readonly PersonManager<Employer> _employerManager; 
+        public AccountController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager, IMailingService emailService)
         {
             _userManager = userManager;
             //bad solutions
             _userManager.EmailService = emailService;
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+
+            _employerManager = employerManager;
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
@@ -130,7 +134,7 @@ namespace Web.Controllers
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
-                if (result.Succeeded)
+                if (result.Succeeded && await AddEmployerAsync(user, employer))
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Employer");
 
@@ -379,6 +383,18 @@ namespace Web.Controllers
             return null;
         }
 
+        [NonAction]
+        private async Task<Boolean> AddEmployerAsync(IdentityUser registeredUser, Employer employer)
+        {
+            var user = await _employerManager.GetUserByIdAsync(registeredUser.Id);
+
+            if (user == null)
+                return false;
+
+            await _employerManager.CreateAsync(employer, user);
+
+            return true;
+        }
         #endregion
     }
 }

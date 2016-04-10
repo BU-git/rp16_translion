@@ -24,24 +24,24 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override async void UpdateAsync(Employer entity)
+        public override Task<int> UpdateAsync(Employer entity)
         {
             if (entity == null)
             {
                 throw new ArgumentException("Employer is null. Wrong parameters");
             }
             _unitOfWork.EmployerRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void UpdateAsync(CancellationToken cancellationToken, Employer entity)
+        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Employer entity)
         {
             if (entity == null)
             {
                 throw new ArgumentException("Employer is null. Wrong parameters");
             }
             _unitOfWork.EmployerRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Delete(User user)
@@ -54,24 +54,24 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override async void DeleteAsync(User user)
+        public override Task<int> DeleteAsync(User user)
         {
             if (user == null)
             {
                 throw new ArgumentException("user is null. Wrong parameters");
             }
             _unitOfWork.UserRepository.Remove(user);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void DeleteAsync(CancellationToken cancellationToken, User user)
+        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
         {
             if (user == null)
             {
                 throw new ArgumentException("user is null. Wrong parameters");
             }
             _unitOfWork.UserRepository.Remove(user);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void DeleteEmployee(User user, Employee employee)
@@ -148,16 +148,16 @@ namespace BLL.Services.PersonageService
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
         }
 
-        public override async void CreateAsync(Employer entity, User user)
+        public override Task<int> CreateAsync(Employer entity, User user)
         {
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
+        public override Task<int> CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
         {
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         #endregion

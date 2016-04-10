@@ -216,10 +216,16 @@ a.tlr-usr-inner-info > img:hover { box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
 
 /*Embloyees label styles*/
 
-.tlr-usr-info-label-btn {
+.tlr-usr-info-label-btn,
+.tlr-usr-info-label-btn:hover,
+.tlr-usr-info-label-btn:visited
+{
     background-color: inherit;
     border: none;
     outline: none;
+    display: block;
+    color: black;
+    text-decoration: none;
 }
 
 

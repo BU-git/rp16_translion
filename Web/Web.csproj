@@ -188,6 +188,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\EmployeeChangeNameViewModel.cs" />
+    <Compile Include="ViewModels\EmployerSettingsViewModel.cs" />
     <Compile Include="ViewModels\EmplPassChangeViewModel.cs" />
     <Compile Include="ViewModels\AddEmployeeViewModel.cs" />
     <Compile Include="ViewModels\CreateAdminViewModel.cs" />
@@ -222,6 +224,7 @@
     <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
+    <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
