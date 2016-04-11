@@ -82,7 +82,7 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override async void CreateAsync(Advisor entity, User user)
+        public override Task<int> CreateAsync(Advisor entity, User user)
         {
             if (entity == null || user == null)
             {
@@ -90,10 +90,10 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
+        public override Task<int> CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
         {
             if (entity == null || user == null)
             {
@@ -101,7 +101,7 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return  _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Update(Advisor entity)
@@ -116,7 +116,7 @@ namespace BLL.Services.PersonageService
 
         }
 
-        public override async void UpdateAsync(Advisor entity)
+        public override Task<int> UpdateAsync(Advisor entity)
         {
             if (entity == null)
             {
@@ -124,10 +124,10 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.AdvisorRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void UpdateAsync(CancellationToken cancellationToken, Advisor entity)
+        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Advisor entity)
         {
             if (entity == null)
             {
@@ -135,7 +135,7 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.AdvisorRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Delete(User user)
@@ -149,7 +149,7 @@ namespace BLL.Services.PersonageService
              _unitOfWork.SaveChanges();
         }
 
-        public override async void DeleteAsync(User user)
+        public override Task<int> DeleteAsync(User user)
         {
             if (user == null)
             {
@@ -157,10 +157,10 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.UserRepository.Remove(user);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void DeleteAsync(CancellationToken cancellationToken, User user)
+        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
         {
             if (user == null)
             {
@@ -168,7 +168,7 @@ namespace BLL.Services.PersonageService
             }
 
             _unitOfWork.UserRepository.Remove(user);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

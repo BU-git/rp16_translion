@@ -193,21 +193,21 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public async void CreateEmployeeAsync(Employee employee, User user)
+        public Task<int> CreateEmployeeAsync(Employee employee, User user)
         {
             if (employee == null | user == null)
             {
                 throw new ArgumentException("employee or user is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name == "Employer"))
+            if (!user.Roles.Any(x => x.Name == "Employer"))
             {
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
             _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public async void CreateEmployeeAsync(CancellationToken cancellationToken, Employee employee, User user)
+        public Task<int> CreateEmployeeAsync(CancellationToken cancellationToken, Employee employee, User user)
         {
             if (employee == null | user == null)
             {
@@ -218,7 +218,7 @@ namespace BLL.Services.PersonageService
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
             _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         #endregion
@@ -235,24 +235,24 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public async void UpdateEmployeeAsync(Employee employee)
+        public Task<int> UpdateEmployeeAsync(Employee employee)
         {
             if (employee.EmployeeId == null)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
             _unitOfWork.EmployeeRepository.Update(employee);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public async void UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee)
+        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee)
         {
             if (employee.EmployeeId == null)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
             _unitOfWork.EmployeeRepository.Update(employee);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public abstract List<TEntity> GetAll();
@@ -262,14 +262,14 @@ namespace BLL.Services.PersonageService
         public abstract Task<TEntity> GetAsync(User user);
         public abstract Task<TEntity> GetAsync(CancellationToken cancellationToken, User user);
         public abstract void Create(TEntity entity, User user);
-        public abstract void CreateAsync(TEntity entity, User user);
-        public abstract void CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
+        public abstract Task<int> CreateAsync(TEntity entity, User user);
+        public abstract Task<int> CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
         public abstract void Update(TEntity entity);
-        public abstract void UpdateAsync(TEntity entity);
-        public abstract void UpdateAsync(CancellationToken cancellationToken, TEntity entity);
+        public abstract Task<int> UpdateAsync(TEntity entity);
+        public abstract Task<int> UpdateAsync(CancellationToken cancellationToken, TEntity entity);
         public abstract void Delete(User user);
-        public abstract void DeleteAsync(User user);
-        public abstract void DeleteAsync(CancellationToken cancellationToken, User user);
+        public abstract Task<int> DeleteAsync(User user);
+        public abstract Task<int> DeleteAsync(CancellationToken cancellationToken, User user);
 
         #endregion
     }
