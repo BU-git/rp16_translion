@@ -76,7 +76,8 @@ namespace Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //TODO fix Antiforgery Exception
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -86,9 +87,19 @@ namespace Web.Controllers
                 if (isLoginSuccessful)
                 {
                     await SignInAsync(user, true);
-                    return await _userManager.IsInRoleAsync(user.Id, "Employer")
-                        ? RedirectToAction("Index", "Employer", new { id = user.Id })
-                        : RedirectToAction("Index", "Admin", new { id = user.Id });
+
+                    if (await _userManager.IsInRoleAsync(user.Id, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin", new { id = user.Id });
+                    }
+                    if (await _userManager.IsInRoleAsync(user.Id, "Advisor"))
+                    {
+                        return RedirectToAction("Index", "Advisor", new { id = user.Id });
+                    }
+                    if (await _userManager.IsInRoleAsync(user.Id, "Employer"))
+                    {
+                        return RedirectToAction("Index", "Employer", new { id = user.Id });
+                    }
                 }
             }
             return View(model);
@@ -152,6 +163,18 @@ namespace Web.Controllers
 
                         return View("AccountConfirmation");
                     }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        return RedirectToAction("Index", "Admin");
+
+                    }
+                    else
+                    {
+                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        return RedirectToAction("Index", "Advisor");
+                    }
+
                 }
             }
             return View(model);
