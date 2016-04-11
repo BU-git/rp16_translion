@@ -1,4 +1,20 @@
-﻿@if (User.Identity.IsAuthenticated)
+﻿@{
+                string Name="";
+                if (User.IsInRole("Admin"))
+                {
+                    Name = "Admin";
+
+                }
+                if (User.IsInRole("Advisor"))
+                {
+                    Name = "Advisor";
+                }
+                if (User.IsInRole("Employer"))
+                {
+                    Name = "Employer";
+                }
+            }
+@if (User.Identity.IsAuthenticated)
 {
     <div class=""></div>
     <div class="col-sm-9 col-md-offset-2 col-lg-offset-4 col-md-7 col-lg-5 tlr-us-info-block">
@@ -20,14 +36,18 @@
             {
                 <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als administrator</p>
             }
-            else
+            @if (User.IsInRole("Advisor"))
+            {
+                <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als advisor</p>
+            }
+            @if (User.IsInRole("Employer"))
             {
                 <p class="tlr-usr-info-block-txt">@User.Identity.Name ingelogd als werkgever</p>
             }
             <p>
-                @Html.ActionLink("Settings", "Settings", User.IsInRole("Admin") ? "Admin" : "Employer", null, new {@class = "tlr-us-info-link"})
+                @Html.ActionLink("Settings", "Settings", @Name, null, new {@class = "tlr-us-info-link"})
                 <span id="trl-usr-logged-splitter">|</span>
-                @Html.ActionLink("Logout", "Logout", User.IsInRole("Admin") ? "Admin" : "Employer", null, new {@class = "tlr-us-info-link"})
+                @Html.ActionLink("Logout", "Logout", @Name, null, new {@class = "tlr-us-info-link"})
             </p>
         </div>
     </div>

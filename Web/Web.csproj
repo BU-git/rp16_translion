@@ -222,6 +222,7 @@
     <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
+    <Content Include="Views\Advisor\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
