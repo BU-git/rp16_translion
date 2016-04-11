@@ -3,10 +3,13 @@ using IDAL.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.DataProtection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
+using BLL.Services.PersonageService;
 using IDAL.Interfaces.Managers;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -17,30 +20,34 @@ namespace Web.Controllers
     [Authorize(Roles = "Employer")]
     public class EmployerController : Controller
     {
-        private readonly IPersonageManager<Employer> _employerManager;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly PersonManager<Employer> _employerManager;
         private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        public EmployerController(IUserStore<IdentityUser, Guid> store, IPersonageManager<Employer> employerManager, IUnitOfWork unitOfWork)
+        public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
-
             _userManager.UserTokenProvider =
                    new DataProtectorTokenProvider<IdentityUser, Guid>(
                           new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+
             _employerManager = employerManager;
-            _unitOfWork = unitOfWork;
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         // GET: Employer
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+            if (user?.Employer != null)
+                return View(user.Employer.Employees);
+
+            return RedirectToAction("Logout");
         }
 
+        #region Add employee
         [HttpGet]
         public ActionResult AddEmployee()
         {
@@ -50,17 +57,81 @@ namespace Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
-        public ActionResult AddEmployee(AddEmployeeViewModel employeeViewModel)
+        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel)
         {
             if (!ModelState.IsValid)
                 return View(employeeViewModel);
 
-            var employerId = Guid.Parse(User.Identity.GetUserId());
-            //TODO Need fix
-            //_employerManager.AddEmployee(employeeViewModel.FirstName, employeeViewModel.Prefix,
-            //    employeeViewModel.LastName, employerId);
-            return View("AddEmployeeSuccess");
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+            if (user != null)
+            {
+                await _employerManager.CreateEmployeeAsync(new Employee
+                {
+                    EmployeeId = Guid.NewGuid(),
+                    LastName = employeeViewModel.LastName,
+                    FirstName = employeeViewModel.FirstName,
+                    Prefix = employeeViewModel.Prefix
+                }, user);
+
+                return View("AddEmployeeSuccess");
+            }
+
+            return View();
         }
+        #endregion
+
+        #region Change employee's name
+        [HttpGet]
+        public async Task<ActionResult> ChangeEmployeeName(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return RedirectToAction("Index");
+
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+            if (user?.Employer != null 
+                && user.Employer.Employees.Any(empl => empl.EmployeeId == id.Value))
+            {
+                var employee = user.Employer.Employees.First(empl => empl.EmployeeId == id.Value);
+
+                return View(new EmployeeChangeNameViewModel
+                {
+                    Id = employee.EmployeeId,
+                    EmployerId = employee.EmployerId,
+                    FirstName = employee.FirstName,
+                    Prefix = employee.Prefix,
+                    LastName = employee.LastName
+                });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async Task<ActionResult> ChangeEmployeeName(EmployeeChangeNameViewModel emplInfo)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            Employee employee;
+
+            if (emplInfo.Id != Guid.Empty 
+                && (employee = await _employerManager.GetEmployeeAsync(emplInfo.Id)) != null 
+                && emplInfo.EmployerId == employee.EmployerId)
+            {
+                employee.FirstName = emplInfo.FirstName;
+                employee.LastName = emplInfo.LastName;
+                employee.Prefix = emplInfo.Prefix;
+
+                await _employerManager.UpdateEmployeeAsync(employee);
+            }
+
+            return RedirectToAction("Index");
+        }
+        #endregion
 
         //test logout method
         public ActionResult Logout()
@@ -72,18 +143,33 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Settings()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
 
             if (user != null)
             {
-                var employer = await _unitOfWork.EmployerRepository.FindByIdAsync(user.Id);
+                var employer = await _employerManager.GetAsync(user);
 
                 if (employer != null)
-                    return View(employer);
+                {
+                    return View(new EmployerSettingsViewModel
+                    {
+                        CompanyName = employer.CompanyName,
+                        FirstName = employer.FirstName,
+                        Prefix = employer.Prefix,
+                        LastName = employer.LastName,
+                        TelephoneNumber = employer.TelephoneNumber,
+                        EmailAdress = user.Email,
+                        PostalCode = employer.PostalCode,
+                        Adress = employer.Adress,
+                        City = employer.City,
+                        UserName = user.UserName
+                    });
+                }
             }
 
             return View("Index");
         }
+
         #region PasswordChange
         [HttpGet]
         public async Task<ActionResult> PasswordChange()

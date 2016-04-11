@@ -77,22 +77,22 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override async void CreateAsync(Admin entity, User user)
+        public override Task<int> CreateAsync(Admin entity, User user)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
+        public override Task<int> CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
         #endregion
 
@@ -106,22 +106,22 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override async void UpdateAsync(Admin entity)
+        public override Task<int> UpdateAsync(Admin entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             _unitOfWork.AdminRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override async void UpdateAsync(CancellationToken cancellationToken, Admin entity)
+        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Admin entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             _unitOfWork.AdminRepository.Update(entity);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
         #endregion
 
@@ -131,35 +131,27 @@ namespace BLL.Services.PersonageService
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (user.Admin == null)
-                throw new InvalidOperationException("Can't delete user. This user is not admin");
-
             _unitOfWork.UserRepository.Remove(user);
             _unitOfWork.SaveChanges();
         }
 
-        public override void DeleteAsync(User user)
+        public override Task<int> DeleteAsync(User user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (user.Admin == null)
-                throw new InvalidOperationException("Can't delete user. This user is not admin");
-
             _unitOfWork.UserRepository.Remove(user);
-            _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override void DeleteAsync(CancellationToken cancellationToken, User user)
+        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (user.Admin == null)
-                throw new InvalidOperationException("Can't delete user. This user is not admin");
 
             _unitOfWork.UserRepository.Remove(user);
-            _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
         #endregion
     }

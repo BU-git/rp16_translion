@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -21,10 +22,8 @@ namespace Web.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
-        //private readonly PersonageManager<Employer> _employerManager; 
-        private readonly EmployerManager _employerManager;
-
-        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService, IUnitOfWork unitOfWork)
+        private readonly PersonManager<Employer> _employerManager;
+        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
         {
             _userManager = userManager;
             //bad solutions
@@ -87,8 +86,8 @@ namespace Web.Controllers
                 {
                     await SignInAsync(user, true);
                     return await _userManager.IsInRoleAsync(user.Id, "Employer")
-                        ? RedirectToAction("Index", "Employer", new {id = user.Id})
-                        : RedirectToAction("Index", "Admin", new {id = user.Id});
+                        ? RedirectToAction("Index", "Employer", new { id = user.Id })
+                        : RedirectToAction("Index", "Admin", new { id = user.Id });
                 }
             }
             return View(model);
@@ -222,7 +221,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel passwForgot)
         {
             string errorSummary; //summary error message
@@ -247,7 +246,7 @@ namespace Web.Controllers
                         if (Request.Url != null)
                         {
                             var callbackUrl = Url.Action("PasswordRecovery", "Account",
-                                new {userId = user.Id, token = passResetToken}, Request.Url.Scheme); //sets recovery url
+                                new { userId = user.Id, token = passResetToken }, Request.Url.Scheme); //sets recovery url
 
                             await SendEmail(user.Id, new ForgotPasswordMailMessageBuilder(callbackUrl));
                         }
@@ -277,7 +276,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ViewResult> ForgotUserName(ForgotUsernameViewModel unameForgot)
         {
             if (!ModelState.IsValid)
@@ -311,13 +310,13 @@ namespace Web.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {Token = token, Id = userId.Value});
+            return View(new PasswordRecoveryViewModel { Token = token, Id = userId.Value });
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ActionResult> PasswordRecovery(PasswordRecoveryViewModel passwRecovery)
         {
             string errorMessage; //error message
@@ -357,7 +356,7 @@ namespace Web.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties {IsPersistent = isPersistent}, identity);
+            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
         }
 
         private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
