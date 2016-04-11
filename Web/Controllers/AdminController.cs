@@ -17,7 +17,7 @@ namespace Web.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser, Guid> _userManager;
-        private readonly PersonageManager<Employer> _employerManager;
+        private readonly PersonManager<Employer> _employerManager;
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         public AdminController(IUserStore<IdentityUser, Guid> store, IUnitOfWork unitOfWork)
@@ -36,11 +36,33 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult EditEmployer(Guid employerId)
+        public ActionResult EmployerProfile(Guid id)
         {
-            //Guid id = new Guid(employerId);
-            Guid id = employerId;
+            var user = _userManager.FindById(id);
+            Employer employer = _unitOfWork.EmployerRepository.FindById(id);
 
+            EmployerViewModel model = new EmployerViewModel
+            {
+                EmailAdress = user.Email,
+
+                FirstName = employer.FirstName,
+                LastName = employer.LastName,
+                CompanyName = employer.CompanyName,
+                Adress = employer.Adress,
+                City = employer.City,
+                Prefix = employer.Prefix,
+                PostalCode = employer.PostalCode,
+                TelephoneNumber = employer.TelephoneNumber
+            };
+
+            ViewBag.EmployerId = id;
+            ViewBag.Employees = employer.Employees;
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult EditEmployer(Guid id)
+        {
             var user = _userManager.FindById(id);
             Employer employer = _unitOfWork.EmployerRepository.FindById(id);
 
@@ -62,12 +84,10 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditEmployer(EmployerViewModel model, string employerId)
+        public ActionResult EditEmployer(EmployerViewModel model, Guid id)
         {
             if (ModelState.IsValid)
             {
-                Guid id = new Guid(employerId);
-
                 var user = _userManager.FindById(id);
                 Employer employer = _unitOfWork.EmployerRepository.FindById(id);
 
@@ -86,7 +106,7 @@ namespace Web.Controllers
                 _employerManager.Update(employer);
             }
 
-            return View(model);
+            return View("EmployerProfile", model);
         }
 
         public ActionResult DeleteEmployer(string employerId)
@@ -94,9 +114,6 @@ namespace Web.Controllers
             Guid id = new Guid(employerId);
 
             var user = _userManager.FindById(id);
-            //Employer employer = _unitOfWork.EmployerRepository.FindById(id);
-
-            //_employerManager.Delete(employer);
             _userManager.Delete(user);
 
             return View("Index");

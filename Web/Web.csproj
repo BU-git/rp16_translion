@@ -225,6 +225,8 @@
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
+    <Content Include="Views\Admin\EditEmployer.cshtml" />
+    <Content Include="Views\Admin\EmployerProfile.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -23,7 +23,8 @@ namespace Web.Controllers
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly PersonManager<Employer> _employerManager;
-        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
+
+        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             //bad solutions
@@ -140,7 +141,7 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
-                    var user = await _employerManager.GetUser(identityUser.Id);
+                    var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
 
                     _employerManager.Create(employer, user);
 
