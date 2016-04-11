@@ -163,18 +163,6 @@ namespace Web.Controllers
 
                         return View("AccountConfirmation");
                     }
-                    else if (User.IsInRole("Admin"))
-                    {
-                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
-                        return RedirectToAction("Index", "Admin");
-
-                    }
-                    else
-                    {
-                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
-                        return RedirectToAction("Index", "Advisor");
-                    }
-
                 }
             }
             return View(model);

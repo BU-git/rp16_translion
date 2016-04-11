@@ -104,9 +104,12 @@ namespace Web.Controllers
 
                 _userManager.Update(user);
                 _employerManager.Update(employer);
-            }
 
-            return View("EmployerProfile", model);
+                ViewBag.Employees = employer.Employees;
+                return View("EmployerProfile", model);
+            }
+            
+            return View(model);
         }
 
         public ActionResult DeleteEmployer(string employerId)
