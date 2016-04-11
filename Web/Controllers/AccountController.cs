@@ -6,6 +6,9 @@ using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
+using BLL.Services.PersonageService;
+using IDAL.Interfaces;
+using IDAL.Interfaces.Managers;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -18,14 +21,18 @@ namespace Web.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
+        //private readonly PersonageManager<Employer> _employerManager; 
+        private readonly EmployerManager _employerManager;
 
-        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService)
+        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             //bad solutions
             _userManager.EmailService = emailService;
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+
+            _employerManager = new EmployerManager(unitOfWork);
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
@@ -101,7 +108,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterEmployer(RegisterEmployerViewModel model)
+        public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
         {
             if (model.Password.Equals("default"))
             {
@@ -123,21 +130,25 @@ namespace Web.Controllers
                     TelephoneNumber = model.TelephoneNumber
                 };
 
-                var user = new IdentityUser
+                var identityUser = new IdentityUser
                 {
                     UserName = model.UserName,
                     Email = model.EmailAdress,
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
+
+                var result = await _userManager.CreateAsync(identityUser, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user.Id, "Employer");
+                    await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
+                    var user = await _employerManager.GetUser(identityUser.Id);
+
+                    _employerManager.Create(employer, user);
 
                     if (!User.IsInRole("Admin"))
                     {
-                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
-                        await SignInAsync(user, true);
+                        await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        await SignInAsync(identityUser, true);
 
                         return View("AccountConfirmation");
                     }
@@ -156,6 +167,7 @@ namespace Web.Controllers
             return View();
         }
 
+        //TODO: set authorize attribute for AddAdmin Method
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
@@ -180,6 +192,8 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Admin");
+
+                    //var user = await 
                     //await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.Username));
 
                     return RedirectIfSignedIn();

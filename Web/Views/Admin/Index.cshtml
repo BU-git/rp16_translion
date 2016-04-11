@@ -1,4 +1,5 @@
-﻿@{
+﻿@using IDAL.Models
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -13,7 +14,7 @@
 
     <div class="row" id="tlr-usr-section-hdr">
         <div class="col-sm-5 col-md-4 col-lg-3">
-            <a href='@Url.Action("CreateEmployer", "Account")' id="tlr-usr-section-hdr-adm-btn">
+            <a href='@Url.Action("RegisterEmployer", "Account")' id="tlr-usr-section-hdr-adm-btn">
                 <img src="~/Content/Images/AdminCreateEmployer.png" />
                 <span>Werkgever toevoegen</span>
             </a>
@@ -27,11 +28,12 @@
     <div class="row" id="tlr-usr-section-main">
         <!--user's info(image and name)-->
         <!--Use this in foreach with your ViewModel-->
-        @for (var i = 0; i < 20; i++)
+        @foreach (var employer in ViewBag.Employers)
         {
             <div class="col-sm-6 col-md-3 col-lg-2 tlr-usr-info">
-                <p class="tlr-usr-info-label">Employer1</p>
-                <a href="unknwn" class="tlr-usr-inner-info">
+                <p class="tlr-usr-info-label">@employer.FirstName @employer.LastName</p>
+                <p class="tlr-usr-info-label">@employer.CompanyName</p>
+                <a href="@Url.Action("EditEmployer", "Admin", new { employerId = employer.EmployerId })" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="UserName">
                 </a>
             </div>

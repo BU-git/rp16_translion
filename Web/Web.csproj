@@ -196,7 +196,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
-    <Compile Include="ViewModels\RegisterEmployerViewModel.cs" />
+    <Compile Include="ViewModels\EmployerViewModel.cs" />
     <Compile Include="ViewModels\RegistrationEmployerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
