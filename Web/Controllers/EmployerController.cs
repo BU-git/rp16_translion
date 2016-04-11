@@ -289,7 +289,7 @@ namespace Web.Controllers
                         await _userManager.ChangePasswordAsync(user.Id, chPassVM.OldPassword, chPassVM.Password);
 
                     if (opResult.Succeeded)
-                        return View("Index");
+                        return RedirectToAction("Index");
                 }
                 else if (!oldPassValid)
                     ModelState.AddModelError(nameof(chPassVM.OldPassword), "Old password is invalid");
