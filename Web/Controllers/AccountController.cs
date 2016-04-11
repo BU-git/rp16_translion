@@ -8,6 +8,8 @@ using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
+using IDAL.Interfaces;
+using IDAL.Interfaces.Managers;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -20,8 +22,9 @@ namespace Web.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser, Guid> _userManager;
-        private readonly PersonManager<Employer> _employerManager; 
-        public AccountController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager, IMailingService emailService)
+        private readonly PersonManager<Employer> _employerManager;
+
+        public AccountController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager, IMailingService emailService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             //bad solutions
@@ -74,7 +77,8 @@ namespace Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //TODO fix Antiforgery Exception
+        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -84,9 +88,19 @@ namespace Web.Controllers
                 if (isLoginSuccessful)
                 {
                     await SignInAsync(user, true);
-                    return await _userManager.IsInRoleAsync(user.Id, "Employer")
-                        ? RedirectToAction("Index", "Employer", new {id = user.Id})
-                        : RedirectToAction("Index", "Admin", new {id = user.Id});
+
+                    if (await _userManager.IsInRoleAsync(user.Id, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin", new { id = user.Id });
+                    }
+                    if (await _userManager.IsInRoleAsync(user.Id, "Advisor"))
+                    {
+                        return RedirectToAction("Index", "Advisor", new { id = user.Id });
+                    }
+                    if (await _userManager.IsInRoleAsync(user.Id, "Employer"))
+                    {
+                        return RedirectToAction("Index", "Employer", new { id = user.Id });
+                    }
                 }
             }
             return View(model);
@@ -106,7 +120,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterEmployer(RegisterEmployerViewModel model)
+        public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
         {
             if (model.Password.Equals("default"))
             {
@@ -128,21 +142,25 @@ namespace Web.Controllers
                     TelephoneNumber = model.TelephoneNumber
                 };
 
-                var user = new IdentityUser
+                var identityUser = new IdentityUser
                 {
                     UserName = model.UserName,
                     Email = model.EmailAdress,
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
 
-                if (result.Succeeded && await AddEmployerAsync(user, employer))
+                var result = await _userManager.CreateAsync(identityUser, model.Password);
+
+                if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user.Id, "Employer");
+                    await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
+                    var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
+
+                    _employerManager.Create(employer, user);
 
                     if (!User.IsInRole("Admin"))
                     {
-                        await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.UserName));
-                        await SignInAsync(user, true);
+                        await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+                        await SignInAsync(identityUser, true);
 
                         return View("AccountConfirmation");
                     }
@@ -161,6 +179,7 @@ namespace Web.Controllers
             return View();
         }
 
+        //TODO: set authorize attribute for AddAdmin Method
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
@@ -185,6 +204,8 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Admin");
+
+                    //var user = await 
                     //await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.Username));
 
                     return RedirectIfSignedIn();
@@ -213,7 +234,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel passwForgot)
         {
             string errorSummary; //summary error message
@@ -238,7 +259,7 @@ namespace Web.Controllers
                         if (Request.Url != null)
                         {
                             var callbackUrl = Url.Action("PasswordRecovery", "Account",
-                                new {userId = user.Id, token = passResetToken}, Request.Url.Scheme); //sets recovery url
+                                new { userId = user.Id, token = passResetToken }, Request.Url.Scheme); //sets recovery url
 
                             await SendEmail(user.Id, new ForgotPasswordMailMessageBuilder(callbackUrl));
                         }
@@ -268,7 +289,7 @@ namespace Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ViewResult> ForgotUserName(ForgotUsernameViewModel unameForgot)
         {
             if (!ModelState.IsValid)
@@ -302,13 +323,13 @@ namespace Web.Controllers
                 return RedirectToAction("ForgotPassword");
             }
 
-            return View(new PasswordRecoveryViewModel {Token = token, Id = userId.Value});
+            return View(new PasswordRecoveryViewModel { Token = token, Id = userId.Value });
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ActionResult> PasswordRecovery(PasswordRecoveryViewModel passwRecovery)
         {
             string errorMessage; //error message
@@ -348,7 +369,7 @@ namespace Web.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties {IsPersistent = isPersistent}, identity);
+            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
         }
 
         private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
@@ -384,18 +405,6 @@ namespace Web.Controllers
             return null;
         }
 
-        [NonAction]
-        private async Task<Boolean> AddEmployerAsync(IdentityUser registeredUser, Employer employer)
-        {
-            var user = await _employerManager.GetUserByIdAsync(registeredUser.Id);
-
-            if (user == null)
-                return false;
-
-            await _employerManager.CreateAsync(employer, user);
-
-            return true;
-        }
         #endregion
     }
 }

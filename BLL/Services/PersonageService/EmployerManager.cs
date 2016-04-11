@@ -138,7 +138,6 @@ namespace BLL.Services.PersonageService
             }
             return await _unitOfWork.EmployerRepository.FindByIdAsync(cancellationToken, user.UserId);
         }
-
         #endregion
 
         #region Create
@@ -146,6 +145,7 @@ namespace BLL.Services.PersonageService
         public override void Create(Employer entity, User user)
         {
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
+            _unitOfWork.SaveChanges();
         }
 
         public override Task<int> CreateAsync(Employer entity, User user)

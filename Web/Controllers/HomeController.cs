@@ -37,10 +37,20 @@ namespace Web.Controllers
         private ActionResult RedirectIfSignedIn()
         {
             if (User.Identity.IsAuthenticated)
-                return User.IsInRole("Admin")
-                    ? RedirectToAction("Index", "Admin")
-                    : RedirectToAction("Index", "Employer");
-
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    RedirectToAction("Index", "Admin");
+                }
+                if (User.IsInRole("Advisor"))
+                {
+                    RedirectToAction("Index", "Advisor");
+                }
+                if (User.IsInRole("Employer"))
+                {
+                    RedirectToAction("Index", "Employer");
+                }
+            }
             return null;
         }
     }
