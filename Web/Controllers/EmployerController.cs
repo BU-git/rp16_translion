@@ -1,18 +1,17 @@
-﻿using IDAL.Interfaces;
-using IDAL.Models;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security.DataProtection;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
+using BLL.Services.MailingService.Interfaces;
+using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
-using IDAL.Interfaces.Managers;
+using IDAL.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 using Web.ViewModels;
 
 namespace Web.Controllers
@@ -20,17 +19,25 @@ namespace Web.Controllers
     [Authorize(Roles = "Employer")]
     public class EmployerController : Controller
     {
+        private readonly PersonManager<Admin> _adminManager;
         private readonly PersonManager<Employer> _employerManager;
+        private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager)
+        public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager,
+            IMailingService mailService, PersonManager<Admin> adminManager)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
             _userManager.UserTokenProvider =
-                   new DataProtectorTokenProvider<IdentityUser, Guid>(
-                          new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+                new DataProtectorTokenProvider<IdentityUser, Guid>(
+                    new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
 
             _employerManager = employerManager;
+
+            _adminManager = adminManager;
+
+            _mailingService = mailService;
+            _mailingService.IgnoreQueue(); //setting manager to ignore mail message queue and tell about errors
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
@@ -42,95 +49,60 @@ namespace Web.Controllers
             var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
 
             if (user?.Employer != null)
-                return View(user.Employer.Employees);
+                return View(user.Employer.Employees.Where(empl => !empl.IsDeleted));
 
             return RedirectToAction("Logout");
         }
 
-        #region Add employee
+        #region Employee info
+
         [HttpGet]
-        public ActionResult AddEmployee()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel)
-        {
-            if (!ModelState.IsValid)
-                return View(employeeViewModel);
-
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
-
-            if (user != null)
-            {
-                await _employerManager.CreateEmployeeAsync(new Employee
-                {
-                    EmployeeId = Guid.NewGuid(),
-                    LastName = employeeViewModel.LastName,
-                    FirstName = employeeViewModel.FirstName,
-                    Prefix = employeeViewModel.Prefix
-                }, user);
-
-                return View("AddEmployeeSuccess");
-            }
-
-            return View();
-        }
-        #endregion
-
-        #region Change employee's name
-        [HttpGet]
-        public async Task<ActionResult> ChangeEmployeeName(Guid? id)
+        public async Task<ActionResult> EmployeeInfo(Guid? id)
         {
             if (id == null || id.Value == Guid.Empty)
                 return RedirectToAction("Index");
 
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+            var employee = await GetEmployeeByIdAsync(id.Value);
 
-            if (user?.Employer != null 
-                && user.Employer.Employees.Any(empl => empl.EmployeeId == id.Value))
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            return View(new EmployeeInfoViewModel
             {
-                var employee = user.Employer.Employees.First(empl => empl.EmployeeId == id.Value);
-
-                return View(new EmployeeChangeNameViewModel
-                {
-                    Id = employee.EmployeeId,
-                    EmployerId = employee.EmployerId,
-                    FirstName = employee.FirstName,
-                    Prefix = employee.Prefix,
-                    LastName = employee.LastName
-                });
-            }
-
-            return RedirectToAction("Index");
+                Id = employee.EmployeeId,
+                Reports = new string[] {}, //TODO: change this in future
+                FullName = $"{employee.FirstName} {employee.Prefix} {employee.LastName}"
+            });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> ChangeEmployeeName(EmployeeChangeNameViewModel emplInfo)
+        #endregion
+
+        #region Remove employee
+
+        [HttpGet]
+        public async Task<ActionResult> RemoveEmployee(Guid? id)
         {
-            if (!ModelState.IsValid)
-                return View();
+            if (id == null || id.Value == Guid.Empty)
+                return RedirectToAction("Index");
 
-            Employee employee;
+            var employee = await GetEmployeeByIdAsync(id.Value);
 
-            if (emplInfo.Id != Guid.Empty 
-                && (employee = await _employerManager.GetEmployeeAsync(emplInfo.Id)) != null 
-                && emplInfo.EmployerId == employee.EmployerId)
+            if (employee != null && !employee.IsDeleted)
             {
-                employee.FirstName = emplInfo.FirstName;
-                employee.LastName = emplInfo.LastName;
-                employee.Prefix = emplInfo.Prefix;
+                employee.IsDeleted = true;
 
                 await _employerManager.UpdateEmployeeAsync(employee);
+
+                var messageInfo = new EmployerDelEmployeeMessageBuilder(User.Identity.Name,
+                    $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
+                    await GetAllAdminsEmailsAsync());
             }
 
             return RedirectToAction("Index");
         }
+
         #endregion
 
         //test logout method
@@ -170,7 +142,120 @@ namespace Web.Controllers
             return View("Index");
         }
 
+        #region IDisposable
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _userManager.Dispose();
+                _mailingService.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #region Add employee
+
+        [HttpGet]
+        public ActionResult AddEmployee()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(employeeViewModel);
+
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+            if (user == null)
+                return RedirectToAction("Logout");
+
+            await _employerManager.CreateEmployeeAsync(new Employee
+            {
+                EmployeeId = Guid.NewGuid(),
+                LastName = employeeViewModel.LastName,
+                FirstName = employeeViewModel.FirstName,
+                Prefix = employeeViewModel.Prefix
+            }, user);
+
+
+            var mailMessageData = new CreateEmployeeMailMessageBuilder(User.Identity.Name,
+                $"{employeeViewModel.FirstName} {employeeViewModel.Prefix} {employeeViewModel.LastName}");
+
+            await _mailingService.SendMailAsync(mailMessageData.Body, mailMessageData.Subject,
+                await GetAllAdminsEmailsAsync());
+
+            return View("AddEmployeeSuccess");
+        }
+
+        #endregion
+
+        #region Change employee's name
+
+        [HttpGet]
+        public async Task<ActionResult> ChangeEmployeeName(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return RedirectToAction("Index");
+
+            var employee = await GetEmployeeByIdAsync(id.Value);
+
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            return View(new EmployeeChangeNameViewModel
+            {
+                Id = employee.EmployeeId,
+                EmployerId = employee.EmployerId,
+                FirstName = employee.FirstName,
+                Prefix = employee.Prefix,
+                LastName = employee.LastName
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async Task<ActionResult> ChangeEmployeeName(EmployeeChangeNameViewModel emplInfo)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            Employee employee;
+
+            if (emplInfo.Id != Guid.Empty
+                && (employee = await _employerManager.GetEmployeeAsync(emplInfo.Id)) != null
+                && emplInfo.EmployerId == employee.EmployerId)
+            {
+                employee.FirstName = emplInfo.FirstName;
+                employee.LastName = emplInfo.LastName;
+                employee.Prefix = emplInfo.Prefix;
+
+                await _employerManager.UpdateEmployeeAsync(employee);
+
+                var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+                var mailMessageData = new ChangeEmployeeNameMessageBuilder(User.Identity.Name,
+                    $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                await _mailingService.SendMailAsync(mailMessageData.Body, mailMessageData.Subject,
+                    ExtendRecieversMails(await GetAllAdminsEmailsAsync(), user?.Email));
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        #endregion
+
         #region PasswordChange
+
         [HttpGet]
         public async Task<ActionResult> PasswordChange()
         {
@@ -178,10 +263,10 @@ namespace Web.Controllers
 
             if (user != null)
             {
-                String token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
-                if (!String.IsNullOrWhiteSpace(token))
-                    return View(new EmplPassChangeViewModel { Id = user.Id, Token = token });
+                if (!string.IsNullOrWhiteSpace(token))
+                    return View(new EmplPassChangeViewModel {Id = user.Id, Token = token});
             }
 
             return View("Index");
@@ -189,18 +274,19 @@ namespace Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
+        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
         public async Task<ActionResult> PasswordChange(EmplPassChangeViewModel chPassVM)
         {
             if (ModelState.IsValid)
             {
-                bool oldPassValid = false;
+                var oldPassValid = false;
 
                 var user = await _userManager.FindByIdAsync(chPassVM.Id);
 
                 if (user != null && (oldPassValid = await _userManager.CheckPasswordAsync(user, chPassVM.OldPassword)))
                 {
-                    var opResult = await _userManager.ChangePasswordAsync(user.Id, chPassVM.OldPassword, chPassVM.Password);
+                    var opResult =
+                        await _userManager.ChangePasswordAsync(user.Id, chPassVM.OldPassword, chPassVM.Password);
 
                     if (opResult.Succeeded)
                         return View("Index");
@@ -213,16 +299,52 @@ namespace Web.Controllers
 
             return View("PasswordChange");
         }
+
         #endregion
 
-        #region IDisposable
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _userManager.Dispose();
+        #region Helpers
 
-            base.Dispose(disposing);
+        [NonAction]
+        private async Task<string[]> GetAllAdminsEmailsAsync()
+        {
+            var admins = await _adminManager.GetAllAsync();
+
+            if (admins.Count == 0)
+                return null;
+
+            return admins
+                .Select(adm => adm.User.Email)
+                .ToArray();
         }
+
+        [NonAction]
+        private async Task<Employee> GetEmployeeByIdAsync(Guid id)
+        {
+            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+
+            return user?.Employer != null
+                   && user.Employer.Employees.Any(empl => empl.EmployeeId == id)
+                ? user.Employer.Employees.First(empl => empl.EmployeeId == id)
+                : null;
+        }
+
+        [NonAction]
+        private string[] ExtendRecieversMails(string[] emails, string extend)
+        {
+            if (extend == null)
+                return emails;
+            if (emails == null || emails.Length == 0)
+                return new[] {extend};
+
+            var extended = new string[emails.Length + 1];
+
+            Array.Copy(emails, 0, extended, 0, emails.Length);
+
+            extended[extended.Length - 1] = extend;
+
+            return extended;
+        }
+
         #endregion
     }
 }

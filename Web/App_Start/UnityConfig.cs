@@ -37,6 +37,10 @@ namespace Web
                 new InjectionConstructor(
                     container.Resolve<IUnitOfWork>()
                     ));
+            container.RegisterType<PersonManager<Admin>, AdminManager>(new PerHttpRequestLifetimeManager(),
+                new InjectionConstructor(
+                    container.Resolve<IUnitOfWork>()
+                    ));
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

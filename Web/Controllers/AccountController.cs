@@ -30,6 +30,7 @@ namespace Web.Controllers
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
 
             _employerManager = employerManager;
+            emailService.IgnoreQueue();
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
