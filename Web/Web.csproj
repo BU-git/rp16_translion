@@ -224,11 +224,9 @@
     <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\Advisor\Index.cshtml" />
-=======
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
->>>>>>> master
+    <Content Include="Views\Advisor\Index.cshtml" />
+    <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
