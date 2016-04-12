@@ -69,6 +69,7 @@ namespace Web.Controllers
             EmployerViewModel model = new EmployerViewModel
             {
                 EmailAdress = user.Email,
+                UserName = user.UserName,
 
                 FirstName = employer.FirstName,
                 LastName = employer.LastName,
@@ -80,6 +81,7 @@ namespace Web.Controllers
                 TelephoneNumber = employer.TelephoneNumber
             };
 
+            ViewBag.EmployerId = id;
             return View(model);
         }
 
@@ -112,10 +114,9 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult DeleteEmployer(string employerId)
+        [HttpGet]
+        public ActionResult DeleteEmployer(Guid id)
         {
-            Guid id = new Guid(employerId);
-
             var user = _userManager.FindById(id);
             _userManager.Delete(user);
 

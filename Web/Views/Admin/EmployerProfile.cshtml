@@ -6,91 +6,60 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Employer Profile</h2>
-
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CompanyName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Prefix)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Prefix)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TelephoneNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TelephoneNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EmailAdress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EmailAdress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PostalCode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PostalCode)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Adress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Adress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.City)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-md-4 col-centered">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => model.CompanyName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.FirstName)</td>
+                    <td>@Html.DisplayFor(model => model.FirstName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Prefix)</td>
+                    <td>@Html.DisplayFor(model => model.Prefix)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.LastName)</td>
+                    <td>@Html.DisplayFor(model => model.LastName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.TelephoneNumber)</td>
+                    <td>@Html.DisplayFor(model => model.TelephoneNumber)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.EmailAdress)</td>
+                    <td>@Html.DisplayFor(model => model.EmailAdress)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.PostalCode)</td>
+                    <td>@Html.DisplayFor(model => model.PostalCode)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Adress)</td>
+                    <td>@Html.DisplayFor(model => model.Adress)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.City)</td>
+                    <td>@Html.DisplayFor(model => model.City)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Gegevens beweken", "EditEmployer", new { id = ViewBag.EmployerId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<div class="row">
+    <div class="col-md-6">
+        @Html.ActionLink("Gegevens beweken", "EditEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-primary pull-right" })
+    </div>
+    <div class="col-md-6">
+        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", new { id = ViewBag.EmployerId }, new {@class = "btn btn-default"})
+    </div>
+</div>
 <div class="row" id="tlr-usr-section-main">
-    <!--user's info(image and name)-->
-    <!--Use this in foreach with your ViewModel-->
     @foreach (Employee employee in ViewBag.Employees)
     {
         <div class="col-sm-6 col-md-3 col-lg-2 tlr-usr-info">
