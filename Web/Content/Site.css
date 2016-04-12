@@ -1,41 +1,4 @@
-﻿CSS Reset » 
-
-Eric Meyer ’ 
-
-s “ 
-
-Reset CSS ” 
-
-2.0 
-
-Eric Meyer ’ 
-
-s “ 
-
-Reset CSS ” 
-
-2.0 
-
-by Joss  – 
-
-follow on Twitter here
-
-
-
-One of the pioneers of the CSS Reset method, Eric Meyer, created a Reset stylesheet that is still in use on millions of websites today. Most people use it in its unedited form, despite Meyer ’ 
-
-s recommendation against this:
-
-The reset styles given here are intentionally very generic. There isn ’ 
-
-t any default color or background set for the body element, for example. I don ’ 
-
-t particularly recommend that you just use this in its unaltered state in your own projects. It should be tweaked, edited, extended, and otherwise tuned to match your specific reset baseline. Fill in your preferred colors for the page, links, and so on.
-Here ’ 
-
-s the code:
-
-/* http://meyerweb.com/eric/tools/css/reset/ 
+﻿/* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */

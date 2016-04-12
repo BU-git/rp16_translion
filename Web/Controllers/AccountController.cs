@@ -24,7 +24,7 @@ namespace Web.Controllers
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly PersonManager<Employer> _employerManager;
 
-        public AccountController(UserManager<IdentityUser, Guid> userManager, IMailingService emailService, IUnitOfWork unitOfWork)
+        public AccountController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager, IMailingService emailService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             //bad solutions
@@ -32,7 +32,8 @@ namespace Web.Controllers
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
                     new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
 
-            _employerManager = new EmployerManager(unitOfWork);
+            _employerManager = employerManager;
+            emailService.IgnoreQueue();
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;

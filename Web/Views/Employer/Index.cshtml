@@ -23,7 +23,7 @@
         @foreach(var empl in Model)
         {
             <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
-                <a href="unknwn" class="tlr-usr-inner-info">
+                <a href="@Url.Action("EmployeeInfo", new { id = empl.EmployeeId })" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="@empl.FirstName">
                 </a>
                 <a href="@Url.Action("ChangeEmployeeName", "Employer", new { id = empl.EmployeeId })" class="tlr-usr-info-label-btn">

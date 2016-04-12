@@ -214,9 +214,12 @@ namespace BLL.Services.MailingService
                 message.IsBodyHtml = true;
 
                 //adding addresses to mail message
-                foreach (var address in addresses)
-                    message.To.Add(new MailAddress(address));
-
+                if (addresses != null)
+                {
+                    foreach (var address in addresses)
+                        message.To.Add(new MailAddress(address));
+                }
+                
                 return message;
             }
             catch (FormatException)

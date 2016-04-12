@@ -85,6 +85,9 @@
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />
     <Compile Include="Services\MailingService\MailingService.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\ChangeEmployeeNameMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\CreateEmployeeMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\EmployerDelEmployeeMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotPasswordMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\MailMessageBuilder.cs" />
