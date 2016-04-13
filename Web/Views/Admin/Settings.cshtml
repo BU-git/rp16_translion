@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = $"{User.Identity.Name}'s Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="emplSettings">
+    <h3 class="centerText">Admin gegevens</h3>
+    <p class="leftAlignText">@User.Identity.Name</p>
+    <div class="row">
+        @Html.ActionLink("Adviseur toevoegen", "AddAdvisor", null, new {@class = "admSettingsButton" })
+    </div>
+    <div class="row">
+        @Html.ActionLink("Administrator toevoegen", "AddAdmin", "Account", null, new {@class = "admSettingsButton" })
+    </div>
+    <div class="row">
+        @Html.ActionLink("Verander wachtwoord", "ChangePassword", null, new {@class = "admSettingsButton" })
+    </div>
+    <div class="row">
+        @Html.ActionLink("Adviseur werwijderen", "AdvisorsList", null, new {@class = "admSettingsButton" })
+    </div>
+
+    <div class="row">
+        @Html.ActionLink("Terug", "Index", null, new { @class = "admSettingsButton" })
+    </div>
+</section>
+

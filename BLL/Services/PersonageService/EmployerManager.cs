@@ -142,21 +142,21 @@ namespace BLL.Services.PersonageService
 
         #region Create
 
-        public override void Create(Employer entity, User user)
+        public override async void Create(Employer entity, User user)
         {
-            _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            _unitOfWork.SaveChanges();
+            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public override async Task<int> CreateAsync(Employer entity, User user)
         {
-            _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
+            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
             return await _unitOfWork.SaveChangesAsync();
         }
 
         public override async Task<int> CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
         {
-            _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
+            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
             return await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 

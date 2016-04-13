@@ -68,31 +68,31 @@ namespace BLL.Services.PersonageService
         #endregion
 
         #region Create concrete admin
-        public override void Create(Admin entity, User user)
+        public override async void Create(Admin entity, User user)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
+            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
             _unitOfWork.SaveChanges();
         }
 
-        public override Task<int> CreateAsync(Admin entity, User user)
+        public override async Task<int> CreateAsync(Admin entity, User user)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
+            return await _unitOfWork.SaveChangesAsync();
         }
 
-        public override Task<int> CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
+        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
+            return await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
         #endregion
 

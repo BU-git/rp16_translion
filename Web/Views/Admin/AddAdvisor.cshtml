@@ -1,0 +1,52 @@
+﻿@model Web.ViewModels.CreateAdvisorViewModel
+@{
+    ViewBag.Title = "AddAdvisor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="registrationForm">
+    @using (Html.BeginForm("AddAdvisor", "Admin", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-5 control-label" })
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Username, new { @class = "col-md-5 control-label" })
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Username, new {@class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-5 control-label" })
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                @Html.PasswordFor(m => m.Password, new {@class = "form-control"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-5 control-label" })
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control"})
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                @Html.ActionLink("Annuleren", "Settings", "Admin", null, new { @class = "btn btn-danger pull-right" })
+            </div>
+            <div class="col-md-7">
+                <input type="submit" value="Account aanmaaken" class="btn btn-success" />
+            </div>
+        </div>
+    }
+</section>
+

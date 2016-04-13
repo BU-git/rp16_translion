@@ -14,15 +14,15 @@ namespace IDAL.Interfaces.Repositories
         User FindByEmail(string email);
         Task<User> FindByEmailAsync(string email);
         Task<User> FindByEmailAsync(CancellationToken cancellationToken, string email);
+        
+        Task AddEmployerAsync(Employer employer, object userId);
+        Task AddEmployerAsync(Employer employer, string userName);
 
-        void AddEmployerAsync(Employer employer, object userId);
-        void AddEmployerAsync(Employer employer, string userName);
+        Task AddAdminAsync(Admin admin, object userId);
+        Task AddAdminAsync(Admin admin, string userName);
 
-        void AddAdminAsync(Admin admin, object userId);
-        void AddAdminAsync(Admin admin, string userName);
-
-        void AddAdvisorAsync(Advisor advisor, object userId);
-        void AddAdvisorAsync(Advisor advisor, string userName);
+        Task AddAdvisorAsync(Advisor advisor, object userId);
+        Task AddAdvisorAsync(Advisor advisor, string userName);
 
         #endregion
     }

@@ -33,11 +33,16 @@ namespace Web
                     ConfigurationManager.AppSettings["mailFrom"],
                     ConfigurationManager.AppSettings["mailPass"],
                     ConfigurationManager.AppSettings["mailHost"]));
+
             container.RegisterType<PersonManager<Employer>, EmployerManager>(new PerHttpRequestLifetimeManager(),
                 new InjectionConstructor(
                     container.Resolve<IUnitOfWork>()
                     ));
             container.RegisterType<PersonManager<Admin>, AdminManager>(new PerHttpRequestLifetimeManager(),
+                new InjectionConstructor(
+                    container.Resolve<IUnitOfWork>()
+                    ));
+            container.RegisterType<PersonManager<Advisor>, AdvisorManager>(new PerHttpRequestLifetimeManager(),
                 new InjectionConstructor(
                     container.Resolve<IUnitOfWork>()
                     ));
