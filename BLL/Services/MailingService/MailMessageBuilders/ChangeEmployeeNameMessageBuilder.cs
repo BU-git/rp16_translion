@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace BLL.Services.MailingService.MailMessageBuilders
 {
@@ -14,3 +14,5 @@ namespace BLL.Services.MailingService.MailMessageBuilders
         }
     }
 }
+
+
