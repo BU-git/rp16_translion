@@ -242,8 +242,8 @@ namespace Web.Controllers
 
                 var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
 
-                var mailMessageData = new ChangeEmployeeNameMessageBuilder(User.Identity.Name,
-                    $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+                var mailMessageData = 
+                    new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
                 await _mailingService.SendMailAsync(mailMessageData.Body, mailMessageData.Subject,
                     ExtendRecieversMails(await GetAllAdminsEmailsAsync(), user?.Email));

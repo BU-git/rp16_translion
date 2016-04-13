@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
+using BLL.Services.MailingService.Interfaces;
+using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
 using IDAL.Interfaces;
 using IDAL.Models;
@@ -26,9 +28,9 @@ namespace Web.Controllers
         private readonly PersonManager<Advisor> _advisorManager;
         private readonly PersonManager<Employer> _employerManager;
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
-
+        private readonly IMailingService _mailingService;
         public AdminController(IUserStore<IdentityUser, Guid> store, PersonManager<Admin> adminManager,
-            PersonManager<Advisor> advisorManager, IUnitOfWork unitOfWork)
+            PersonManager<Advisor> advisorManager, IUnitOfWork unitOfWork, IMailingService mailService)
         {
             _unitOfWork = unitOfWork;
 
@@ -38,6 +40,8 @@ namespace Web.Controllers
             _advisorManager = advisorManager;
 
             _employerManager = new EmployerManager(_unitOfWork);
+
+            _mailingService = mailService;
         }
 
         // GET: Admin
@@ -147,6 +151,57 @@ namespace Web.Controllers
         {
             return View();
         }
+        
+        #region Change employee's name
+        [HttpGet]
+        public async Task<ActionResult> ChangeEmployeeName(Guid? id)
+        {
+            var employee = await GetEmployeeAsync(id);
+
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            return View(new EmployeeChangeNameViewModel
+            {
+                EmployerId = employee.EmployerId,
+                FirstName = employee.FirstName,
+                Id = employee.EmployeeId,
+                LastName = employee.LastName,
+                Prefix = employee.Prefix
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeEmployeeName(EmployeeChangeNameViewModel employeeInfo)
+        {
+            if (!ModelState.IsValid || employeeInfo.Id == Guid.Empty)
+                return View(employeeInfo);
+
+            var employee = await _adminManager.GetEmployeeAsync(employeeInfo.Id);
+
+            if (employee != null)
+            {
+                employee.FirstName = employeeInfo.FirstName;
+                employee.LastName = employeeInfo.LastName;
+                employee.Prefix = employeeInfo.Prefix;
+
+                if (await _adminManager.UpdateEmployeeAsync(employee) > 0)
+                {
+                    var messageInfo = 
+                        new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                    await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
+                            employee.Employer.User.Email);
+
+                    return RedirectToAction("EmployerProfile", new { id = employee.EmployerId });
+                }
+            }
+
+            ModelState.AddModelError("", SERVER_ERROR);
+            return View(employeeInfo);
+        }
+        #endregion
 
         #region Add advisor
 
@@ -274,7 +329,7 @@ namespace Web.Controllers
         #region Helpers
 
         [NonAction]
-        public async Task<User> GetUserIfAdvisorAsync(Guid? id)
+        private async Task<User> GetUserIfAdvisorAsync(Guid? id)
         {
             if (id == null && id.Value == Guid.Empty)
                 return null;
@@ -284,12 +339,23 @@ namespace Web.Controllers
             return user?.Advisor != null ? user : null;
         }
 
+        [NonAction]
+        private  Task<Employee> GetEmployeeAsync(Guid? id)
+        {
+            if (id == null && id.Value == Guid.Empty)
+                return null;
+
+            return _adminManager.GetEmployeeAsync(id.Value);
+        }
         #endregion
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _userManager.Dispose();
+                _mailingService.Dispose();
+            }
 
             base.Dispose(disposing);
         }

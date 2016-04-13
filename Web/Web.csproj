@@ -241,6 +241,7 @@
     <Content Include="Views\Admin\EmployerProfile.cshtml" />
     <Content Include="Views\Advisor\Index.cshtml" />
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
+    <Content Include="Views\Admin\ChangeEmployeeName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
