@@ -1,0 +1,56 @@
+﻿@model IDAL.Models.Advisor
+@{
+    ViewBag.Title = $"{Model.Name}'s info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="emplSettings">
+    <h3 class="centerText">Adviseur gegevens</h3>
+    <!--Main info-->
+    <div class="row employeeInfoRow">
+        <!--Image column-->
+        <div class="col-xs-6 col-sm-6 col-md-5 col-lg-4" id="emplSettingsMainImage">
+            <p>@Model.Name</p>
+            <a href="@Url.Action("AdvisorInfo", new { id = Model.AdvisorId })">
+                <img src="~/Content/Images/UserImg.png" alt="@Model.Name" />
+            </a>
+        </div>
+    </div>
+    <!--New report section-->
+    <div class="row">
+        @Html.ActionLink("Naam verranden", "ChangeAdvisorName", "Admin", new { id = Model.AdvisorId }, new { @class = "admSettingsButton" })
+    </div>
+    <!--Modal button-->
+    <div class="row">
+        <a class="admSettingsButton" data-toggle="modal" data-target="#delAdvisor">
+            Account verwijderen
+        </a>
+    </div>
+    <!--Return-->
+    <div class="row employeeInfoRow">
+        <div class="col-sm-6 col-md-3">
+            @Html.ActionLink("Terug", "Index", null, new { @class = "admSettingsButton" })
+        </div>
+    </div>
+    <!--Modal Window-->
+    <div id="delAdvisor" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Adviseur verwijderen!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("Ja", "RemoveAdvisor", new { id = Model.AdvisorId }, new { @class = "btn btn-success" })
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

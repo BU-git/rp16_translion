@@ -164,7 +164,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\employer\findEmployer.js" />
+    <Content Include="Scripts\employer\findEmployee.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -191,6 +191,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AdvisorChangeNameViewModel.cs" />
+    <Compile Include="ViewModels\CreateAdvisorViewModel.cs" />
     <Compile Include="ViewModels\EmployeeChangeNameViewModel.cs" />
     <Compile Include="ViewModels\EmployeeInfoViewModel.cs" />
     <Compile Include="ViewModels\EmployerSettingsViewModel.cs" />
@@ -230,6 +232,11 @@
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
     <Content Include="Views\Employer\EmployeeInfo.cshtml" />
+    <Content Include="Views\Admin\Settings.cshtml" />
+    <Content Include="Views\Admin\AddAdvisor.cshtml" />
+    <Content Include="Views\Admin\AdvisorsList.cshtml" />
+    <Content Include="Views\Admin\AdvisorInfo.cshtml" />
+    <Content Include="Views\Admin\ChangeAdvisorName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

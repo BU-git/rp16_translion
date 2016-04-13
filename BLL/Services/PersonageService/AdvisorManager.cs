@@ -72,36 +72,39 @@ namespace BLL.Services.PersonageService
             return await _unitOfWork.AdvisorRepository.FindByIdAsync(cancellationToken, user.UserId);
         }
 
-        public override void Create(Advisor entity, User user)
+        public override async void Create(Advisor entity, User user)
         {
             if (entity == null||user==null)
             {
                 throw new ArgumentException("Advisor or user are null. Wrong parameters");
             }
-            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+
+            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
             _unitOfWork.SaveChanges();
         }
 
-        public override Task<int> CreateAsync(Advisor entity, User user)
+        public override async Task<int> CreateAsync(Advisor entity, User user)
         {
             if (entity == null || user == null)
             {
                 throw new ArgumentException("Advisor or user are null. Wrong parameters");
             }
 
-            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+
+            return await _unitOfWork.SaveChangesAsync();
         }
 
-        public override Task<int> CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
+        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
         {
             if (entity == null || user == null)
             {
                 throw new ArgumentException("Advisor or user are null. Wrong parameters");
             }
 
-            _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-            return  _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
+
+            return await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public override void Update(Advisor entity)

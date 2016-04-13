@@ -29,42 +29,42 @@ namespace DAL.Repositories
             return Set.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
-        public async void AddEmployerAsync(Employer employer, object userId)
+        public async Task AddEmployerAsync(Employer employer, object userId)
         {
             var user = await Set.FindAsync(userId);
             user.Employer = employer;
             Update(user);
         }
 
-        public async void AddEmployerAsync(Employer employer, string userName)
+        public async Task AddEmployerAsync(Employer employer, string userName)
         {
             var user = await FindByUserNameAsync(userName);
             user.Employer = employer;
             Update(user);
         }
 
-        public async void AddAdminAsync(Admin admin, object userId)
+        public async Task AddAdminAsync(Admin admin, object userId)
         {
             var user = await Set.FindAsync(userId);
             user.Admin = admin;
             Update(user);
         }
 
-        public async void AddAdminAsync(Admin admin, string userName)
+        public async Task AddAdminAsync(Admin admin, string userName)
         {
             var user = await FindByUserNameAsync(userName);
             user.Admin = admin;
             Update(user);
         }
 
-        public async void AddAdvisorAsync(Advisor advisor, object userId)
+        public async Task AddAdvisorAsync(Advisor advisor, object userId)
         {
             var user = await Set.FindAsync(userId);
             user.Advisor = advisor;
             Update(user);
         }
 
-        public async void AddAdvisorAsync(Advisor advisor, string userName)
+        public async Task AddAdvisorAsync(Advisor advisor, string userName)
         {
             var user = await FindByUserNameAsync(userName);
             user.Advisor = advisor;
