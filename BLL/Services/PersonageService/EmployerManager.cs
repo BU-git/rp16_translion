@@ -148,16 +148,16 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public override Task<int> CreateAsync(Employer entity, User user)
+        public override async Task<int> CreateAsync(Employer entity, User user)
         {
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            return _unitOfWork.SaveChangesAsync();
+            return await _unitOfWork.SaveChangesAsync();
         }
 
-        public override Task<int> CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
+        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
         {
             _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
+            return await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         #endregion

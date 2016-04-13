@@ -1,18 +1,18 @@
 ﻿@{
-                string Name="";
-                if (User.IsInRole("Admin"))
-                {
-                    Name = "Admin";
+    string Name= "Account";
+    if (User.IsInRole("Admin"))
+    {
+        Name = "Admin";
 
-                }
-                if (User.IsInRole("Advisor"))
-                {
-                    Name = "Advisor";
-                }
-                if (User.IsInRole("Employer"))
-                {
-                    Name = "Employer";
-                }
+    }
+    if (User.IsInRole("Advisor"))
+    {
+        Name = "Advisor";
+    }
+    if (User.IsInRole("Employer"))
+    {
+        Name = "Employer";
+    }
             }
 @if (User.Identity.IsAuthenticated)
 {

@@ -73,7 +73,7 @@ namespace DAL.Repositories
 
         public User FindByUserName(string username)
         {
-            return Set.FirstOrDefault(x => x.UserName == username);
+            return  Set.FirstOrDefault(x => x.UserName == username);
         }
 
         public Task<User> FindByUserNameAsync(string username)
