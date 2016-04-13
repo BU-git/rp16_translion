@@ -1,4 +1,4 @@
-@model Web.ViewModels.RegisterEmployerViewModel
+@model Web.ViewModels.EmployerViewModel
 <section class="registrationForm">
     @using (Html.BeginForm("RegisterEmployer", "Account", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
     {
@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        if (!User.IsInRole("Admin"))
+        if (!(User.IsInRole("Admin")||User.IsInRole("Advisor")))
         {
             <br />
             <div class="form-group">

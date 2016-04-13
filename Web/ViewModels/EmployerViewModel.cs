@@ -4,7 +4,7 @@ using System.Web.Security;
 
 namespace Web.ViewModels
 {
-    public class RegisterEmployerViewModel
+    public class EmployerViewModel
     {
         [Required]
         [Display(Name = "Bedrijfsnaam")]
