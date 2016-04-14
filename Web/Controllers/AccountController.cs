@@ -160,12 +160,20 @@ namespace Web.Controllers
 
                     await _employerManager.CreateAsync(employer, user);
 
-                    if (!User.IsInRole("Admin"))
+                    if (User.IsInRole("Employer"))
                     {
                         await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
                         await SignInAsync(identityUser, true);
 
                         return View("AccountConfirmation");
+                    }
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    if (User.IsInRole("Advisor"))
+                    {
+                        return RedirectToAction("Index", "Advisor");
                     }
                 }
             }
