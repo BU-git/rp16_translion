@@ -420,7 +420,7 @@ namespace Web.Controllers
             {
                 return RedirectToAction("Index", "Employer");
             }
-            return View("Login");
+            return null;
         }
 
         #endregion
