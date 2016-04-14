@@ -331,7 +331,7 @@ namespace Web.Controllers
         [NonAction]
         private async Task<User> GetUserIfAdvisorAsync(Guid? id)
         {
-            if (id == null && id.Value == Guid.Empty)
+            if (id == null || id.Value == Guid.Empty)
                 return null;
 
             var user = await _adminManager.GetUserByIdAsync(id.Value);
@@ -342,7 +342,7 @@ namespace Web.Controllers
         [NonAction]
         private  Task<Employee> GetEmployeeAsync(Guid? id)
         {
-            if (id == null && id.Value == Guid.Empty)
+            if (id == null || id.Value == Guid.Empty)
                 return null;
 
             return _adminManager.GetEmployeeAsync(id.Value);
