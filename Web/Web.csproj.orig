@@ -234,12 +234,9 @@
     <Content Include="Views\Admin\EmployerProfile.cshtml" />
     <Content Include="Views\Advisor\Index.cshtml" />
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Admin\ChangeEmployeeName.cshtml" />
-=======
     <Content Include="Views\Advisor\EditEmployer.cshtml" />
     <Content Include="Views\Advisor\EmployerProfile.cshtml" />
->>>>>>> dev_mariya
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

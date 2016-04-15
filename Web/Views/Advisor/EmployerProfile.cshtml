@@ -59,15 +59,39 @@
         @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-default" })
     </div>
 </div>
-<div class="row" id="tlr-usr-section-main">
-    @foreach (Employee employee in ViewBag.Employees)
-    {
-        <div class="col-sm-6 col-md-3 col-lg-2 tlr-usr-info">
-            <p class="tlr-usr-info-label">@employee.FirstName @employee.LastName</p>
-            <a href="@Url.Action(null, "Advisor",  new { id = ViewBag.EmployerId })" class="tlr-usr-inner-info">
-                <img src="~/Content/Images/UserImg.png" alt="UserName">
-            </a>
+<section id="tlr-usr-section">
+    <!--Header-->
+    <div class="row" id="tlr-usr-section-hdr">
+        <div class="col-sm-3 col-md-2 col-lg-2">
+            <h3>Werknemers</h3>
         </div>
-    }
-</div>
+        <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
+            @Html.ActionLink("Werkenemer toevoegen", "AddEmployee", "Advisor", null, new {id = "addWorker"})
+        </div>
+        <div class="col-sm-4 col-md-3 col-lg-3">
+            <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
+            <input type="search" id="emplSearch" placeholder="search" autofocus/>
+        </div>
+    </div>
+    <!--Main panel with users-->
+    <div class="row" id="tlr-usr-section-main">
+        @foreach (Employee employee in ViewBag.Employees)
+        {
+            <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
+                <p class="tlr-user-inner-info-trash">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </p>
+                <a href="#" class="tlr-usr-inner-info">
+                    <img src="~/Content/Images/UserImg.png" alt="@employee.FirstName">
+                </a>
+                <a href="@Url.Action("ChangeEmployeeName", "Advisor", new {id = employee.EmployeeId})" class="tlr-usr-info-label-btn">
+                    <span data-userName>@employee.FirstName @employee.Prefix @employee.LastName</span>
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+
 

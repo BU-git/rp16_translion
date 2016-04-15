@@ -228,6 +228,18 @@ a.tlr-usr-inner-info > img:hover { box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
     text-decoration: none;
 }
 
+p.tlr-user-inner-info-trash {
+    background-color: inherit;
+    text-align: center;
+    color: black;
+    display: block;
+    margin-bottom: -19px;
+    padding-left: 107px;
+    z-index: 20;
+}
+p.tlr-user-inner-info-trash > span {
+    font-size: 14px;
+}
 
 /*LAYOUT PAGE USER'S INFO STYLE*/
 

@@ -20,7 +20,7 @@
         @foreach (var adv in Model)
         {
             <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
-                <p>@adv.Name</p>
+                <p data-userName>@adv.Name</p>
                 <a href="@Url.Action("AdvisorInfo", new {id = adv.AdvisorId})" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="@adv.Name">
                 </a>

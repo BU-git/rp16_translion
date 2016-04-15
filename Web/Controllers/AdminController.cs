@@ -20,6 +20,7 @@ namespace Web.Controllers
         #region common problems messages
         private const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
         private const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
+        private const string ADVISOR_ROLE = "Advisor";
         #endregion
 
         private readonly UserManager<IdentityUser, Guid> _userManager;
@@ -218,6 +219,7 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
                 return View(advisorInfo);
 
+
             if (await _adminManager.GetUserByNameAsync(advisorInfo.Username) != null)
             {
                 ModelState.AddModelError(nameof(advisorInfo.Username), USERNAME_IS_IN_USE_ERROR);
@@ -230,16 +232,19 @@ namespace Web.Controllers
 
             User user = null;
 
-            if (!creationRes.Succeeded 
-                || (user = await _adminManager.GetUserByNameAsync(advisorInfo.Username)) == null)
+            if (creationRes.Succeeded 
+                && (user = await _adminManager.GetUserByNameAsync(advisorInfo.Username)) != null)
             {
-                ModelState.AddModelError("", SERVER_ERROR);
-                return View(advisorInfo);
+                await _advisorManager.CreateAsync(new Advisor { Name = advisorInfo.Name }, user);
+
+                var roleResult = await _userManager.AddToRoleAsync(user.UserId, ADVISOR_ROLE);
+
+                if (roleResult.Succeeded)
+                    return RedirectToAction("Settings");
             }
         
-            await _advisorManager.CreateAsync(new Advisor { Name = advisorInfo.Name }, user);
-
-            return RedirectToAction("Settings");
+            ModelState.AddModelError("", SERVER_ERROR);
+            return View(advisorInfo);
         }
 
         [HttpGet]

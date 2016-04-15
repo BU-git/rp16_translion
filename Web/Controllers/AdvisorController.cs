@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
+using BLL.Services.MailingService.Interfaces;
+using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
 using IDAL.Interfaces;
 using IDAL.Models;
@@ -15,16 +18,19 @@ namespace Web.Controllers
     [Authorize(Roles = "Advisor")]
     public class AdvisorController : Controller
     {
+        private const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
+
         private readonly PersonManager<Employer> _employerManager;
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMailingService _mailingService;
 
-
-        public AdvisorController(IUnitOfWork uow, IUserStore<IdentityUser, Guid> store)
+        public AdvisorController(IUnitOfWork uow, IUserStore<IdentityUser, Guid> store, IMailingService mailingService)
         {
             _unitOfWork = uow;
             _employerManager = new EmployerManager(uow);
-            _userManager=new UserManager<IdentityUser, Guid>(store);
+            _userManager = new UserManager<IdentityUser, Guid>(store);
+            _mailingService = mailingService;
         }
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
         public ActionResult Index()
@@ -119,13 +125,80 @@ namespace Web.Controllers
             return View (model);
         }
 
+        #region Change employee's name 
+        [HttpGet]
+        public async Task<ActionResult> ChangeEmployeeName(Guid? id)
+        {
+            if (id != null && id.Value != Guid.Empty)
+            {
+                var employee = await _employerManager.GetEmployeeAsync(id.Value);
+
+                if (employee != null)
+                {
+                    return View(new EmployeeChangeNameViewModel
+                    {
+                        EmployerId = employee.EmployerId,
+                        FirstName = employee.FirstName,
+                        Id = employee.EmployeeId,
+                        LastName = employee.LastName,
+                        Prefix = employee.Prefix
+                    });
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeEmployeeName(EmployeeChangeNameViewModel employeeInfo)
+        {
+            if (!ModelState.IsValid)
+                return View(employeeInfo);
+
+            var employee = await _employerManager.GetEmployeeAsync(employeeInfo.Id);
+
+            if (employee != null)
+            {
+                employee.FirstName = employeeInfo.FirstName;
+                employee.LastName = employeeInfo.LastName;
+                employee.Prefix = employeeInfo.Prefix;
+
+                if (await _employerManager.UpdateEmployeeAsync(employee) > 0)
+                {
+                    var mailInfo =
+                        new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                    await 
+                        _mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employee.Employer?.User?.Email);
+
+                    return RedirectToAction("EmployerProfile", new { id = employee.EmployerId });
+                }
+            }
+
+            ModelState.AddModelError("", SERVER_ERROR);
+            return View(employeeInfo);
+        }
+        #endregion
+
         [HttpGet]
         public ActionResult DeleteEmployer(Guid id)
         {
             var user = _userManager.FindById(id);
             _userManager.Delete(user);
-
             return RedirectToAction("Index","Advisor");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _userManager.Dispose();
+                _mailingService.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

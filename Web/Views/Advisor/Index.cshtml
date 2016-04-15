@@ -32,7 +32,7 @@
         @foreach (var employer in ViewBag.Employers)
         {
             <div class="col-sm-6 col-md-3 col-lg-2 tlr-usr-info">
-                <p class="tlr-usr-info-label">@employer.FirstName @employer.LastName</p>
+                <p class="tlr-usr-info-label" data-userName>@employer.FirstName @employer.LastName</p>
                 <p class="tlr-usr-info-label">@employer.CompanyName</p>
                 <a href="@Url.Action("EmployerProfile", "Advisor", new { id = employer.EmployerId })" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="UserName">

@@ -83,7 +83,7 @@
                     <img src="~/Content/Images/UserImg.png" alt="@employee.FirstName">
                 </a>
                 <a href="@Url.Action("ChangeEmployeeName", "Admin", new { id = employee.EmployeeId })" class="tlr-usr-info-label-btn">
-                    <span>@employee.FirstName @employee.Prefix @employee.LastName</span>
+                    <span data-userName>@employee.FirstName @employee.Prefix @employee.LastName</span>
                     <span class="glyphicon glyphicon-pencil"></span>
                 </a>
             </div>

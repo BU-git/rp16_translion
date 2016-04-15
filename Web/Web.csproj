@@ -166,6 +166,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\search\fuser.js" />
+    <Content Include="Scripts\search\search.js" />
+    <Content Include="Scripts\tlrUserActions\deleteUser.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -237,6 +240,7 @@
     <Content Include="Views\Admin\ChangeEmployeeName.cshtml" />
     <Content Include="Views\Advisor\EditEmployer.cshtml" />
     <Content Include="Views\Advisor\EmployerProfile.cshtml" />
+    <Content Include="Views\Advisor\ChangeEmployeeName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
