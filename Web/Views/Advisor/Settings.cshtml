@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="advisorSettingsWrapper container col-centered">
+    <div class="col-md-2 advSettingsTitle">
+        Adviseur gegevens
+    </div>
+    <br/>
+    <div class="row advAfterName">
+        <div class="advSettingsName">
+            @ViewBag.Name
+        </div>
+    </div>
+    <div class="row">
+        <div class="">
+            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new {@class = "emplSettingsButton "})
+        </div>
+    </div>
+
+    <div class="row emplSettingsBottom advBackBtn">
+        <div class="col-md-1">
+            @Html.ActionLink("Terug", "Index", null, new {@class = "emplSettingsButton "})
+        </div>
+
+    </div>
+</div>

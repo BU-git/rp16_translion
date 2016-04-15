@@ -401,3 +401,30 @@ section.borderedSection {
     border: 1px solid black;
     background-color: yellow;
 }
+
+.advisorSettingsWrapper {
+    border: 1px solid black;
+    min-height: 500px;
+}
+
+.advSettingsTitle {
+    background-color: white;
+    margin-top: -10px;
+    max-width: 155px;
+    text-align: left;
+}
+
+.advSettingsName {
+    text-align: left;
+    margin-left: 30px;
+}
+
+.advAfterName {
+    margin-bottom: 150px;
+}
+
+.advBackBtn {
+    margin-left: 0;
+    padding-top: 200px;
+    text-align: left;
+}
