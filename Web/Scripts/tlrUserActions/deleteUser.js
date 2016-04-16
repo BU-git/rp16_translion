@@ -1,5 +1,5 @@
 ﻿(function() {
-    const USER_INFO_SELECTOR = 'p.tlr-user-inner-info-trash';
+    const USER_INFO_SELECTOR = '.tlr-user-inner-info-trash';
     const HREF_TO_UPDATE_SELECTOR = 'a#delEmpl';
     const DATA_ATTR_OF_URL = 'reftodel';
     $(document).ready(function () {

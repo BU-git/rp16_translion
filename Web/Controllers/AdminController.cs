@@ -154,6 +154,30 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> DeleteEmployee(Guid? id)
+        {
+            if (id != null && id.Value != Guid.Empty)
+            {
+                var employee = await _advisorManager.GetEmployeeAsync(id.Value);
+
+                var employer = await _employerManager.GetUserByIdAsync(employee.EmployerId);
+
+                if (employee != null && employer != null)
+                {
+                    _advisorManager.DeleteEmployee(employer, employee);
+
+                    // TODO: send mails to admins also
+                    var mailInfo =
+                       new DeleteEmployeeMailMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                    await _mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
         public ActionResult EmployerProfile(Guid id)
         {
             var user = _userManager.FindById(id);
