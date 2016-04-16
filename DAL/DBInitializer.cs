@@ -27,7 +27,8 @@ namespace DAL
                 UserId = Guid.NewGuid(),
                 UserName = "Admin",
                 Email = "admin@admin.com",
-                PasswordHash = "APBR9EYEz260JqC9otNdi9AQtMa81poBY9UK/Vx7l5qZEjnjJ+LXjeVh/aDH5A+xzQ==",
+                // Password: qwerty1234
+                PasswordHash = "AHjaRq2q/FfDHi0bYjtDfZqWQWmedFAQcrVpuBeh5mRTk0nlWhQlfE+aiW/4zp/67Q==",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
@@ -62,13 +63,14 @@ namespace DAL
                 UserId = Guid.NewGuid(),
                 UserName = "Advisor",
                 Email = "advisor@advisor.com",
-                PasswordHash = "APBR9EYEz260JqC9otNdi9AQtMa81poBY9UK/Vx7l5qZEjnjJ+LXjeVh/aDH5A+xzQ==",
+                // Password: qwerty1234
+                PasswordHash = "AHjaRq2q/FfDHi0bYjtDfZqWQWmedFAQcrVpuBeh5mRTk0nlWhQlfE+aiW/4zp/67Q==",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
             // Get Admin role
             Role advisorRole = roleRepo.FindByName("Advisor");
-            defaultAdvisor.Roles.Add(adminRole);
+            defaultAdvisor.Roles.Add(advisorRole);
 
             // Add claim
             Claim advisorClaim = new Claim()

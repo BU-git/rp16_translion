@@ -1,6 +1,11 @@
-@model Web.ViewModels.EmployerViewModel
+﻿@model Web.ViewModels.AdminRegisterEmployerViewModel
+
+@{
+    ViewBag.Title = "RegisterEmployer";
+}
+
 <section class="registrationForm">
-    @using (Html.BeginForm("RegisterEmployer", "Account", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+    @using (Html.BeginForm("RegisterEmployer", "Admin", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new {@class = "text-danger"})
@@ -68,30 +73,12 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(m => m.UserName, new {@class = "col-md-5 control-label"})
+            @Html.LabelFor(m => m.LoginName, new {@class = "col-md-5 control-label"})
             <div class="col-md-6">
-                @Html.TextBoxFor(m => m.UserName, new {Value = "", @class = "form-control"})
-                @Html.ValidationMessageFor(m => m.UserName, "", new {@class = "text-danger"})
+                @Html.TextBoxFor(m => m.LoginName, new {Value = "", @class = "form-control"})
+                @Html.ValidationMessageFor(m => m.LoginName, "", new {@class = "text-danger"})
             </div>
         </div>
-
-        <br/>
-        <div class="form-group">
-            @Html.LabelFor(m => m.Password, new {@class = "col-md-5 control-label"})
-            <div class="col-md-6">
-                @Html.PasswordFor(m => m.Password, new {@class = "form-control"})
-                @Html.ValidationMessageFor(m => m.Password, "", new {@class = "text-danger"})
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(m => m.ConfirmPassword, new {@class = "col-md-5 control-label"})
-            <div class="col-md-6">
-                @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control"})
-                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new {@class = "text-danger"})
-            </div>
-        </div>
-
-
         <br/>
         <div class="row">
             <div class="col-md-5">

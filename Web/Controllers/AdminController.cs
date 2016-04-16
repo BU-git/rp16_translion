@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
@@ -152,7 +154,46 @@ namespace Web.Controllers
         {
             return View();
         }
-        
+
+        [HttpGet]
+        public ActionResult RegisterEmployer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterEmployer(AdminRegisterEmployerViewModel model)
+        {
+            var password = Membership.GeneratePassword(12, 4);
+
+            if (ModelState.IsValid)
+            {
+                var employer = MapRegisterViewModelToEmployer(model);
+                var identityUser = new IdentityUser
+                {
+                    UserName = model.LoginName,
+                    Email = model.EmailAdress,
+                };
+
+                var result = await _userManager.CreateAsync(identityUser, password);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
+                    var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
+
+                    await _employerManager.CreateAsync(employer, user);
+
+                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.LoginName));
+                    return RedirectToAction("Index", "Admin");
+
+                }
+            }
+            return View(model);
+        }
+
         #region Change employee's name
         [HttpGet]
         public async Task<ActionResult> ChangeEmployeeName(Guid? id)
@@ -332,6 +373,10 @@ namespace Web.Controllers
         #endregion
 
         #region Helpers
+        private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
+        {
+            await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
+        }
 
         [NonAction]
         private async Task<User> GetUserIfAdvisorAsync(Guid? id)
@@ -343,6 +388,25 @@ namespace Web.Controllers
 
             return user?.Advisor != null ? user : null;
         }
+
+        private Employer MapRegisterViewModelToEmployer(AdminRegisterEmployerViewModel model)
+        {
+           
+            var employer = new Employer
+            {
+                Adress = model.Adress,
+                City = model.City,
+                CompanyName = model.CompanyName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Prefix = model.Prefix,
+                PostalCode = model.PostalCode,
+                TelephoneNumber = model.TelephoneNumber
+            };
+
+            return employer;
+        }
+
 
         [NonAction]
         private  Task<Employee> GetEmployeeAsync(Guid? id)

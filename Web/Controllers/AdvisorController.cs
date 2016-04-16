@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
@@ -24,6 +25,7 @@ namespace Web.Controllers
 
         private readonly PersonManager<Employer> _employerManager;
         private readonly UserManager<IdentityUser, Guid> _userManager;
+        private readonly PersonManager<Advisor> _advisorManager; 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMailingService _mailingService;
 
@@ -32,6 +34,7 @@ namespace Web.Controllers
             _unitOfWork = uow;
             _employerManager = new EmployerManager(uow);
             _userManager = new UserManager<IdentityUser, Guid>(store);
+            _advisorManager = new AdvisorManager(uow);
 
             _userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<IdentityUser, Guid>(
@@ -146,11 +149,50 @@ namespace Web.Controllers
         public ActionResult Settings()
         {
             //bad solution, go to employer repo, not advisor!!!
-            var emp = _employerManager.Get(
+            var adv = _advisorManager.Get(
                 new User() { UserId = Guid.Parse(User.Identity.GetUserId()) }
                 );
-            ViewBag.Name = $"{emp.FirstName} {emp.LastName}";
+            ViewBag.Name = adv.Name;
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult RegisterEmployer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterEmployer(AdminRegisterEmployerViewModel model)
+        {
+            var password = Membership.GeneratePassword(12, 4);
+
+            if (ModelState.IsValid)
+            {
+                var employer = MapRegisterViewModelToEmployer(model);
+                var identityUser = new IdentityUser
+                {
+                    UserName = model.LoginName,
+                    Email = model.EmailAdress,
+                };
+
+                var result = await _userManager.CreateAsync(identityUser, password);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
+                    var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
+
+                    await _employerManager.CreateAsync(employer, user);
+
+                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.LoginName));
+                    return RedirectToAction("Index", "Admin");
+
+                }
+            }
+            return View(model);
         }
 
         [HttpGet]
@@ -254,6 +296,28 @@ namespace Web.Controllers
         }
         #endregion
 
+        private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
+        {
+            await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
+        }
+
+        private Employer MapRegisterViewModelToEmployer(AdminRegisterEmployerViewModel model)
+        {
+
+            var employer = new Employer
+            {
+                Adress = model.Adress,
+                City = model.City,
+                CompanyName = model.CompanyName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Prefix = model.Prefix,
+                PostalCode = model.PostalCode,
+                TelephoneNumber = model.TelephoneNumber
+            };
+
+            return employer;
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
