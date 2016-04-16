@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -125,11 +126,6 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
         {
-            if (model.Password.Equals("default"))
-            {
-                model.Password = Membership.GeneratePassword(12, 4);
-                model.ConfirmPassword = model.Password;
-            }
 
             if (ModelState.IsValid)
             {
@@ -159,22 +155,10 @@ namespace Web.Controllers
                     var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
 
                     await _employerManager.CreateAsync(employer, user);
-
-                    if (User.IsInRole("Employer"))
-                    {
-                        await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
-                        await SignInAsync(identityUser, true);
-
-                        return View("AccountConfirmation");
-                    }
-                    if (User.IsInRole("Admin"))
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    if (User.IsInRole("Advisor"))
-                    {
-                        return RedirectToAction("Index", "Advisor");
-                    }
+                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+                    await SignInAsync(identityUser, true);
+                    return View("AccountConfirmation");
+                    
                 }
             }
             return View(model);
