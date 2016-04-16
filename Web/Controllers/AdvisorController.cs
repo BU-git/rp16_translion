@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
@@ -26,6 +27,7 @@ namespace Web.Controllers
         private readonly PersonManager<Employer> _employerManager;
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly PersonManager<Advisor> _advisorManager;
+        private readonly PersonManager<Admin> _adminManager; 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMailingService _mailingService;
 
@@ -35,6 +37,7 @@ namespace Web.Controllers
             _employerManager = new EmployerManager(uow);
             _userManager = new UserManager<IdentityUser, Guid>(store);
             _advisorManager = new AdvisorManager(uow);
+            _adminManager = new AdminManager(uow);
 
             _userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<IdentityUser, Guid>(
@@ -296,6 +299,35 @@ namespace Web.Controllers
         }
         #endregion
 
+        #region Delete employee
+        [HttpGet]
+        public async Task<ActionResult> DeleteEmployee(Guid? id)
+        {
+            if (id != null && id.Value != Guid.Empty)
+            {
+                var employee = await _advisorManager.GetEmployeeAsync(id.Value);
+
+                User employer = null;
+
+                if (employee != null
+                    && (employer = await _employerManager.GetUserByIdAsync(employee.EmployerId)) != null)
+                {
+                    _advisorManager.DeleteEmployee(employer, employee);
+
+                    var mailInfo = 
+                        new DeleteEmployeeMailMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                    await _mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject,
+                        ExtendRecieversMails(await GetAllAdminsEmailsAsync(), employer.Email));
+                }
+            }
+
+
+            return RedirectToAction("Index");
+        }
+        #endregion
+
+
         private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
         {
             await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
@@ -318,6 +350,40 @@ namespace Web.Controllers
 
             return employer;
         }
+
+        #region Helpers
+        [NonAction]
+        private async Task<string[]> GetAllAdminsEmailsAsync()
+        {
+            var admins = await _adminManager.GetAllAsync();
+
+            if (admins.Count == 0)
+                return null;
+
+            return admins
+                .Select(adm => adm.User.Email)
+                .ToArray();
+        }
+
+        
+
+        [NonAction]
+        private string[] ExtendRecieversMails(string[] emails, string extend)
+        {
+            if (extend == null)
+                return emails;
+            if (emails == null || emails.Length == 0)
+                return new[] { extend };
+
+            var extended = new string[emails.Length + 1];
+
+            Array.Copy(emails, 0, extended, 0, emails.Length);
+
+            extended[extended.Length - 1] = extend;
+
+            return extended;
+        }
+        #endregion
         protected override void Dispose(bool disposing)
         {
             if (disposing)
