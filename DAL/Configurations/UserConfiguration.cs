@@ -46,7 +46,8 @@ namespace DAL.Configurations
                 .WithRequired(z => z.User);
 
             HasOptional(x => x.Employer)
-                .WithRequired(z => z.User);
+                .WithRequired(z => z.User)
+                .WillCascadeOnDelete(true);
 
             HasMany(x => x.Roles)
                 .WithMany(x => x.Users)

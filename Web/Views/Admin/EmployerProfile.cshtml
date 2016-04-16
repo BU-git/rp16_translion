@@ -53,10 +53,10 @@
 
 <div class="row">
     <div class="col-md-6">
-        @Html.ActionLink("Gegevens beweken", "EditEmployer", new {id = ViewBag.EmployerId}, new {@class = "btn btn-primary pull-right"})
+        @Html.ActionLink("Gegevens beweken", "EditEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-primary pull-right" })
     </div>
     <div class="col-md-6">
-        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", new {id = ViewBag.EmployerId}, new {@class = "btn btn-default"})
+        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-default" })
     </div>
 </div>
 
@@ -67,7 +67,7 @@
             <h3>Werknemers</h3>
         </div>
         <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
-            @Html.ActionLink("Werkenemer toevoegen", "AddEmployee", "Admin", null, new { id = "addWorker" })
+            @Html.ActionLink("Werkenemer toevoegen", "AddEmployee", "Admin", new { id = ViewBag.EmployerId }, new { @class = "btn btn-default" })
         </div>
         <div class="col-sm-4 col-md-3 col-lg-3">
             <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>

@@ -28,10 +28,12 @@ namespace Web.Controllers
         private readonly PersonManager<Admin> _adminManager;
         private readonly PersonManager<Advisor> _advisorManager;
         private readonly PersonManager<Employer> _employerManager;
+
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
         private readonly IMailingService _mailingService;
+
         public AdminController(IUserStore<IdentityUser, Guid> store, PersonManager<Admin> adminManager,
-            PersonManager<Advisor> advisorManager, IUnitOfWork unitOfWork, IMailingService mailService)
+            PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, IUnitOfWork unitOfWork, IMailingService mailService)
         {
             _unitOfWork = unitOfWork;
 
@@ -40,7 +42,7 @@ namespace Web.Controllers
             _adminManager = adminManager;
             _advisorManager = advisorManager;
 
-            _employerManager = new EmployerManager(_unitOfWork);
+            _employerManager = employerManager;
 
             _mailingService = mailService;
         }
@@ -50,6 +52,40 @@ namespace Web.Controllers
         {
             ViewBag.Employers = _employerManager.GetAll();
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult AddEmployee(Guid id)
+        {
+            ViewBag.EmployerId = id;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel model, Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var employer = await _adminManager.GetUserByIdAsync(id);
+
+            var employee = new Employee()
+            {
+                EmployeeId = Guid.NewGuid(),
+                LastName = model.LastName,
+                FirstName = model.FirstName,
+                Prefix = model.Prefix
+            };
+
+            int result = await _adminManager.CreateEmployeeAsync(employee, employer);
+
+            //TODO: A mail is sent to the employer with the following text: 
+            // “De gewenste werknemer, met de naam <name of added employee> is toegevoegd aan uw account”
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -127,7 +163,7 @@ namespace Web.Controllers
                 ViewBag.Employees = employer.Employees;
                 return View("EmployerProfile", model);
             }
-            
+
             return View(model);
         }
 
@@ -152,7 +188,7 @@ namespace Web.Controllers
         {
             return View();
         }
-        
+
         #region Change employee's name
         [HttpGet]
         public async Task<ActionResult> ChangeEmployeeName(Guid? id)
@@ -189,7 +225,7 @@ namespace Web.Controllers
 
                 if (await _adminManager.UpdateEmployeeAsync(employee) > 0)
                 {
-                    var messageInfo = 
+                    var messageInfo =
                         new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
                     await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
@@ -226,13 +262,13 @@ namespace Web.Controllers
                 return View(advisorInfo);
             }
 
-            var creationRes = await 
-                _userManager.CreateAsync( new IdentityUser {Id = Guid.NewGuid(), UserName = advisorInfo.Username},
+            var creationRes = await
+                _userManager.CreateAsync(new IdentityUser { Id = Guid.NewGuid(), UserName = advisorInfo.Username },
                         advisorInfo.Password);
 
             User user = null;
 
-            if (creationRes.Succeeded 
+            if (creationRes.Succeeded
                 && (user = await _adminManager.GetUserByNameAsync(advisorInfo.Username)) != null)
             {
                 await _advisorManager.CreateAsync(new Advisor { Name = advisorInfo.Name }, user);
@@ -242,7 +278,7 @@ namespace Web.Controllers
                 if (roleResult.Succeeded)
                     return RedirectToAction("Settings");
             }
-        
+
             ModelState.AddModelError("", SERVER_ERROR);
             return View(advisorInfo);
         }
@@ -345,7 +381,16 @@ namespace Web.Controllers
         }
 
         [NonAction]
-        private  Task<Employee> GetEmployeeAsync(Guid? id)
+        private async Task<Employer> GetEmployerAsync(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return null;
+
+            return await _unitOfWork.EmployerRepository.FindByIdAsync(id);
+        }
+
+        [NonAction]
+        private Task<Employee> GetEmployeeAsync(Guid? id)
         {
             if (id == null || id.Value == Guid.Empty)
                 return null;
