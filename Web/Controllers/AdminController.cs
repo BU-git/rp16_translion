@@ -170,12 +170,12 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteEmployer(Guid id)
+        public async Task<ActionResult> DeleteEmployer(Guid id)
         {
-            var user = _userManager.FindById(id);
-            _userManager.Delete(user);
+            var employer = await GetEmployerAsUser(id);
+            await _adminManager.DeleteAsync(employer);
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         public ActionResult Logout()
@@ -183,8 +183,7 @@ namespace Web.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Index");
         }
-
-
+        
         [HttpGet]
         public ViewResult Settings()
         {
@@ -451,6 +450,17 @@ namespace Web.Controllers
                 return null;
 
             return await _unitOfWork.EmployerRepository.FindByIdAsync(id);
+        }
+
+        [NonAction]
+        private async Task<User> GetEmployerAsUser(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return null;
+
+            var user = await _adminManager.GetUserByIdAsync(id.Value);
+
+            return user?.Employer != null ? user : null;
         }
 
         [NonAction]
