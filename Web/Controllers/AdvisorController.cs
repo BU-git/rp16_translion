@@ -137,12 +137,12 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteEmployer(Guid id)
+        public async Task<ActionResult> DeleteEmployer(Guid id)
         {
-            var user = _userManager.FindById(id);
-            _userManager.Delete(user);
+            var employer = await GetEmployerAsUser(id);
+            await _advisorManager.DeleteAsync(employer);
 
-            return RedirectToAction("Index", "Advisor");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -318,6 +318,18 @@ namespace Web.Controllers
 
             return employer;
         }
+
+        [NonAction]
+        private async Task<User> GetEmployerAsUser(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return null;
+
+            var user = await _advisorManager.GetUserByIdAsync(id.Value);
+
+            return user?.Employer != null ? user : null;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
