@@ -193,7 +193,7 @@
     <Compile Include="ViewModels\EmployeeChangeNameViewModel.cs" />
     <Compile Include="ViewModels\EmployeeInfoViewModel.cs" />
     <Compile Include="ViewModels\EmployerSettingsViewModel.cs" />
-    <Compile Include="ViewModels\EmplPassChangeViewModel.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\AddEmployeeViewModel.cs" />
     <Compile Include="ViewModels\CreateAdminViewModel.cs" />
     <Compile Include="ViewModels\ForgotPasswordViewModel.cs" />
@@ -246,6 +246,8 @@
     <Content Include="Views\Advisor\PasswordChange.cshtml" />
     <Content Include="Views\Admin\RegisterEmployer.cshtml" />
     <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
+    <Content Include="Views\Admin\AddEmployee.cshtml" />
+    <Content Include="Views\Admin\ChangePassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

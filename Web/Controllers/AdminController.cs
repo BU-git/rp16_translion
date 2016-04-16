@@ -11,7 +11,9 @@ using BLL.Services.PersonageService;
 using IDAL.Interfaces;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 using Web.ViewModels;
 
 namespace Web.Controllers
@@ -41,6 +43,9 @@ namespace Web.Controllers
 
             _userManager = new UserManager<IdentityUser, Guid>(store);
 
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
+                new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
+
             _adminManager = adminManager;
             _advisorManager = advisorManager;
 
@@ -53,6 +58,62 @@ namespace Web.Controllers
         public ActionResult Index()
         {
             ViewBag.Employers = _employerManager.GetAll();
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ChangePassword()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                if (!String.IsNullOrWhiteSpace(token))
+                {
+                    var model = new ChangePasswordViewModel
+                    {
+                        Id = user.Id,
+                        Token = token
+                    };
+
+                    return View(model);
+                }
+            }
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.Id);
+                bool isOldPasswordValid = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+
+                if (user != null && isOldPasswordValid)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                else if (!isOldPasswordValid)
+                {
+                    ModelState.AddModelError(nameof(model.OldPassword), "Old password is invalid");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Server probleem(Probeer a.u.b.later)");
+            }
+
             return View();
         }
 
@@ -82,10 +143,12 @@ namespace Web.Controllers
                 Prefix = model.Prefix
             };
 
-            int result = await _adminManager.CreateEmployeeAsync(employee, employer);
+            await _adminManager.CreateEmployeeAsync(employee, employer);
 
-            //TODO: A mail is sent to the employer with the following text: 
-            // “De gewenste werknemer, met de naam <name of added employee> is toegevoegd aan uw account”
+            var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+            await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
+                    employer.Email);
 
             return RedirectToAction("Index");
         }
@@ -170,12 +233,12 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteEmployer(Guid id)
+        public async Task<ActionResult> DeleteEmployer(Guid? id)
         {
-            var user = _userManager.FindById(id);
-            _userManager.Delete(user);
+            var employer = await GetEmployerAsUser(id);
+            await _adminManager.DeleteAsync(employer);
 
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         public ActionResult Logout()
@@ -183,8 +246,7 @@ namespace Web.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Index");
         }
-
-
+        
         [HttpGet]
         public ViewResult Settings()
         {
@@ -451,6 +513,17 @@ namespace Web.Controllers
                 return null;
 
             return await _unitOfWork.EmployerRepository.FindByIdAsync(id);
+        }
+
+        [NonAction]
+        private async Task<User> GetEmployerAsUser(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return null;
+
+            var user = await _adminManager.GetUserByIdAsync(id.Value);
+
+            return user?.Employer != null ? user : null;
         }
 
         [NonAction]
