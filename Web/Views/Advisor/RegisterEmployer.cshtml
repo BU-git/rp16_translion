@@ -1,0 +1,92 @@
+﻿@model Web.ViewModels.AdminRegisterEmployerViewModel
+
+@{
+    ViewBag.Title = "RegisterEmployer";
+}
+
+<section class="registrationForm">
+    @using (Html.BeginForm("RegisterEmployer", "Advisor", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        <div class="form-group">
+            @Html.LabelFor(m => m.CompanyName, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.CompanyName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.CompanyName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.FirstName, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.FirstName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Prefix, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Prefix, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Prefix, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.LastName, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.LastName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.TelephoneNumber, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.TelephoneNumber, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.TelephoneNumber, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.EmailAdress, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.EmailAdress, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.EmailAdress, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PostalCode, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.PostalCode, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PostalCode, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Adress, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.Adress, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Adress, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.City, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.City, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.City, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.LoginName, new {@class = "col-md-5 control-label"})
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.LoginName, new {Value = "", @class = "form-control"})
+                @Html.ValidationMessageFor(m => m.LoginName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-5">
+                @Html.ActionLink("Annuleren", "Index", "Home", null, new {@class = "btn btn-danger pull-right"})
+            </div>
+            <div class="col-md-7">
+                <input type="submit" value="Account aanmaaken" class="btn btn-success"/>
+            </div>
+        </div>
+    }
+</section>
