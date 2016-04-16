@@ -82,10 +82,12 @@ namespace Web.Controllers
                 Prefix = model.Prefix
             };
 
-            int result = await _adminManager.CreateEmployeeAsync(employee, employer);
+            await _adminManager.CreateEmployeeAsync(employee, employer);
 
-            //TODO: A mail is sent to the employer with the following text: 
-            // “De gewenste werknemer, met de naam <name of added employee> is toegevoegd aan uw account”
+            var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+            await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
+                    employer.Email);
 
             return RedirectToAction("Index");
         }
@@ -170,7 +172,7 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> DeleteEmployer(Guid id)
+        public async Task<ActionResult> DeleteEmployer(Guid? id)
         {
             var employer = await GetEmployerAsUser(id);
             await _adminManager.DeleteAsync(employer);
