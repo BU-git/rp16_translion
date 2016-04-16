@@ -205,7 +205,7 @@ namespace Web.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (!string.IsNullOrWhiteSpace(token))
-                    return View(new EmplPassChangeViewModel { Id = user.Id, Token = token });
+                    return View(new ChangePasswordViewModel { Id = user.Id, Token = token });
             }
 
             return View("Index");
@@ -214,24 +214,24 @@ namespace Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> PasswordChange(EmplPassChangeViewModel chPassVM)
+        public async Task<ActionResult> PasswordChange(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var oldPassValid = false;
 
-                var user = await _userManager.FindByIdAsync(chPassVM.Id);
+                var user = await _userManager.FindByIdAsync(model.Id);
 
-                if (user != null && (oldPassValid = await _userManager.CheckPasswordAsync(user, chPassVM.OldPassword)))
+                if (user != null && (oldPassValid = await _userManager.CheckPasswordAsync(user, model.OldPassword)))
                 {
                     var opResult =
-                        await _userManager.ChangePasswordAsync(user.Id, chPassVM.OldPassword, chPassVM.Password);
+                        await _userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.Password);
 
                     if (opResult.Succeeded)
                         return RedirectToAction("Index");
                 }
                 else if (!oldPassValid)
-                    ModelState.AddModelError(nameof(chPassVM.OldPassword), "Old password is invalid");
+                    ModelState.AddModelError(nameof(model.OldPassword), "Old password is invalid");
             }
             else
                 ModelState.AddModelError("", "Server probleem(Probeer a.u.b.later)");

@@ -266,7 +266,7 @@ namespace Web.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (!string.IsNullOrWhiteSpace(token))
-                    return View(new EmplPassChangeViewModel {Id = user.Id, Token = token});
+                    return View(new ChangePasswordViewModel {Id = user.Id, Token = token});
             }
 
             return View("Index");
@@ -275,7 +275,7 @@ namespace Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> PasswordChange(EmplPassChangeViewModel chPassVM)
+        public async Task<ActionResult> PasswordChange(ChangePasswordViewModel chPassVM)
         {
             if (ModelState.IsValid)
             {
