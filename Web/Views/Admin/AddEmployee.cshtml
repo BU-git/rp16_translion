@@ -39,7 +39,7 @@
 
             <div class="row">
                 <div class="col-md-5">
-                    @Html.ActionLink("Annuleren", "Index", "Home", null, new { @class = "btn btn-default pull-right" })
+                    @Html.ActionLink("Annuleren", "EmployerProfile", "Admin", new {id = ViewBag.EmployerId}, new { @class = "btn btn-default pull-right" })
                 </div>
                 <div class="col-md-7">
                     <input type="submit" value="Profiel aanmaken" class="btn btn-primary pull-left" />
