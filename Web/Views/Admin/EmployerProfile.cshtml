@@ -56,7 +56,9 @@
         @Html.ActionLink("Gegevens beweken", "EditEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-primary pull-right" })
     </div>
     <div class="col-md-6">
-        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", new { id = ViewBag.EmployerId }, new { @class = "btn btn-default" })
+        <a href="#" class="tlr-user-inner-info-trash btn btn-default" data-toggle="modal" data-target="#delEmployer" data-reftodel="@Url.Action("DeleteEmployer", "Admin", new { id = ViewBag.EmployerId })">
+            <span>Profiel verwijderen</span>
+        </a>
     </div>
 </div>
 
@@ -100,9 +102,31 @@
     </div>
 </section>
 
-<!-- Modal window -->
+<!-- delete employee modal window -->
 
 <div id="delEmployee" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title text-center">Verwijder werkпgever</h4>
+            </div>
+            <div class="modal-body">
+                <p>Weet u zeker dat u deze werkgever wilt verwijderen.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" id="delEmpl">Ja</a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete employer modal window -->
+
+<div id="delEmployer" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->

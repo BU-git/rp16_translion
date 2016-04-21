@@ -52,6 +52,7 @@ namespace Web.Controllers
             _employerManager = employerManager;
 
             _mailingService = mailService;
+            _mailingService.IgnoreQueue();
         }
 
         // GET: Admin
@@ -146,9 +147,7 @@ namespace Web.Controllers
             await _adminManager.CreateEmployeeAsync(employee, employer);
 
             var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
-
-            await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
-                    employer.Email);
+            await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
 
             return RedirectToAction("Index");
         }
@@ -228,7 +227,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditEmployer(EmployerViewModel model, Guid id)
+        public async Task<ActionResult> EditEmployer(EmployerViewModel model, Guid id)
         {
             if (ModelState.IsValid)
             {
@@ -249,6 +248,18 @@ namespace Web.Controllers
                 _userManager.Update(user);
                 _employerManager.Update(employer);
 
+                var messageInfo = new AdminEditEmployerMessageBuilder(
+                    user.UserName, 
+                    employer.CompanyName, 
+                    employer.FirstName, 
+                    employer.Prefix, 
+                    employer.LastName, 
+                    employer.TelephoneNumber,
+                    employer.PostalCode,
+                    employer.Adress,
+                    employer.City);
+                await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, user.Email);
+
                 ViewBag.Employees = employer.Employees;
                 return View("EmployerProfile", model);
             }
@@ -261,6 +272,9 @@ namespace Web.Controllers
         {
             var employer = await GetEmployerAsUser(id);
             await _adminManager.DeleteAsync(employer);
+
+            var messageInfo = new AdminDeleteEmployerMessageBuilder();
+            await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
 
             return RedirectToAction("Index");
         }
@@ -308,9 +322,10 @@ namespace Web.Controllers
 
                     await _employerManager.CreateAsync(employer, user);
 
-                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.LoginName));
-                    return RedirectToAction("Index", "Admin");
+                    var messageInfo = new AdminRegEmployerMessageBuilder(model.LoginName, password);
+                    var mailingResult = await _mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, model.EmailAdress);
 
+                    return RedirectToAction("Index", "Admin");
                 }
             }
             return View(model);
