@@ -78,16 +78,21 @@
         @foreach (Employee employee in @Model.Employees)
         {
             <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
-                <p class="tlr-user-inner-info-trash" data-toggle="modal" data-target="#delEmployee" 
-                   data-reftodel="@Url.Action("DeleteEmployee", null, new { id = employee.EmployeeId })">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="@Url.Action("ChangeEmployeeName", "Admin", new {id = employee.EmployeeId})" class="tlr-usr-info-label-btn">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" class="tlr-usr-info-label-btn tlr-user-inner-info-trash" data-toggle="modal" data-target="#delEmployee" data-reftodel="@Url.Action("DeleteEmployee", "Admin", new { id = employee.EmployeeId })">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </div>
+                </div>
                 <a href="#" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="@employee.FirstName">
-                </a>
-                <a href="@Url.Action("ChangeEmployeeName", null, new {id = employee.EmployeeId})" class="tlr-usr-info-label-btn">
                     <span data-userName>@employee.FirstName @employee.Prefix @employee.LastName</span>
-                    <span class="glyphicon glyphicon-pencil"></span>
                 </a>
             </div>
         }
