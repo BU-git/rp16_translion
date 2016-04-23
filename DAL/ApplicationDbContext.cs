@@ -23,7 +23,10 @@ namespace DAL
         internal IDbSet<Employer> Employers { get; set; }
         internal IDbSet<Admin> Admins { get; set; }
         internal IDbSet<Advisor> Advisors { get; set; }
-
+        internal IDbSet<Page> Pages { get; set; }
+        internal IDbSet<Question> Questions { get; set; }
+        internal IDbSet<Answer> Answers { get; set; }
+           
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new ClaimConfiguration());
@@ -33,6 +36,9 @@ namespace DAL
             modelBuilder.Configurations.Add(new EmployerConfiguration());
             modelBuilder.Configurations.Add(new AdminConfiguration());
             modelBuilder.Configurations.Add(new AdvisorConfiguration());
+            modelBuilder.Configurations.Add(new PageConfiguration());
+            modelBuilder.Configurations.Add(new QuestionConfiguration());
+            modelBuilder.Configurations.Add(new AnswerConfiguration());
         }
     }
 }

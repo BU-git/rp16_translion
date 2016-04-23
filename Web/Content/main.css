@@ -1,0 +1,125 @@
+body
+{
+	padding: 100px;
+}
+
+.wrapper
+{
+	margin: 0 auto;
+	height: 600px;
+	min-width: 700px;
+	max-width: 1000px;
+	border: 1px solid black;
+}
+
+.leftPagePanel
+{
+	text-align: center;
+	border-right: 1px solid black;
+	width: 100px;
+	height: 600px;
+	padding-top: 10px;
+	float: left;
+}
+
+.mainGrid
+{
+	display: block;
+	min-width: 600px;
+	max-width: 900px;
+	height: 600px;
+	padding: 10px;
+}
+
+.pageContainer
+{
+	height: 530px;
+	margin-top: 10px;
+	overflow:auto;
+	overflow-x:hidden;
+	padding-right: 5px;
+}
+
+
+.btn-nav
+{
+	margin-bottom: 5px;
+	background-color: #3E4349;
+	color: white;
+}
+
+.btn-nav:hover{
+	background-color: #F57B00;
+}
+
+.containerQuestions
+{
+	margin: 35px 90px;
+ 	padding-right: 10px;  
+	max-height: 520px;
+	overflow: auto;
+	overflow-x: hidden; 
+}
+
+.wrapperQuestion
+{
+	margin: 10px 0px;
+	display: block;
+}
+
+.nameOfQuestion
+{
+	display: inline-block;
+	margin-bottom: 5px;
+	margin-left: 12px;
+}
+
+.editQuestion:hover, .deleteQuestion:hover
+{
+	cursor: pointer;
+}
+
+.editQuestion
+{
+	height: 15px;
+}
+
+.containerAnswers
+{
+	margin-left: 45px;
+}
+
+.textareaAnswer
+{
+	resize: none;
+}
+
+.previewHeader
+{
+	margin-top: 5px;
+}
+
+.sortablePages
+{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.selectedPage
+{
+	background-color: #F57B00;
+}
+
+.buttonDeletePage
+{
+	margin-left: 10px;
+}
+
+#namePageGrid
+{
+	margin-top: 50px;
+	text-align:center;
+	font-size: 20px;
+}
+

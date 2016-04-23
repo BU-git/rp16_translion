@@ -44,6 +44,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -106,6 +107,8 @@
     <Compile Include="Services\PersonageService\AdvisorManager.cs" />
     <Compile Include="Services\PersonageService\PersonManager.cs" />
     <Compile Include="Services\PersonageService\EmployerManager.cs" />
+    <Compile Include="Services\TestService\Interfaces\ITestService.cs" />
+    <Compile Include="Services\TestService\TestManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IDAL\IDAL.csproj">

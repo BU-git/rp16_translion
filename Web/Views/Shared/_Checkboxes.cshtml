@@ -1,0 +1,26 @@
+﻿@model IDAL.Models.Question
+<div class="question">
+    <!--Question-->
+    <h3>@Model.QuestionName</h3>
+    <!--Answers-->
+    <!--If there are only two answers - inline form-->
+    @if (Model.Answers.Count == 2) {
+        foreach (var answer in Model.Answers)
+        {
+            <label class="checkbox-inline">
+                <input type="checkbox" name="@String.Format("page{0}qa{1}", Model.PageId, Model.Id)"/>
+                @answer.Name
+            </label>
+        }
+    }
+    else
+    {
+        foreach (var answer in Model.Answers)
+        {
+            <div class="checkbox">
+                <label><input type="checkbox" value="">@answer.Name</label>
+            </div>
+        }
+    }
+</div>
+

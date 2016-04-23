@@ -143,11 +143,14 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\5.1 Report.png" />
     <Content Include="Content\Images\AdminCreateEmployer.png" />
     <Content Include="Content\Images\AdminMessages.png" />
     <Content Include="Content\Images\logoTransLion.png" />
+    <Content Include="Content\Images\pen.png" />
     <Content Include="Content\Images\UserHeader.png" />
     <Content Include="Content\Images\UserImg.png" />
+    <Content Include="Content\main.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\styles.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -166,6 +169,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\report\core.js" />
     <Content Include="Scripts\search\fuser.js" />
     <Content Include="Scripts\search\search.js" />
     <Content Include="Scripts\tlrUserActions\deleteUser.js" />
@@ -184,9 +188,11 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EmployerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\HtmlHelpers\CreateQuestionHelpers.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AdminRegisterEmployerViewModel.cs" />
     <Compile Include="ViewModels\AdvisorChangeNameViewModel.cs" />
@@ -243,6 +249,11 @@
     <Content Include="Views\Shared\PasswordChange.cshtml" />
     <Content Include="Views\Employer\AddEmployee.cshtml" />
     <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
+    <Content Include="Views\Report\CreateReport.cshtml" />
+    <Content Include="Views\Shared\_Checkboxes.cshtml" />
+    <Content Include="Views\Shared\_Comment.cshtml" />
+    <Content Include="Views\Shared\_Radiobuttons.cshtml" />
+    <Content Include="Views\Report\GetAllPages.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

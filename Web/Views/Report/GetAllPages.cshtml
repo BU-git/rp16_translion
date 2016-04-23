@@ -1,0 +1,17 @@
+﻿@using Web.Infrastructure.HtmlHelpers
+@model List<IDAL.Models.Page>
+@{
+    ViewBag.Title = "GetAllPages";
+}
+
+
+@foreach (var page in Model)
+{
+    <h2>@page.Name Order: @page.Order</h2>
+        <div class="row">
+            @foreach (var question in page.Questions)
+            {
+                @Html.CreateQuestion(question)
+            }
+        </div>
+}
