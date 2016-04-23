@@ -23,7 +23,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>1.7</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -181,6 +181,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AdvisorController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EmployerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -223,31 +224,25 @@
     <Content Include="Views\Shared\_LoggedUserPartial.cshtml" />
     <Content Include="Views\Employer\Settings.cshtml" />
     <Content Include="Views\Employer\PasswordChange.cshtml" />
-    <Content Include="Views\Employer\AddEmployee.cshtml" />
     <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
-    <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
     <Content Include="Views\Employer\EmployeeInfo.cshtml" />
     <Content Include="Views\Admin\Settings.cshtml" />
     <Content Include="Views\Admin\AddAdvisor.cshtml" />
     <Content Include="Views\Admin\AdvisorsList.cshtml" />
     <Content Include="Views\Admin\AdvisorInfo.cshtml" />
     <Content Include="Views\Admin\ChangeAdvisorName.cshtml" />
-    <Content Include="Views\Admin\EditEmployer.cshtml" />
-    <Content Include="Views\Admin\EmployerProfile.cshtml" />
     <Content Include="Views\Advisor\Index.cshtml" />
-    <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
-    <Content Include="Views\Admin\ChangeEmployeeName.cshtml" />
-    <Content Include="Views\Advisor\EditEmployer.cshtml" />
-    <Content Include="Views\Advisor\EmployerProfile.cshtml" />
-    <Content Include="Views\Advisor\ChangeEmployeeName.cshtml" />
     <Content Include="Views\Advisor\Settings.cshtml" />
-    <Content Include="Views\Advisor\PasswordChange.cshtml" />
-    <Content Include="Views\Admin\RegisterEmployer.cshtml" />
-    <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
-    <Content Include="Views\Admin\AddEmployee.cshtml" />
-    <Content Include="Views\Admin\ChangePassword.cshtml" />
+    <Content Include="Views\Shared\EmployerProfile.cshtml" />
+    <Content Include="Views\Shared\AddEmployee.cshtml" />
+    <Content Include="Views\Shared\RegisterEmployer.cshtml" />
+    <Content Include="Views\Shared\ChangeEmployeeName.cshtml" />
+    <Content Include="Views\Shared\EditEmployer.cshtml" />
+    <Content Include="Views\Shared\PasswordChange.cshtml" />
+    <Content Include="Views\Employer\AddEmployee.cshtml" />
+    <Content Include="Views\Employer\ChangeEmployeeName.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -257,6 +252,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj">

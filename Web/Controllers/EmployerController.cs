@@ -21,23 +21,16 @@ namespace Web.Controllers
     {
         private readonly PersonManager<Admin> _adminManager;
         private readonly PersonManager<Employer> _employerManager;
-        private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
+        private readonly IMailingService _mailingService;
 
-        public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager,
+        public EmployerController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager,
             IMailingService mailService, PersonManager<Admin> adminManager)
         {
-            _userManager = new UserManager<IdentityUser, Guid>(store);
-            _userManager.UserTokenProvider =
-                new DataProtectorTokenProvider<IdentityUser, Guid>(
-                    new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
-
+            _userManager = userManager;
             _employerManager = employerManager;
-
             _adminManager = adminManager;
-
             _mailingService = mailService;
-            _mailingService.IgnoreQueue(); //setting manager to ignore mail message queue and tell about errors
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;

@@ -2,10 +2,11 @@
 
 @{
     ViewBag.Title = "Add Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row col-centered">
-    @using (Html.BeginForm("AddEmployee", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("AddEmployee", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
 
@@ -35,11 +36,11 @@
                 </div>
             </div>
 
-            @Html.Hidden("id", (Guid)ViewBag.EmployerId)
+            @Html.Hidden("id", (string)ViewBag.EmployerId)
 
             <div class="row">
                 <div class="col-md-5">
-                    @Html.ActionLink("Annuleren", "EmployerProfile", "Admin", new {id = ViewBag.EmployerId}, new { @class = "btn btn-default pull-right" })
+                    @Html.ActionLink("Annuleren", "EmployerProfile", null, new {id = ViewBag.EmployerId}, new { @class = "btn btn-default pull-right" })
                 </div>
                 <div class="col-md-7">
                     <input type="submit" value="Profiel aanmaken" class="btn btn-primary pull-left" />
