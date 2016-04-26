@@ -35,7 +35,9 @@ namespace DAL
         private IAdminRepository _adminRepository;
         private IEmployeeRepository _employeeRepository;
         private IAdvisorRepository _advisorRepository;
-        private IAlertRepository _alertRepository;
+        private IAnswerRepository _answerRepository;
+        private IPageRepository _pageRepository;
+        private IQuestionRepository _questionRepository;
         #endregion
 
         #region Constructors
@@ -93,7 +95,18 @@ namespace DAL
 
         public IAlertRepository AlertRepository
         {
+            get { return _pageRepository ?? (_pageRepository = new PageRepository(_context)); }
             get { return _alertRepository ?? (_alertRepository = new AlertRepository(_context)); }
+        }
+
+        public IAnswerRepository AnswerRepository
+        {
+            get { return _answerRepository ?? (_answerRepository = new AnswerRepository(_context)); }
+        }
+
+        public IQuestionRepository QuestionRepository
+        {
+            get { return _questionRepository ?? (_questionRepository = new QuestionRepository(_context)); }
         }
 
         public int SaveChanges()

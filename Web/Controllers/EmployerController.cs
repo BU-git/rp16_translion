@@ -25,6 +25,7 @@ namespace Web.Controllers
         private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly AlertManager _alertManager;
+        private readonly IMailingService _mailingService;
 
         public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager,
             IMailingService mailService, PersonManager<Admin> adminManager, AlertManager alertManager)
@@ -320,7 +321,7 @@ namespace Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> PasswordChange(EmplPassChangeViewModel chPassVM)
+        public async Task<ActionResult> PasswordChange(ChangePasswordViewModel chPassVM)
         {
             if (ModelState.IsValid)
             {

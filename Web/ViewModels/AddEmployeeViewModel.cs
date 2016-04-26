@@ -11,7 +11,6 @@ namespace Web.ViewModels
             ErrorMessage = "Veld klopt niet, controleer dit aub. Nummers, symbolen en spaties zijn niet toegestaan")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Vul tussenvoesgsen in")]
         [Display(Name = "Tussenvoesgsen")]
         [StringLength(5, ErrorMessage = "Too long prefix")]
         [RegularExpression("[a-zA-Z]+",

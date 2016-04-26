@@ -19,8 +19,19 @@ using Web.ViewModels;
 namespace Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
+        public AdminController(
+            UserManager<IdentityUser, Guid> userManager,
+            PersonManager<Admin> adminManager,
+            PersonManager<Advisor> advisorManager,
+            PersonManager<Employer> employerManager,
+            IMailingService mailingService) : base(
+                userManager,
+                adminManager,
+                advisorManager,
+                employerManager,
+                mailingService
         #region common problems messages
         private const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
         private const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
@@ -84,8 +95,6 @@ namespace Web.Controllers
                 FirstName = model.FirstName,
                 Prefix = model.Prefix,
                 IsApprove = false
-            };
-
             var alert = new Alert()
             {
                 AlertId = Guid.NewGuid(),
@@ -301,6 +310,7 @@ namespace Web.Controllers
                 employee.Prefix = employeeInfo.Prefix;
 
                 if (await _adminManager.UpdateEmployeeAsync(employee, alert) > 0)
+        }
                 {
                     var messageInfo =
                         new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -333,24 +343,24 @@ namespace Web.Controllers
                 return View(advisorInfo);
 
 
-            if (await _adminManager.GetUserByNameAsync(advisorInfo.Username) != null)
+            if (await adminManager.GetUserByNameAsync(advisorInfo.Username) != null)
             {
                 ModelState.AddModelError(nameof(advisorInfo.Username), USERNAME_IS_IN_USE_ERROR);
                 return View(advisorInfo);
             }
 
             var creationRes = await
-                _userManager.CreateAsync(new IdentityUser { Id = Guid.NewGuid(), UserName = advisorInfo.Username },
-                        advisorInfo.Password);
+                userManager.CreateAsync(new IdentityUser {Id = Guid.NewGuid(), UserName = advisorInfo.Username},
+                    advisorInfo.Password);
 
             User user = null;
 
             if (creationRes.Succeeded
-                && (user = await _adminManager.GetUserByNameAsync(advisorInfo.Username)) != null)
+                && (user = await adminManager.GetUserByNameAsync(advisorInfo.Username)) != null)
             {
-                await _advisorManager.CreateAsync(new Advisor { Name = advisorInfo.Name }, user);
+                await advisorManager.CreateAsync(new Advisor {Name = advisorInfo.Name}, user);
 
-                var roleResult = await _userManager.AddToRoleAsync(user.UserId, ADVISOR_ROLE);
+                var roleResult = await userManager.AddToRoleAsync(user.UserId, ADVISOR_ROLE);
 
                 if (roleResult.Succeeded)
                     return RedirectToAction("Settings");
@@ -372,6 +382,7 @@ namespace Web.Controllers
 
         #endregion
 
+        #region CheckAdvisorName
         #region All advisors
         [HttpGet]
         public async Task<ActionResult> AdvisorsList()
@@ -382,14 +393,17 @@ namespace Web.Controllers
 
         #region Advisor's info
         [HttpGet]
-        public async Task<ActionResult> AdvisorInfo(Guid? id)
+        public async Task<JsonResult> CheckAdvisorName(string userName)
         {
+            if (string.IsNullOrWhiteSpace(userName))
+                return Json(false, JsonRequestBehavior.AllowGet);
             var user = await GetUserIfAdvisorAsync(id);
 
             if (user != null)
                 return View(user.Advisor);
 
-            return RedirectToAction("AdvisorsList");
+            return Json(await adminManager.GetUserByNameAsync(userName) == null,
+                JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -407,6 +421,7 @@ namespace Web.Controllers
         #endregion
 
         #region Change advisor's name
+
         [HttpGet]
         public async Task<ActionResult> ChangeAdvisorName(Guid? id)
         {
@@ -435,7 +450,7 @@ namespace Web.Controllers
             {
                 user.Advisor.Name = advInfo.Name;
 
-                if (await _advisorManager.UpdateAsync(user.Advisor) > 0)
+                if (await advisorManager.UpdateAsync(user.Advisor) > 0)
                     return View("Settings");
             }
 

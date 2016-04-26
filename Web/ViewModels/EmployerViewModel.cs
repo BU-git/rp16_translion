@@ -1,11 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Web.Security;
+using IDAL.Models;
 
 namespace Web.ViewModels
 {
     public class EmployerViewModel
     {
+        public Guid EmployerId { get; set; }
         [Required]
         [Display(Name = "Bedrijfsnaam")]
         public string CompanyName { get; set; }
@@ -49,6 +53,9 @@ namespace Web.ViewModels
         [Display(Name = "Gebruikersnaam")]
         public string UserName { get; set; }
 
+        public IEnumerable<Employee> Employees { get; set; }
+
+        // TODO CHECK AND DELETE
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Wachtwoord")]

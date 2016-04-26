@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels
 {
-    public class EmplPassChangeViewModel
+    public class ChangePasswordViewModel
     {
         [Display(Name = "Oude wachtwoord")]
         [Required(ErrorMessage = "Vul oude wachtwoord in")]

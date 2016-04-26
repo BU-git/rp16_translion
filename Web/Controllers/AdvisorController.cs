@@ -1,32 +1,22 @@
 ﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using BLL.Identity.Models;
 using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
-using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
-using IDAL.Interfaces;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.DataProtection;
-using Web.ViewModels;
 
 namespace Web.Controllers
 {
     [Authorize(Roles = "Advisor")]
-    public class AdvisorController : Controller
+    public class AdvisorController : BaseController
     {
-        private const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
-
-        private readonly PersonManager<Employer> _employerManager;
-        private readonly UserManager<IdentityUser, Guid> _userManager;
-        private readonly PersonManager<Advisor> _advisorManager;
+        public AdvisorController(
+            UserManager<IdentityUser, Guid> userManager,
+            PersonManager<Admin> adminManager,
+            PersonManager<Advisor> advisorManager,
+            PersonManager<Employer> employerManager,
         private readonly AlertManager _alertManager;
 
         private readonly IUnitOfWork _unitOfWork;

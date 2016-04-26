@@ -7,6 +7,7 @@
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css"/>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="~/Content/styles.css" rel="stylesheet" type="text/css"/>
+    @RenderSection("styles", false)
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
 </head>
 <body>
@@ -41,7 +42,9 @@
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/tlrUserActions/deleteUser.js"></script>
 <script src="~/Scripts/search/search.js"></script>
 <script src="~/Scripts/search/fuser.js"></script>
+@RenderSection("scripts", false)
 </body>
 </html>

@@ -25,10 +25,10 @@ namespace IDAL.Models
             get { return _employer; }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
                 _employer = value;
-                EmployerId = value.EmployerId;
+                if (value != null)
+                    EmployerId = value.EmployerId;
+
             }
         }
 

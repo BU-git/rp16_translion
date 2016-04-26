@@ -175,7 +175,7 @@ namespace BLL.Services.MailingService
         /// <summary>
         ///     Allows identity message sending
         /// </summary>
-        public Task SendAsync(IdentityMessage message)
+        Task IIdentityMessageService.SendAsync(IdentityMessage message)
         {
             var created = message != null
                 ? CreateMessage(message.Subject, message.Body, null, message.Destination)
@@ -183,7 +183,6 @@ namespace BLL.Services.MailingService
 
             return SendMailAsync(created);
         }
-
         #endregion
 
         #region MessageCreators

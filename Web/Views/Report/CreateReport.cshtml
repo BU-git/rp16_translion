@@ -1,0 +1,201 @@
+﻿@{
+    ViewBag.Title = "CreateReport";
+}
+
+@section styles {
+    <link rel="stylesheet" href="/Content/main.css">
+}
+
+<div class="wrapper">
+    <div class="leftPagePanel">
+        <button id="btnAddPage" class="btn btn-default" data-target="#myModalPage">Add Page</button>
+        <div class="pageContainer">
+            <ul class="sortablePages">
+                <!--li>
+                    <button class="btn btn-default btn-nav">Page1</button>
+                </li>
+                <li>
+                    <button class="btn btn-default btn-nav selectedPage">Page1</button>
+                </li-->
+            </ul>
+        </div>
+    </div>
+    <div class="container mainGrid">
+        <div class="actionBar">
+            <!--span class="col-md-1 previewHeader">Preview</span-->
+            <button id="btnDeletePage" class="pull-left btn btn-default buttonDeletePage">Delete Page</button>
+            <button id="btnAddQuestion" class="btn btn-default pull-right" data-target="#myModal">Add Question</button>
+
+        </div>
+        <div id="namePageGrid"></div>
+        <div class="containerQuestions">
+
+            <!-- <div class="wrapperQuestion">
+                <img class="deleteQuestion" src="5.1 Report.png">
+                <img class="editQuestion" src="pen.png">
+                <span class="nameOfQuestion">Name of Question</span>
+                <div class="containerAnswers">
+                    <div class="radio">
+                        <label><input type="radio" name="browser" value="ie"> Internet Explorer</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="browser" value="opera"> Opera</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="browser" value="firefox"> Firefox</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrapperQuestion">
+                <img class="deleteQuestion" src="5.1 Report.png">
+                <img class="editQuestion" src="pen.png">
+                <span class="nameOfQuestion">Комментарий</span>
+                <div class="containerAnswers">
+                    <textarea class="form-control textareaAnswer" name="comment" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="wrapperQuestion">
+                <img class="deleteQuestion" src="5.1 Report.png">
+                <img class="editQuestion" src="pen.png">
+                <span class="nameOfQuestion">Checkboxes</span>
+                <div class="containerAnswers">
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="">Option 1</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="">Option 2</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="">Option 3</label>
+                    </div>
+
+                </div>
+            </div> -->
+
+        </div>
+    </div>
+    <div class="containerSaveBtn">
+        <button id="btnSaveTest" class="btn btn-default">Save</button>
+    </div>
+
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Question</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span>Name of question:</span>
+                    </div>
+                    <div class="row">
+                        <input id="questionName" type="text" class="form-control nameOfQuestion">
+                    </div>
+                    <div class="row">
+                        <span>Type of answer:</span>
+                        <select id="cbTypeAnswers">
+                            <option selected="selected" value="Checkboxes">Checkboxes</option>
+                            <option value="Radiobuttons">Radiobuttons</option>
+                            <option value="Comment">Comment</option>
+                        </select>
+                    </div>
+                    <div class="row addAnswer">
+                        <button id="btnAddAnswer" type="button" class="btn btn-default">Add Answer</button>
+                    </div>
+                    <div class="row containerAnswersModal">
+                        <!--div class="input-group wrapperAnswer">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default">X</button>
+                            </span>
+                        </div-->
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnMyModalOK" type="button" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalPage" tabindex="-1" role="dialog" aria-labelledby="myModalPageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalPageLabel">Add Page</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span>Name of page:</span>
+                    </div>
+                    <div class="row">
+                        <input id="pageNameModal" type="text" class="form-control nameOfQuestion">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnMyModalPageOK" type="button" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deletePageModal" tabindex="-1" role="dialog" aria-labelledby="myModalPageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalPageLabel">Deleting Page!!!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span>Are you sure what want to delete page?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnDeletePageModalOK" type="button" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="myModalPageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalPageLabel">Deleting Question!!!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span>Are you sure what want to delete question?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnDeleteQuestionModalOK" type="button" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script> <!-- Please, add jQuery UI to project-->
+    <script src="~/Scripts/report/core.js"></script>
+}

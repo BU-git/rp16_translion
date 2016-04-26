@@ -27,7 +27,7 @@ namespace DAL
 
 
 
-
+           
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new ClaimConfiguration());
@@ -39,6 +39,9 @@ namespace DAL
             modelBuilder.Configurations.Add(new AdminConfiguration());
             modelBuilder.Configurations.Add(new AdvisorConfiguration());
             modelBuilder.Configurations.Add(new AlertConfiguration());
+            modelBuilder.Configurations.Add(new PageConfiguration());
+            modelBuilder.Configurations.Add(new QuestionConfiguration());
+            modelBuilder.Configurations.Add(new AnswerConfiguration());
         }
     }
 }

@@ -44,6 +44,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -87,8 +88,13 @@
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />
     <Compile Include="Services\MailingService\MailingService.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\AdminAddEmployeeMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\AdminDeleteEmployerMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\AdminEditEmployerMessage.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\AdminRegEmployerMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ChangeEmployeeNameMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\CreateEmployeeMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\DeleteEmployeeMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\EmployerDelEmployeeMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotPasswordMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
@@ -102,6 +108,8 @@
     <Compile Include="Services\PersonageService\AdvisorManager.cs" />
     <Compile Include="Services\PersonageService\PersonManager.cs" />
     <Compile Include="Services\PersonageService\EmployerManager.cs" />
+    <Compile Include="Services\TestService\Interfaces\ITestService.cs" />
+    <Compile Include="Services\TestService\TestManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IDAL\IDAL.csproj">

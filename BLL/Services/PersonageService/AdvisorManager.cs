@@ -26,7 +26,7 @@ namespace BLL.Services.PersonageService
             {
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
-            user.Employer.Employees.Remove(employee);
+            _unitOfWork.EmployeeRepository.Remove(employee);
             _unitOfWork.SaveChanges();
         }
 
