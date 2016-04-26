@@ -19,6 +19,7 @@ namespace DAL
             _adminRepository = null;
             _employeeRepository = null;
             _advisorRepository = null;
+            _alertRepository = null;
             _context.Dispose();
         }
 
@@ -34,7 +35,7 @@ namespace DAL
         private IAdminRepository _adminRepository;
         private IEmployeeRepository _employeeRepository;
         private IAdvisorRepository _advisorRepository;
-
+        private IAlertRepository _alertRepository;
         #endregion
 
         #region Constructors
@@ -88,6 +89,11 @@ namespace DAL
         public IAdvisorRepository AdvisorRepository
         {
             get { return _advisorRepository ?? (_advisorRepository = new AdvisorRepository(_context)); }
+        }
+
+        public IAlertRepository AlertRepository
+        {
+            get { return _alertRepository ?? (_alertRepository = new AlertRepository(_context)); }
         }
 
         public int SaveChanges()

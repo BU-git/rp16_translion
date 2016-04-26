@@ -15,7 +15,7 @@ namespace BLL.Services.PersonageService
         }
 
 
-        public override async void DeleteEmployee(User user, Employee employee)
+        public override async void DeleteEmployee(User user, Employee employee, Alert alert)
         {
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));

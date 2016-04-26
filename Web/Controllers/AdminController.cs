@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BLL.Identity.Models;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
@@ -30,12 +32,13 @@ namespace Web.Controllers
         private readonly PersonManager<Admin> _adminManager;
         private readonly PersonManager<Advisor> _advisorManager;
         private readonly PersonManager<Employer> _employerManager;
+        private readonly AlertManager _alertManager;
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
         private readonly IMailingService _mailingService;
 
         public AdminController(IUserStore<IdentityUser, Guid> store, PersonManager<Admin> adminManager,
-            PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, IUnitOfWork unitOfWork, IMailingService mailService)
+            PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, IUnitOfWork unitOfWork, IMailingService mailService, AlertManager alertManager)
         {
             _unitOfWork = unitOfWork;
 
@@ -47,6 +50,7 @@ namespace Web.Controllers
             _employerManager = employerManager;
 
             _mailingService = mailService;
+            _alertManager = alertManager;
         }
 
         // GET: Admin
@@ -71,7 +75,6 @@ namespace Web.Controllers
             {
                 return View(model);
             }
-
             var employer = await _adminManager.GetUserByIdAsync(id);
 
             var employee = new Employee()
@@ -79,10 +82,31 @@ namespace Web.Controllers
                 EmployeeId = Guid.NewGuid(),
                 LastName = model.LastName,
                 FirstName = model.FirstName,
-                Prefix = model.Prefix
+                Prefix = model.Prefix,
+                IsApprove = false
             };
 
-            int result = await _adminManager.CreateEmployeeAsync(employee, employer);
+            var alert = new Alert()
+            {
+                AlertId = Guid.NewGuid(),
+                AlertEmployerId = employer.UserId,
+                AlertType = AlertType.Employee_Add,
+                AlertComment = "",
+                AlertIsDeleted = false,
+                AlertCreateTS = DateTime.Now,
+                AlertUpdateTS = DateTime.Now
+            };
+            
+            //alert.Employees.Add(employee);
+            //employee.Alerts.Add(alert);
+
+            int result = await _employerManager.CreateEmployeeAsync(employee, employer);
+            int result1 = await _alertManager.CreateAsync(alert);
+            //int result = await _adminManager.CreateEmployeeAsync(employee, employer);
+            //Employee ee = _adminManager.GetEmployee(employee.EmployeeId);
+            //Employer emp = ee.Employer;
+            //_alertManager.Create(emp, ee, _alertManager.GetAlertType("Employee_Add"));
+
 
             //TODO: A mail is sent to the employer with the following text: 
             // “De gewenste werknemer, met de naam <name of added employee> is toegevoegd aan uw account”
@@ -99,7 +123,6 @@ namespace Web.Controllers
             EmployerViewModel model = new EmployerViewModel
             {
                 EmailAdress = user.Email,
-
                 FirstName = employer.FirstName,
                 LastName = employer.LastName,
                 CompanyName = employer.CompanyName,
@@ -111,7 +134,7 @@ namespace Web.Controllers
             };
 
             ViewBag.EmployerId = id;
-            ViewBag.Employees = employer.Employees;
+            ViewBag.Employees = employer.Employees.Where(e=>e.IsApprove);
             return View(model);
         }
 
@@ -260,11 +283,24 @@ namespace Web.Controllers
 
             if (employee != null)
             {
+                var alert = new Alert()
+                {
+                    AlertId = Guid.NewGuid(),
+                    AlertEmployerId = employee.EmployerId,
+                    AlertType = AlertType.Employee_Rename,
+                    AlertComment = employee.LastName+" "+employee.FirstName, //old name
+                    AlertIsDeleted = false,
+                    AlertCreateTS = DateTime.Now,
+                    AlertUpdateTS = DateTime.Now
+                };
+                alert.Employees.Add(employee);
+                employee.Alerts.Add(alert);
+
                 employee.FirstName = employeeInfo.FirstName;
                 employee.LastName = employeeInfo.LastName;
                 employee.Prefix = employeeInfo.Prefix;
 
-                if (await _adminManager.UpdateEmployeeAsync(employee) > 0)
+                if (await _adminManager.UpdateEmployeeAsync(employee, alert) > 0)
                 {
                     var messageInfo =
                         new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -408,6 +444,45 @@ namespace Web.Controllers
         }
         #endregion
 
+        #region View alerts
+
+        [HttpGet]
+        public ActionResult ViewAlerts()
+        {
+            List<Alert> Alerts = new List<Alert>();
+            Alerts = _alertManager.GetNew();
+            List<AdminAlertPanelViewModel> alertList=new List<AdminAlertPanelViewModel>();
+            foreach (var alert in Alerts)
+            {
+                AdminAlertPanelViewModel a = this.MapAlertToTableView(alert);
+                alertList.Add(a);
+            }
+        
+            return View("AdminAlertPanel", alertList);
+        }
+
+        #endregion
+
+        #region Approve alerts
+
+        public ActionResult ApproveAlert(Guid? alertId)
+        {
+            Alert alertToApprove = _alertManager.GetAlert(alertId);
+            _alertManager.Approve(alertToApprove);
+
+            List<Alert> Alerts = new List<Alert>();
+            Alerts = _alertManager.GetNew();
+            List<AdminAlertPanelViewModel> alertList = new List<AdminAlertPanelViewModel>();
+            foreach (var alert in Alerts)
+            {
+                AdminAlertPanelViewModel a = this.MapAlertToTableView(alert);
+                alertList.Add(a);
+            } 
+            return View("AdminAlertPanel", alertList);
+        }
+
+        #endregion
+        
         #region Helpers
         private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
         {
@@ -441,6 +516,29 @@ namespace Web.Controllers
             };
 
             return employer;
+        }
+
+        private AdminAlertPanelViewModel MapAlertToTableView(Alert alert)
+        {
+            string EmployeeName = "n.v.t";
+            Alert alertToShow = _unitOfWork.AlertRepository.FindById(alert.AlertId);
+            if (alertToShow.Employees.Count != 0)
+            {
+                Employee emp = _alertManager.FindEmployee(alert);
+                EmployeeName = emp.LastName + " " + emp.FirstName;
+            }
+
+            var AlertData = new AdminAlertPanelViewModel
+            {
+                alert = alert,
+                EmployerName = alert.Employer.LastName+" "+alert.Employer.FirstName,
+                Company = alert.Employer.CompanyName,
+                EmployeeName = EmployeeName,
+                AlertType = "Demo",
+                Comment = alert.AlertComment
+            };
+
+            return AlertData;
         }
 
 

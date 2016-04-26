@@ -23,6 +23,10 @@ namespace DAL
         internal IDbSet<Employer> Employers { get; set; }
         internal IDbSet<Admin> Admins { get; set; }
         internal IDbSet<Advisor> Advisors { get; set; }
+        internal IDbSet<Alert> Alerts { get; set; }
+
+
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -31,8 +35,10 @@ namespace DAL
             modelBuilder.Configurations.Add(new RoleConfiguration());
             modelBuilder.Configurations.Add(new UserConfiguration());
             modelBuilder.Configurations.Add(new EmployerConfiguration());
+            modelBuilder.Configurations.Add(new EmployeeConfiguration());
             modelBuilder.Configurations.Add(new AdminConfiguration());
             modelBuilder.Configurations.Add(new AdvisorConfiguration());
+            modelBuilder.Configurations.Add(new AlertConfiguration());
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BLL.Identity.Models;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
@@ -26,6 +27,8 @@ namespace Web.Controllers
         private readonly PersonManager<Employer> _employerManager;
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly PersonManager<Advisor> _advisorManager;
+        private readonly AlertManager _alertManager;
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMailingService _mailingService;
 
@@ -35,6 +38,7 @@ namespace Web.Controllers
             _employerManager = new EmployerManager(uow);
             _userManager = new UserManager<IdentityUser, Guid>(store);
             _advisorManager = new AdvisorManager(uow);
+            _alertManager=new AlertManager(uow);
 
             _userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<IdentityUser, Guid>(
@@ -275,11 +279,25 @@ namespace Web.Controllers
 
             if (employee != null)
             {
+                var alert = new Alert()
+                {
+                    AlertId = Guid.NewGuid(),
+                    AlertEmployerId = employee.EmployerId,
+                    AlertType = AlertType.Employee_Rename,
+                    AlertComment = employee.LastName + " " + employee.FirstName, //old name
+                    AlertIsDeleted = false,
+                    AlertCreateTS = DateTime.Now,
+                    AlertUpdateTS = DateTime.Now
+                };
+                alert.Employees.Add(employee);
+                employee.Alerts.Add(alert);
+
+
                 employee.FirstName = employeeInfo.FirstName;
                 employee.LastName = employeeInfo.LastName;
                 employee.Prefix = employeeInfo.Prefix;
 
-                if (await _employerManager.UpdateEmployeeAsync(employee) > 0)
+                if (await _employerManager.UpdateEmployeeAsync(employee, alert) > 0)
                 {
                     var mailInfo =
                         new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");

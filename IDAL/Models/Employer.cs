@@ -8,6 +8,7 @@ namespace IDAL.Models
         #region Fields
 
         private ICollection<Employee> _employees;
+        private ICollection<Alert> _alerts; 
 
         #endregion
 
@@ -22,6 +23,7 @@ namespace IDAL.Models
         public string PostalCode { get; set; }
         public string Adress { get; set; }
         public string City { get; set; }
+        public bool IsDeleted { get; set; }
 
         #endregion
 
@@ -31,6 +33,12 @@ namespace IDAL.Models
         {
             get { return _employees ?? (_employees = new List<Employee>()); }
             set { _employees = value; }
+        }
+
+        public virtual ICollection<Alert> Alerts
+        {
+            get { return _alerts ?? (_alerts = new List<Alert>()); }
+            set { _alerts = value; }
         }
 
         public virtual User User { get; set; }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Identity.Models;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
@@ -23,9 +24,10 @@ namespace Web.Controllers
         private readonly PersonManager<Employer> _employerManager;
         private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
+        private readonly AlertManager _alertManager;
 
         public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager,
-            IMailingService mailService, PersonManager<Admin> adminManager)
+            IMailingService mailService, PersonManager<Admin> adminManager, AlertManager alertManager)
         {
             _userManager = new UserManager<IdentityUser, Guid>(store);
             _userManager.UserTokenProvider =
@@ -35,6 +37,7 @@ namespace Web.Controllers
             _employerManager = employerManager;
 
             _adminManager = adminManager;
+            _alertManager = alertManager;
 
             _mailingService = mailService;
             _mailingService.IgnoreQueue(); //setting manager to ignore mail message queue and tell about errors
@@ -90,8 +93,21 @@ namespace Web.Controllers
             if (employee != null && !employee.IsDeleted)
             {
                 employee.IsDeleted = true;
+                var alert = new Alert()
+                {
+                    AlertId = Guid.NewGuid(),
+                    AlertEmployerId = employee.EmployerId,
+                    AlertType = AlertType.Employee_Delete,
+                    AlertComment = "",
+                    AlertIsDeleted = false,
+                    AlertCreateTS = DateTime.Now,
+                    AlertUpdateTS = DateTime.Now
+                };
+                alert.Employees.Add(employee);
+                employee.Alerts.Add(alert);
 
-                await _employerManager.UpdateEmployeeAsync(employee);
+
+                await _employerManager.UpdateEmployeeAsync(employee, alert);
 
                 var messageInfo = new EmployerDelEmployeeMessageBuilder(User.Identity.Name,
                     $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -176,16 +192,31 @@ namespace Web.Controllers
 
             if (user == null)
                 return RedirectToAction("Logout");
-
-            await _employerManager.CreateEmployeeAsync(new Employee
+            Employee employee = new Employee
             {
                 EmployeeId = Guid.NewGuid(),
                 LastName = employeeViewModel.LastName,
                 FirstName = employeeViewModel.FirstName,
-                Prefix = employeeViewModel.Prefix
-            }, user);
+                Prefix = employeeViewModel.Prefix,
+                IsApprove = false
 
+            };
+            var alert = new Alert()
+            {
+                AlertId = Guid.NewGuid(),
+                AlertEmployerId = user.UserId,
+                AlertType = AlertType.Employee_Add,
+                AlertComment = "",
+                AlertIsDeleted = false,
+                AlertCreateTS = DateTime.Now,
+                AlertUpdateTS = DateTime.Now
+            };
+            alert.Employees.Add(employee);
+            employee.Alerts.Add(alert);
 
+            await _employerManager.CreateEmployeeAsync(employee, user);
+
+            await _alertManager.CreateAsync(alert);
             var mailMessageData = new CreateEmployeeMailMessageBuilder(User.Identity.Name,
                 $"{employeeViewModel.FirstName} {employeeViewModel.Prefix} {employeeViewModel.LastName}");
 
@@ -234,11 +265,25 @@ namespace Web.Controllers
                 && (employee = await _employerManager.GetEmployeeAsync(emplInfo.Id)) != null
                 && emplInfo.EmployerId == employee.EmployerId)
             {
+
+                var alert = new Alert()
+                {
+                    AlertId = Guid.NewGuid(),
+                    AlertEmployerId = employee.EmployerId,
+                    AlertType = AlertType.Employee_Rename,
+                    AlertComment = employee.LastName + " " + employee.FirstName, //old name
+                    AlertIsDeleted = false,
+                    AlertCreateTS = DateTime.Now,
+                    AlertUpdateTS = DateTime.Now
+                };
+                alert.Employees.Add(employee);
+                employee.Alerts.Add(alert);
+
                 employee.FirstName = emplInfo.FirstName;
                 employee.LastName = emplInfo.LastName;
                 employee.Prefix = emplInfo.Prefix;
 
-                await _employerManager.UpdateEmployeeAsync(employee);
+                await _employerManager.UpdateEmployeeAsync(employee, alert);
 
                 var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
 

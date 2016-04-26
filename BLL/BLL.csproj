@@ -83,6 +83,7 @@
     <Compile Include="Identity\Stores\RoleStore.cs" />
     <Compile Include="Identity\Stores\UserStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AlertService\AlertManager.cs" />
     <Compile Include="Services\MailingService\Interfaces\ILogger.cs" />
     <Compile Include="Services\MailingService\Interfaces\IMailingService.cs" />
     <Compile Include="Services\MailingService\MailingService.cs" />

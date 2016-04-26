@@ -18,7 +18,7 @@ namespace BLL.Services.PersonageService
 
         public IUnitOfWork _unitOfWork { get; }
 
-        public abstract void DeleteEmployee(User user, Employee employee);
+        public abstract void DeleteEmployee(User user, Employee employee, Alert alert);
 
 
         #region Get user by username
@@ -179,7 +179,7 @@ namespace BLL.Services.PersonageService
 
         #region CreateEmployee
 
-        public void CreateEmployee(Employee employee, User user)
+        public void CreateEmployee(Employee employee, User user, Alert alert)
         {
             if (employee == null | user == null)
             {
@@ -190,8 +190,24 @@ namespace BLL.Services.PersonageService
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
             _unitOfWork.EmployerRepository.AddEmployee(employee, user);
+            _unitOfWork.AlertRepository.Add(alert);
             _unitOfWork.SaveChanges();
         }
+
+        //public Task<int> CreateEmployeeAsync(Employee employee, User user, Alert alert)
+        //{
+        //    if (employee == null | user == null)
+        //    {
+        //        throw new ArgumentException("employee or user is null. Wrong parameter");
+        //    }
+        //    if (!user.Roles.Any(x => x.Name == "Employer"))
+        //    {
+        //        throw new ArgumentException("Only employer can have employees. User isn't employer");
+        //    }
+        //    _unitOfWork.EmployerRepository.AddEmployee(employee, user);
+        //    _unitOfWork.AlertRepository.Add(alert);
+        //    return _unitOfWork.SaveChangesAsync();
+        //}
 
         public Task<int> CreateEmployeeAsync(Employee employee, User user)
         {
@@ -204,10 +220,12 @@ namespace BLL.Services.PersonageService
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
             _unitOfWork.EmployerRepository.AddEmployee(employee, user);
+            //_unitOfWork.AlertRepository.Add(alert);
             return _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<int> CreateEmployeeAsync(CancellationToken cancellationToken, Employee employee, User user)
+
+        public Task<int> CreateEmployeeAsync(CancellationToken cancellationToken, Employee employee, User user, Alert alert)
         {
             if (employee == null | user == null)
             {
@@ -218,6 +236,7 @@ namespace BLL.Services.PersonageService
                 throw new ArgumentException("Only employer can have employees. User isn't employer");
             }
             _unitOfWork.EmployerRepository.AddEmployee(employee, user);
+            _unitOfWork.AlertRepository.Add(alert);
             return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
@@ -225,17 +244,18 @@ namespace BLL.Services.PersonageService
 
         #region UpdateEmployee
 
-        public void UpdateEmployee(Employee employee)
+        public void UpdateEmployee(Employee employee, Alert alert)
         {
             if (employee.EmployeeId == null)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
             _unitOfWork.EmployeeRepository.Update(employee);
+            _unitOfWork.AlertRepository.Add(alert);
             _unitOfWork.SaveChanges();
         }
 
-        public Task<int> UpdateEmployeeAsync(Employee employee)
+        public Task<int> UpdateEmployeeAsync(Employee employee, Alert alert)
         {
             if (employee.EmployeeId == null)
             {
@@ -245,13 +265,14 @@ namespace BLL.Services.PersonageService
             return _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee)
+        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee, Alert alert)
         {
             if (employee.EmployeeId == null)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
             _unitOfWork.EmployeeRepository.Update(employee);
+            _unitOfWork.AlertRepository.Add(alert);
             return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 

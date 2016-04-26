@@ -42,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IUnitOfWork.cs" />
+    <Compile Include="Interfaces\Managers\IAlertManager.cs" />
     <Compile Include="Interfaces\Managers\IPersonageManager.cs" />
     <Compile Include="Interfaces\Repositories\IAdminRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAdvisorRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAlertRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEmployeeRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEmployerRepository.cs" />
     <Compile Include="Interfaces\Repositories\IExternalLoginRepository.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Advisor.cs" />
+    <Compile Include="Models\Alert.cs" />
     <Compile Include="Models\Claim.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Employer.cs" />

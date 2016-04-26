@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace IDAL.Models
 {
     public class Employee
     {
+        private ICollection<Alert> _alerts;
         private Employer _employer;
+
+
         public Guid EmployeeId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -12,6 +16,7 @@ namespace IDAL.Models
         public bool IsApprove { get; set; }
         public bool IsDeleted { get; set; }
         public Guid EmployerId { get; set; }
+
 
         #region Navigation Properties
 
@@ -26,6 +31,14 @@ namespace IDAL.Models
                 EmployerId = value.EmployerId;
             }
         }
+
+
+        public virtual ICollection<Alert> Alerts
+        {
+            get { return _alerts ?? (_alerts = new List<Alert>()); }
+            set { _alerts = value; }
+        }
+
 
         #endregion
     }

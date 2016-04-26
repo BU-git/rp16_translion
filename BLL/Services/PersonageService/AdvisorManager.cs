@@ -15,7 +15,7 @@ namespace BLL.Services.PersonageService
         {
         }
 
-        public override void DeleteEmployee(User user, Employee employee)
+        public override void DeleteEmployee(User user, Employee employee, Alert alert)
         {
 
             if (user == null || employee == null)
