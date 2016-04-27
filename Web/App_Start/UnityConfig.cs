@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using BLL;
 using BLL.Identity.Models;
 using BLL.Identity.Stores;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
@@ -32,6 +33,8 @@ namespace Web
             container.RegisterType<UserManager<IdentityUser, Guid>>(new InjectionFactory(
                 x => GetUserManager()
                 ));
+
+            container.RegisterType<IAlertManager, AlertManager>(new PerHttpRequestLifetimeManager());
 
             container.RegisterType<RoleStore>(new PerHttpRequestLifetimeManager());
             container.RegisterType<IMailingService, MailingService>(new PerHttpRequestLifetimeManager(),

@@ -53,6 +53,7 @@
     <Compile Include="Configurations\AdminConfiguration.cs" />
     <Compile Include="Configurations\AdvisorConfiguration.cs" />
     <Compile Include="Configurations\AlertConfiguration.cs" />
+    <Compile Include="Configurations\AnswerConfiguration.cs" />
     <Compile Include="Configurations\ClaimConfiguration.cs" />
     <Compile Include="Configurations\EmployeeConfiguration.cs" />
     <Compile Include="Configurations\EmployerConfiguration.cs" />

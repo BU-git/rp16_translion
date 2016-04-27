@@ -46,6 +46,7 @@
     <Compile Include="Interfaces\Managers\IPersonageManager.cs" />
     <Compile Include="Interfaces\Repositories\IAdminRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAdvisorRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAlertRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAnswerRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEmployeeRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEmployerRepository.cs" />

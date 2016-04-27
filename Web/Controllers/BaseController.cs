@@ -4,9 +4,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BLL.Identity.Models;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
+using IDAL.Interfaces.Managers;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -22,23 +24,26 @@ namespace Web.Controllers
         internal const string ADVISOR_ROLE = "Advisor";
         #endregion
 
+        internal readonly UserManager<IdentityUser, Guid> userManager;
         internal readonly PersonManager<Admin> adminManager;
         internal readonly PersonManager<Advisor> advisorManager;
         internal readonly PersonManager<Employer> employerManager;
+        internal readonly IAlertManager alertManager;
         internal readonly IMailingService mailingService;
-        internal readonly UserManager<IdentityUser, Guid> userManager;
 
         public BaseController(
             UserManager<IdentityUser, Guid> userManager,
             PersonManager<Admin> adminManager,
             PersonManager<Advisor> advisorManager,
             PersonManager<Employer> employerManager,
+            AlertManager alertManager,
             IMailingService mailingService)
         {
             this.userManager = userManager;
             this.adminManager = adminManager;
             this.advisorManager = advisorManager;
             this.employerManager = employerManager;
+            this.alertManager = alertManager;
             this.mailingService = mailingService;
         }
 
@@ -246,8 +251,19 @@ namespace Web.Controllers
                 Prefix = model.Prefix
             };
 
-            await adminManager.CreateEmployeeAsync(employee, employer);
+            Alert alert = new Alert()
+            {
+                AlertId = Guid.NewGuid(),
+                AlertEmployerId = employer.UserId,
+                AlertType = AlertType.Employee_Add,
+                AlertComment = "",
+                AlertCreateTS = DateTime.Now,
+                AlertUpdateTS = DateTime.Now
+            };
 
+            await employerManager.CreateEmployeeAsync(employee, employer);
+            await alertManager.CreateAsync(alert);
+            
             var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
             await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
 
@@ -322,6 +338,19 @@ namespace Web.Controllers
                 employee.FirstName = employeeInfo.FirstName;
                 employee.LastName = employeeInfo.LastName;
                 employee.Prefix = employeeInfo.Prefix;
+
+                var alert = new Alert()
+                {
+                    AlertId = Guid.NewGuid(),
+                    AlertEmployerId = employee.EmployerId,
+                    AlertType = AlertType.Employee_Rename,
+                    AlertComment = employee.LastName + " " + employee.FirstName, //old name
+                    AlertIsDeleted = false,
+                    AlertCreateTS = DateTime.Now,
+                    AlertUpdateTS = DateTime.Now
+                };
+
+                await alertManager.CreateAsync(alert);
 
                 if (await adminManager.UpdateEmployeeAsync(employee) > 0)
                 {

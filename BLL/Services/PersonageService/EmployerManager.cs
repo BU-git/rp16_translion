@@ -74,7 +74,7 @@ namespace BLL.Services.PersonageService
             return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public override void DeleteEmployee(User user, Employee employee, Alert alert)
+        public override void DeleteEmployee(User user, Employee employee)
         {
             if (user == null || employee == null)
             {
@@ -88,7 +88,7 @@ namespace BLL.Services.PersonageService
             Employee emp = user.Employer.Employees.FirstOrDefault(x => x.EmployeeId == employee.EmployeeId);
             emp.IsDeleted = true;
 
-            this.UpdateEmployeeAsync(emp, alert);
+            this.UpdateEmployeeAsync(emp);
             _unitOfWork.SaveChanges();
         }
 

@@ -41,8 +41,8 @@ namespace IDAL.Interfaces.Managers
         #region Create
 
         void Create(Alert alert);
-        //Task<int> CreateAsync(Employer employer, Employee employee, AlertType alertType);
-        //Task<int> CreateAsync(CancellationToken cancellationToken, Employer employer, Employee employee, AlertType alertType);
+        Task<int> CreateAsync(Alert alert);
+        Task<int> CreateAsync(CancellationToken cancellationToken, Alert alert);
 
         #endregion
 

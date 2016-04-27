@@ -25,7 +25,6 @@ namespace Web.Controllers
         private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
         private readonly AlertManager _alertManager;
-        private readonly IMailingService _mailingService;
 
         public EmployerController(IUserStore<IdentityUser, Guid> store, PersonManager<Employer> employerManager,
             IMailingService mailService, PersonManager<Admin> adminManager, AlertManager alertManager)
@@ -104,11 +103,10 @@ namespace Web.Controllers
                     AlertCreateTS = DateTime.Now,
                     AlertUpdateTS = DateTime.Now
                 };
-                alert.Employees.Add(employee);
-                employee.Alerts.Add(alert);
 
+                await _alertManager.CreateAsync(alert);
 
-                await _employerManager.UpdateEmployeeAsync(employee, alert);
+                await _employerManager.UpdateEmployeeAsync(employee);
 
                 var messageInfo = new EmployerDelEmployeeMessageBuilder(User.Identity.Name,
                     $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -277,14 +275,14 @@ namespace Web.Controllers
                     AlertCreateTS = DateTime.Now,
                     AlertUpdateTS = DateTime.Now
                 };
-                alert.Employees.Add(employee);
-                employee.Alerts.Add(alert);
+
+                _alertManager.Create(alert);
 
                 employee.FirstName = emplInfo.FirstName;
                 employee.LastName = emplInfo.LastName;
                 employee.Prefix = emplInfo.Prefix;
 
-                await _employerManager.UpdateEmployeeAsync(employee, alert);
+                await _employerManager.UpdateEmployeeAsync(employee);
 
                 var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
 
@@ -312,7 +310,7 @@ namespace Web.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (!string.IsNullOrWhiteSpace(token))
-                    return View(new EmplPassChangeViewModel {Id = user.Id, Token = token});
+                    return View(new ChangePasswordViewModel() {Id = user.Id, Token = token});
             }
 
             return View("Index");

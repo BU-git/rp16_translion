@@ -18,7 +18,7 @@ namespace BLL.Services.PersonageService
 
         public IUnitOfWork _unitOfWork { get; }
 
-        public abstract void DeleteEmployee(User user, Employee employee, Alert alert);
+        public abstract void DeleteEmployee(User user, Employee employee);
 
 
         #region Get user by username
@@ -255,7 +255,7 @@ namespace BLL.Services.PersonageService
             _unitOfWork.SaveChanges();
         }
 
-        public Task<int> UpdateEmployeeAsync(Employee employee, Alert alert)
+        public Task<int> UpdateEmployeeAsync(Employee employee)
         {
             if (employee.EmployeeId == null)
             {
@@ -265,14 +265,13 @@ namespace BLL.Services.PersonageService
             return _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee, Alert alert)
+        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee)
         {
             if (employee.EmployeeId == null)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
             _unitOfWork.EmployeeRepository.Update(employee);
-            _unitOfWork.AlertRepository.Add(alert);
             return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
