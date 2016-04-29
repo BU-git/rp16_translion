@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/Content/main.css">
 }
 
-<div class="wrapper">
+<div class="innerWrapper">
     <div class="leftPagePanel">
         <button id="btnAddPage" class="btn btn-default" data-target="#myModalPage">Add Page</button>
         <div class="pageContainer">
@@ -195,7 +195,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="ajaxResultModal" tabindex="-1" role="dialog" aria-labelledby="myModalPageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Test template creation result</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span id="ajaxStatsMessage"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAjaxHideModal" type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script> <!-- Please, add jQuery UI to project-->
+    <script type="text/javascript" src="~/Scripts/loadingoverlay.min.js"></script>
     <script src="~/Scripts/report/core.js"></script>
 }

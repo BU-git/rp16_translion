@@ -226,15 +226,32 @@ $(document).ready(function() {
 	{
 		$('#myModalPage').modal();
 	});
-	
-	$("#btnSaveTest").click(function(){
+
+    
+
+	$("#btnSaveTest").click(function() {
 	    var dataToSerialize = { pages: pages };
 		$.ajax({
             type: 'POST',
             url: '/Report/AddPages',
             data: JSON.stringify(dataToSerialize),
-            contentType: 'application/json; charset=utf-8'
-        });
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function() {
+                $.LoadingOverlay("show", {
+                    size: "50%",
+                    image: "/Content/Images/loading.gif"
+                });
+            },
+            complete: function(jqxhr, status) {
+                $.LoadingOverlay("hide");
+                var message = status === "success" ?
+                    "Successfully added new report pattern" :
+                    "Error occured, please, check all pages, or try later";
+                $('#ajaxStatsMessage').text(message);
+                $('#ajaxResultModal').modal('show');
+            },
+
+		});
 	});
 	
 	$('#btnDeleteQuestionModalOK').click(function(){
@@ -252,7 +269,7 @@ $(document).ready(function() {
 		var questionIndex = IndexOfObjectArray(page.Questions, "Id", questionId);
 		page.Questions.splice(questionIndex, 1);
 
-		wrapper.remove()
+	    wrapper.remove();
 
 		modal.modal('hide');
 	});
