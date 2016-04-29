@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -15,30 +15,24 @@ namespace DAL.Repositories
             : base(context)
         {
         }
-
-        public Employee FindById(Guid id)
+        public Employee FindById(Guid employeeId)
         {
-            return Set.FirstOrDefault(x => x.EmployeeId == id);
+            return Set.FirstOrDefault(x => x.EmployeeId == employeeId);
         }
 
-        public List<Employee> GetAllEmployees(User user)
+        public async Task<List<Employee>> GetAllEmployees(Guid employerId)
         {
-            return (from employee in Set
-                where employee.EmployerId == user.UserId
-                select employee).ToList();
-        }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync(User user)
-        {
             return await (from employee in Set
-                where employee.EmployerId == user.UserId
+                where employee.Employer.EmployerId == employerId
                 select employee).ToListAsync();
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken, User user)
+
+        public async Task<List<Employee>> GetAllEmployees(CancellationToken cancellationToken, Guid employerId)
         {
             return await (from employee in Set
-                where employee.EmployerId == user.UserId
+                where employee.Employer.EmployerId == employerId
                 select employee).ToListAsync(cancellationToken);
         }
     }

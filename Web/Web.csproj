@@ -266,6 +266,8 @@
     <Content Include="Views\Shared\_Comment.cshtml" />
     <Content Include="Views\Shared\_Radiobuttons.cshtml" />
     <Content Include="Views\Report\GetAllPages.cshtml" />
+    <Content Include="Views\Admin\RegisterEmployer.cshtml" />
+    <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

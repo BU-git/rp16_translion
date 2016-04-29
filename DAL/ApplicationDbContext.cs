@@ -24,10 +24,7 @@ namespace DAL
         internal IDbSet<Admin> Admins { get; set; }
         internal IDbSet<Advisor> Advisors { get; set; }
         internal IDbSet<Alert> Alerts { get; set; }
-
-
-
-           
+        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new ClaimConfiguration());

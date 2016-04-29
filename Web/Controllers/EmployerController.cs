@@ -49,7 +49,7 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+            var user = await _employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
             if (user?.Employer != null)
                 return View(user.Employer.Employees.Where(empl => !empl.IsDeleted));
@@ -104,9 +104,9 @@ namespace Web.Controllers
                     AlertUpdateTS = DateTime.Now
                 };
 
-                await _alertManager.CreateAsync(alert);
+                //await _alertManager.CreateAsync(alert);
 
-                await _employerManager.UpdateEmployeeAsync(employee);
+                await _employerManager.DeleteEmployee(employee);
 
                 var messageInfo = new EmployerDelEmployeeMessageBuilder(User.Identity.Name,
                     $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -130,11 +130,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Settings()
         {
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+            var user = await _employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
             if (user != null)
             {
-                var employer = await _employerManager.GetAsync(user);
+                var employer = await _employerManager.Get(user.UserId);
 
                 if (employer != null)
                 {
@@ -187,13 +187,14 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
                 return View(employeeViewModel);
 
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+            var user = await _employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
             if (user == null)
                 return RedirectToAction("Logout");
             Employee employee = new Employee
             {
                 EmployeeId = Guid.NewGuid(),
+                EmployerId =  user.UserId,
                 LastName = employeeViewModel.LastName,
                 FirstName = employeeViewModel.FirstName,
                 Prefix = employeeViewModel.Prefix,
@@ -210,10 +211,10 @@ namespace Web.Controllers
                 AlertCreateTS = DateTime.Now,
                 AlertUpdateTS = DateTime.Now
             };
-            alert.Employees.Add(employee);
-            employee.Alerts.Add(alert);
+            //alert.Employees.Add(employee);
+            //employee.Alerts.Add(alert);
 
-            await _employerManager.CreateEmployeeAsync(employee, user);
+            await _employerManager.CreateEmployee(employee);
 
             await _alertManager.CreateAsync(alert);
             var mailMessageData = new CreateEmployeeMailMessageBuilder(User.Identity.Name,
@@ -257,14 +258,9 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-
-            Employee employee;
-
-            if (emplInfo.Id != Guid.Empty
-                && (employee = await _employerManager.GetEmployeeAsync(emplInfo.Id)) != null
-                && emplInfo.EmployerId == employee.EmployerId)
+            Employee employee = await _employerManager.GetEmployee(emplInfo.Id);
+            if ((employee != null))
             {
-
                 var alert = new Alert()
                 {
                     AlertId = Guid.NewGuid(),
@@ -276,15 +272,15 @@ namespace Web.Controllers
                     AlertUpdateTS = DateTime.Now
                 };
 
-                _alertManager.Create(alert);
+                //_alertManager.Create(alert);
 
                 employee.FirstName = emplInfo.FirstName;
                 employee.LastName = emplInfo.LastName;
                 employee.Prefix = emplInfo.Prefix;
 
-                await _employerManager.UpdateEmployeeAsync(employee);
+                await _employerManager.UpdateEmployee(employee);
 
-                var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+                var user = await _employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
                 var mailMessageData = 
                     new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -351,7 +347,7 @@ namespace Web.Controllers
         [NonAction]
         private async Task<string[]> GetAllAdminsEmailsAsync()
         {
-            var admins = await _adminManager.GetAllAsync();
+            var admins = await _adminManager.GetAll();
 
             if (admins.Count == 0)
                 return null;
@@ -364,7 +360,7 @@ namespace Web.Controllers
         [NonAction]
         private async Task<Employee> GetEmployeeByIdAsync(Guid id)
         {
-            var user = await _employerManager.GetUserByIdAsync(User.Identity.GetUserId());
+            var user = await _employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
             return user?.Employer != null
                    && user.Employer.Employees.Any(empl => empl.EmployeeId == id)

@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace IDAL.Models
 {
@@ -16,7 +11,17 @@ namespace IDAL.Models
 
         #endregion
 
+        #region Navigation Properties
 
+        public virtual Employer Employer { get; set; }
+
+        #endregion
+
+        public ICollection<Employee> Employees
+        {
+            get { return _employees ?? (_employees = new List<Employee>()); }
+            set { _employees = value; }
+        }
 
         #region Scalar Properties
 
@@ -28,23 +33,12 @@ namespace IDAL.Models
         public virtual DateTime AlertCreateTS { get; set; }
         public virtual DateTime AlertUpdateTS { get; set; }
 
-
         #endregion
-
-        #region Navigation Properties
-
-        public virtual Employer Employer { get; set; }
-       
-        #endregion
-
-        public ICollection<Employee> Employees
-        {
-            get { return _employees ?? (_employees = new List<Employee>()); }
-            set { _employees = value; }
-        }
-        
     }
-    public enum AlertType { Employee_Add,
+
+    public enum AlertType
+    {
+        Employee_Add,
         Employee_Rename,
         Employee_Delete,
         Employee_Profile,
@@ -52,6 +46,5 @@ namespace IDAL.Models
         Employer_Update,
         Employer_Delete,
         Employer_ChangePassw
-    };
-
+    }
 }

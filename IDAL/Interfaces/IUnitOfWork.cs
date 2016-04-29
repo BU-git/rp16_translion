@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 
 namespace IDAL.Interfaces
 {
@@ -24,10 +24,9 @@ namespace IDAL.Interfaces
         #endregion
 
         #region Methods
-
-        int SaveChanges();
-        Task<int> SaveChangesAsync();
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        
+        Task<int> SaveChanges();
+        Task<int> SaveChanges(CancellationToken cancellationToken);
 
         #endregion
     }

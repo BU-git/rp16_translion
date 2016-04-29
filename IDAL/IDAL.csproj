@@ -42,20 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IUnitOfWork.cs" />
-    <Compile Include="Interfaces\Managers\IAlertManager.cs" />
-    <Compile Include="Interfaces\Managers\IPersonageManager.cs" />
-    <Compile Include="Interfaces\Repositories\IAdminRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IAdvisorRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IAlertRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IAnswerRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IEmployeeRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IEmployerRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IExternalLoginRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IPageRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IQuestionRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IRoleRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
+    <Compile Include="Interfaces\IManagers\IAlertManager.cs" />
+    <Compile Include="Interfaces\IManagers\IPersonageManager.cs" />
+    <Compile Include="Interfaces\IRepositories\IAdminRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IAdvisorRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IAlertRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IAnswerRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IEmployeeRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IEmployerRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IExternalLoginRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IPageRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IQuestionRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IRoleRepository.cs" />
+    <Compile Include="Interfaces\IRepositories\IUserRepository.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Advisor.cs" />
     <Compile Include="Models\Alert.cs" />
@@ -69,6 +69,7 @@
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkResult.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

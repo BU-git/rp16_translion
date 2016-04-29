@@ -1,8 +1,7 @@
 ﻿using System.Data.Entity;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -14,17 +13,12 @@ namespace DAL.Repositories
         {
         }
 
-        public Role FindByName(string roleName)
-        {
-            return Set.FirstOrDefault(x => x.Name == roleName);
-        }
-
-        public Task<Role> FindByNameAsync(string roleName)
+        public Task<Role> FindByName(string roleName)
         {
             return Set.FirstOrDefaultAsync(x => x.Name == roleName);
         }
 
-        public Task<Role> FindByNameAsync(CancellationToken cancellationToken, string roleName)
+        public Task<Role> FindByName(CancellationToken cancellationToken, string roleName)
         {
             return Set.FirstOrDefaultAsync(x => x.Name == roleName, cancellationToken);
         }

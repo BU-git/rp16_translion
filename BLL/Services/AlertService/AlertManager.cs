@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Managers;
+using IDAL.Interfaces.IManagers;
 using IDAL.Models;
 
 namespace BLL.Services.AlertService
@@ -18,59 +18,17 @@ namespace BLL.Services.AlertService
         }
 
         public IUnitOfWork _unitOfWork { get; }
-        #region Get all members
-
-        //public  List<Alert> GetAll()
-        //{
-            
-        //}
-
-        //public async Task<List<Alert>> GetAllAsync()
-        //{
-            
-        //}
-
-        //public  Task<List<Alert>> GetAllAsync(CancellationToken cancellationToken)
-        //{
-            
-        //}
-
-        #endregion
-
-        #region Get concrete type alert
-
-        //public List<Alert> Get(AlertType alertType)
-        //{
-            
-        //}
-
-        //public async Task<Alert> GetAsync(AlertType alertType)
-        //{
-            
-        //}
-
-        //public async Task<Alert> GetAsync(CancellationToken cancellationToken, AlertType alertType)
-        //{
-            
-        //}
-
-        #endregion
 
         #region Get with concrete status alerts
 
-        public List<Alert> GetNew()
+        public async Task<List<Alert>> GetNew()
         {
-            return _unitOfWork.AlertRepository.GetNewAlerts();
+            return await _unitOfWork.AlertRepository.GetNewAlerts();
         }
 
-        public async Task<List<Alert>> GetNewAsync()
+        public async Task<List<Alert>> GetNew(CancellationToken cancellationToken)
         {
-            return await _unitOfWork.AlertRepository.GetNewAlertsAsync();
-        }
-
-        public async Task<List<Alert>> GetNewAsync(CancellationToken cancellationToken)
-        {
-            return await _unitOfWork.AlertRepository.GetNewAlertsAsync(cancellationToken);
+            return await _unitOfWork.AlertRepository.GetNewAlerts(cancellationToken);
         }
         #endregion
 
@@ -105,7 +63,7 @@ namespace BLL.Services.AlertService
             }
 
             _unitOfWork.AlertRepository.Add(alert);
-            return await _unitOfWork.SaveChangesAsync();
+            return await _unitOfWork.SaveChanges();
         }
 
         public async Task<int> CreateAsync(CancellationToken cancellationToken, Alert alert)
@@ -116,7 +74,7 @@ namespace BLL.Services.AlertService
             }
 
             _unitOfWork.AlertRepository.Add(alert);
-            return await _unitOfWork.SaveChangesAsync();
+            return await _unitOfWork.SaveChanges(cancellationToken);
 
         }
         #endregion
@@ -186,31 +144,31 @@ namespace BLL.Services.AlertService
         #endregion
 
         #region GetAlert
-        public  Alert GetAlert(Guid? alertid)
+        public Alert GetAlert(Guid alertid)
         {
             if (alertid == null)
             {
                 throw new ArgumentException("alert is null. Wrong parameters");
             }
-            return _unitOfWork.AlertRepository.FindAlertById(alertid);
+            return  _unitOfWork.AlertRepository.FindAlertById(alertid).Result;
         }
 
-        public  async Task<Alert> GetAlertAsync(Guid? alertid)
+        public  async Task<Alert> GetAlertAsync(Guid alertid)
         {
             if (alertid == null)
             {
                 throw new ArgumentException("alert is null. Wrong parameters");
             }
-            return await _unitOfWork.AlertRepository.FindByIdAsync(alertid);
+            return await _unitOfWork.AlertRepository.FindById(alertid);
         }
 
-        public async Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid? alertid)
+        public async Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid alertid)
         {
             if (alertid == null)
             {
                 throw new ArgumentException("alert is null. Wrong parameters");
             }
-            return await _unitOfWork.AlertRepository.FindByIdAsync(cancellationToken,alertid);
+            return await _unitOfWork.AlertRepository.FindById(cancellationToken,alertid);
         }
 #endregion
 

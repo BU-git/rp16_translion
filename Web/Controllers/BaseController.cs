@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -8,7 +9,8 @@ using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
-using IDAL.Interfaces.Managers;
+using IDAL;
+using IDAL.Interfaces.IManagers;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -57,8 +59,8 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> EmployerProfile(string Id)
         {
-            var user = await employerManager.GetUserByIdAsync(Id);
-            var employer = await employerManager.GetAsync(user);
+            var user = await employerManager.GetBaseUserByGuid(Id);
+            var employer = await employerManager.Get(user.UserId);
 
             var model = new EmployerViewModel
             {
@@ -86,8 +88,8 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> EditEmployer(string Id)
         {
-            var user = await employerManager.GetUserByIdAsync(Id);
-            var employer = await employerManager.GetAsync(user);
+            var user = await employerManager.GetBaseUserByGuid(Id);
+            var employer = await employerManager.Get(user.UserId);
 
             var model = new EmployerViewModel
             {
@@ -111,8 +113,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await employerManager.GetUserByIdAsync(Id);
-                var employer = await employerManager.GetAsync(user);
+                var user = await employerManager.GetBaseUserByGuid(Id);
+                var employer = await employerManager.Get(user.UserId);
 
                 user.Email = model.EmailAdress;
 
@@ -125,7 +127,7 @@ namespace Web.Controllers
                 employer.Prefix = model.Prefix;
                 employer.TelephoneNumber = model.TelephoneNumber;
 
-                employerManager.Update(employer);
+                await employerManager.Update(employer);
 
                 var messageInfo = new AdminEditEmployerMessageBuilder(
                     user.UserName,
@@ -138,8 +140,7 @@ namespace Web.Controllers
                     employer.Adress,
                     employer.City);
                 await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, user.Email);
-
-                ViewBag.Employees = employer.Employees;
+                
                 return View("EmployerProfile", model);
             }
             return View(model);
@@ -150,8 +151,8 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteEmployer(string Id)
         {
-            var employer = await employerManager.GetUserByIdAsync(Id);
-            await adminManager.DeleteAsync(employer);
+            var employer = await employerManager.GetBaseUserByGuid(Id);
+            await employerManager.Delete(employer.UserName);
 
             var messageInfo = new AdminDeleteEmployerMessageBuilder();
             await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
@@ -187,9 +188,9 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(identityUser.Id, "Employer");
-                    var user = await employerManager.GetUserByIdAsync(identityUser.Id);
 
-                    await employerManager.CreateAsync(employer, user);
+                    employer.EmployerId = identityUser.Id;
+                    await employerManager.Create(employer);
 
                     var messageInfo = new AdminRegEmployerMessageBuilder(model.LoginName, password);
                     var mailingResult =
@@ -241,12 +242,13 @@ namespace Web.Controllers
                 return View(model);
             }
 
-            var employer = await adminManager.GetUserByIdAsync(id);
+            var employer = await adminManager.GetBaseUserByGuid(id);
 
             var employee = new Employee()
             {
                 EmployeeId = Guid.NewGuid(),
                 LastName = model.LastName,
+                EmployerId = employer.UserId,
                 FirstName = model.FirstName,
                 Prefix = model.Prefix
             };
@@ -261,7 +263,7 @@ namespace Web.Controllers
                 AlertUpdateTS = DateTime.Now
             };
 
-            await employerManager.CreateEmployeeAsync(employee, employer);
+            await employerManager.CreateEmployee(employee);
             await alertManager.CreateAsync(alert);
             
             var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -278,15 +280,15 @@ namespace Web.Controllers
         {
             if (id != null)
             {
-                var employee = await advisorManager.GetEmployeeAsync(id.Value);
+                var employee = await advisorManager.GetEmployee(id.Value);
 
-                var employer = await employerManager.GetUserByIdAsync(employee.EmployerId);
+                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId.ToString());
 
 
 
                 if (employee != null && employer != null)
                 {
-                    advisorManager.DeleteEmployee(employer, employee);
+                    await advisorManager.DeleteEmployee(employee);
 
                     // TODO: send mails to admins also
                     var mailInfo =
@@ -331,7 +333,7 @@ namespace Web.Controllers
             if (!ModelState.IsValid || employeeInfo.Id == Guid.Empty)
                 return View(employeeInfo);
 
-            var employee = await adminManager.GetEmployeeAsync(employeeInfo.Id);
+            var employee = await adminManager.GetEmployee(employeeInfo.Id);
 
             if (employee != null)
             {
@@ -351,8 +353,8 @@ namespace Web.Controllers
                 };
 
                 await alertManager.CreateAsync(alert);
-
-                if (await adminManager.UpdateEmployeeAsync(employee) > 0)
+                WorkResult result = await adminManager.UpdateEmployee(employee);
+                if (result.Succeeded)
                 {
                     var messageInfo =
                         new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
@@ -374,16 +376,16 @@ namespace Web.Controllers
             if (id == null || id.Value == Guid.Empty)
                 return null;
 
-            return adminManager.GetEmployeeAsync(id.Value);
+            return adminManager.GetEmployee(id.Value);
         }
         #endregion
 
         #endregion
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            ViewBag.Employers = employerManager.GetAll();
-            return View();
+            List<Employer> employers = await employerManager.GetAll();
+            return View(employers);
         }
 
         public ActionResult Logout()

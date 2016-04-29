@@ -1,4 +1,5 @@
-﻿@model IEnumerable<IDAL.Models.Advisor>
+﻿@using IDAL.Models
+@model List<Advisor>
 @{
     ViewBag.Title = "Advisors";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,12 +18,12 @@
     </div>
     <!--Main panel with users-->
     <div class="row" id="tlr-usr-section-main">
-        @foreach (var adv in Model)
+        @foreach (Advisor advisor in Model)
         {
             <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
-                <p data-userName>@adv.Name</p>
-                <a href="@Url.Action("AdvisorInfo", new {id = adv.AdvisorId})" class="tlr-usr-inner-info">
-                    <img src="~/Content/Images/UserImg.png" alt="@adv.Name">
+                <p data-userName>@advisor.Name</p>
+                <a href="@Url.Action("AdvisorInfo", new {id = advisor.AdvisorId})"class="tlr-usr-inner-info">
+                    <img src="~/Content/Images/UserImg.png" alt="@advisor.Name">
                 </a>
             </div>
         }

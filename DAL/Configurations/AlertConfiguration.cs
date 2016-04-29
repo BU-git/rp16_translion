@@ -47,13 +47,13 @@ namespace DAL.Configurations
 
             #region Relationship configuration
 
-            HasRequired(x => x.Employer)
-                .WithMany(x => x.Alerts)
-                .HasForeignKey(x => x.AlertEmployerId);
+            //HasRequired(x => x.Employer)
+            //    .WithMany(x => x.Alerts)
+            //    .HasForeignKey(x => x.AlertEmployerId);
 
-            HasMany(x => x.Employees)
-                .WithMany(x => x.Alerts);
-           
+            //HasMany(x => x.Employees)
+            //    .WithMany(x => x.Alerts);
+
 
             #endregion
         }

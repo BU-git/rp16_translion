@@ -34,9 +34,9 @@ namespace Web.Controllers
             if (!ModelState.IsValid || pages == null || pages.Length == 0)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Not all pages are valid");
 
-            await _testService.DeleteAllPagesAsync(); //deleting old template
+            await _testService.DeleteAllPages(); //deleting old template
 
-            await _testService.AddPagesAsync(pages);
+            await _testService.AddPages(pages);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -44,7 +44,7 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ViewResult> GetAllPages()
         {
-            var pages = await _testService.GetAllPagesAsync() 
+            var pages = await _testService.GetAllPages() 
                 ?? new List<Page>();
 
             return View(pages.OrderBy(p => p.Order).ToList());

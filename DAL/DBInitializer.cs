@@ -33,7 +33,7 @@ namespace DAL
             };
 
             // Get Admin role
-            Role adminRole = roleRepo.FindByName("Admin");
+            Role adminRole = roleRepo.FindByName("Admin").Result;
             defaultAdmin.Roles.Add(adminRole);
 
             // Add claim
@@ -69,7 +69,7 @@ namespace DAL
             };
 
             // Get Admin role
-            Role advisorRole = roleRepo.FindByName("Advisor");
+            Role advisorRole = roleRepo.FindByName("Advisor").Result;
             defaultAdvisor.Roles.Add(advisorRole);
 
             // Add claim

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IDAL;
 using IDAL.Models;
 
 namespace BLL.Services.TestService.Interfaces
@@ -11,93 +12,108 @@ namespace BLL.Services.TestService.Interfaces
     public interface ITestService
     {
         #region Get all pages
-        List<Page> GetAllPages();
-        Task<List<Page>> GetAllPagesAsync();
-        Task<List<Page>> GetAllPagesAsync(CancellationToken cancellationToken);
+
+        Task<List<Page>> GetAllPages();
+        Task<List<Page>> GetAllPages(CancellationToken cancellationToken);
+
         #endregion
 
         #region Add page collection
-        void AddPages(IEnumerable<Page> pages);
-        Task<int> AddPagesAsync(IEnumerable<Page> pages);
-        Task<int> AddPagesAsync(CancellationToken token, IEnumerable<Page> pages);
+
+        Task<WorkResult> AddPages(IEnumerable<Page> pages);
+        Task<WorkResult> AddPages(CancellationToken token, IEnumerable<Page> pages);
+
         #endregion
 
         #region Get concrete page by id
-        Page GetPageById(int pageId);
-        Task<Page> GetPageByIdAsync(int pageId);
-        Task<Page> GetPageByIdAsync(CancellationToken cancellationToken, int pageId);
+
+        Task<Page> GetPageById(int pageId);
+        Task<Page> GetPageById(CancellationToken cancellationToken, int pageId);
+
         #endregion
 
         #region Create page
-        void CreatePage(Page page);
-        Task<int> CreatePageAsync(Page page);
-        Task<int> CreatePageAsync(CancellationToken cancellationToken, Page page);
+
+        Task<WorkResult> CreatePage(Page page);
+        Task<WorkResult> CreatePage(CancellationToken cancellationToken, Page page);
+
         #endregion
 
         #region Update page
-        void UpdatePage(Page page);
-        Task<int> UpdatePageAsync(Page page);
-        Task<int> UpdatePageAsync(CancellationToken cancellationToken, Page page);
+
+        Task<WorkResult> UpdatePage(Page page);
+        Task<WorkResult> UpdatePage(CancellationToken cancellationToken, Page page);
+
         #endregion
 
         #region Delete page
-        void DeletePage(Page page);
-        Task<int> DeletePageAsync(Page page);
-        Task<int> DeletePageAsync(CancellationToken cancellationToken, Page page);
+
+        Task<WorkResult> DeletePage(Page page);
+        Task<WorkResult> DeletePage(CancellationToken cancellationToken, Page page);
+
         #endregion
 
         #region Delete all pages
-        void DeleteAllPages();
-        Task<int> DeleteAllPagesAsync();
-        Task<int> DeleteAllPagesAsync(CancellationToken token);
+
+        Task<WorkResult> DeleteAllPages();
+        Task<WorkResult> DeleteAllPages(CancellationToken token);
+
         #endregion
 
         #region Add question to page
-        void AddQuestion(Question question, Page page);
-        Task<int> AddQuestionAsync(Question question, Page page);
-        Task<int> AddQuestionAsync(CancellationToken token, Question question, Page page);
+
+        Task<WorkResult> AddQuestion(Question question, Page page);
+        Task<WorkResult> AddQuestion(CancellationToken cancellationToken, Question question, Page page);
+
         #endregion
 
         #region Remove question from page
-        void RemoveQuestion(Question question, Page page);
-        Task<int> RemoveQuestionAsync(Question question, Page page);
-        Task<int> RemoveQuestionAsync(CancellationToken token, Question question, Page page);
+
+        Task<WorkResult> RemoveQuestion(Question question, Page page);
+        Task<WorkResult> RemoveQuestion(CancellationToken token, Question question, Page page);
+
         #endregion
 
         #region Update Question
-        void UpdateQuestion(Question question);
-        Task<int> UpdateQuestionAsync(Question question);
-        Task<int> UpdateQuestionAsync(CancellationToken token, Question question);
+
+        Task<WorkResult> UpdateQuestion(Question question);
+        Task<WorkResult> UpdateQuestion(CancellationToken token, Question question);
+
         #endregion
 
         #region Get question
-        Question GetQuestion(int questionId);
-        Task<Question> GetQuestionAsync(int questionId);
-        Task<Question> GetQuestionAsync(CancellationToken token, int questionId);
+
+        Task<Question> GetQuestion(int questionId);
+        Task<Question> GetQuestion(CancellationToken cancellationToken, int questionId);
+
         #endregion
 
         #region Add answer to question
-        void AddAnswer(Answer answer, Question question);
-        Task<int> AddAnswerAsync(Answer answer, Question question);
-        Task<int> AddAnswerAsync(CancellationToken token, Answer answer, Question question);
+
+        Task<WorkResult> AddAnswer(Answer answer, Question question);
+        Task<WorkResult> AddAnswer(CancellationToken token, Answer answer, Question question);
+
         #endregion
 
         #region Remove answer from question
-        void RemoveAnswer(Answer answer, Question question);
-        Task<int> RemoveAnswerAsync(Answer answer, Question question);
-        Task<int> RemoveAnswerAsync(CancellationToken token, Answer answer, Question question);
+
+        Task<WorkResult> RemoveAnswer(Answer answer, Question question);
+        Task<WorkResult> RemoveAnswer(CancellationToken token, Answer answer, Question question);
+
         #endregion
 
         #region Update answer
-        void UpdateAnswer(Answer answer);
-        Task<int> UpdateAnswerAsync(Answer answer);
-        Task<int> UpdateAnswerAsync(CancellationToken token, Answer answer);
+
+        Task<WorkResult> UpdateAnswer(Answer answer);
+        Task<WorkResult> UpdateAnswer(CancellationToken cancellationToken, Answer answer);
+
         #endregion
 
         #region Get answer
-        Answer GetAnswer(int answerId);
-        Task<Answer> GetAnswerAsync(int answerId);
-        Task<Answer> GetAnswerAsync(CancellationToken token, int answerId);
+
+        Task<Answer> GetAnswer(int answerId);
+        Task<Answer> GetAnswer(CancellationToken cancellationToken, int answerId);
+
         #endregion
     }
 }
