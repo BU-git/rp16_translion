@@ -186,6 +186,30 @@ namespace BLL.Services.PersonageService
             }
         }
 
+
+        #endregion
+
+        #region Delete advisor
+
+
+        public override async Task<WorkResult> Delete(Advisor entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.AdvisorId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Advisor entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(cancellationToken, entity.AdvisorId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
         public override async Task<WorkResult> Delete(Guid userId)
         {
             if (userId == Guid.Empty)
@@ -194,14 +218,15 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                // Check is userId owned Advisor
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(userId);
+                if (advisor != null)
                 {
+                    UnitOfWork.UserRepository.Remove(advisor.User);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
@@ -217,24 +242,21 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(cancellationToken,userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                // Check is userId owned Advisor
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,userId);
+                if (advisor != null)
                 {
+                    UnitOfWork.UserRepository.Remove(advisor.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
                 return WorkResult.Failed(ex.Message);
             }
         }
-
-        #endregion
-
-        #region Delete advisor
 
         public override async Task<WorkResult> Delete(string userName)
         {
@@ -244,14 +266,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
+                // Check is userId owned Advisor
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(user.UserId);
+                if (advisor != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
@@ -267,14 +291,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
+                // Check is userId owned Advisor
                 User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,user.UserId);
+                if (advisor != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {

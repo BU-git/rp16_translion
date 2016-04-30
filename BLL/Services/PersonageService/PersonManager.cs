@@ -205,9 +205,11 @@ namespace BLL.Services.PersonageService
         public abstract Task<WorkResult> Update(TEntity entity);
         public abstract Task<WorkResult> Update(CancellationToken cancellationToken, TEntity entity);
 
+        public abstract Task<WorkResult> Delete(TEntity entity);
+        public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, TEntity entity);
         public abstract Task<WorkResult> Delete(Guid userId);
-        public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId);
-        public abstract Task<WorkResult> Delete(string userName);
-        public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, string userName);
+        public abstract  Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId);
+        public abstract  Task<WorkResult> Delete(string userName);
+        public abstract  Task<WorkResult> Delete(CancellationToken cancellationToken, string userName);
     }
 }

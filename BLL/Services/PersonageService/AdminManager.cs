@@ -190,6 +190,25 @@ namespace BLL.Services.PersonageService
 
         #region Delete admin
 
+
+        public override async Task<WorkResult> Delete(Admin entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.AdminId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Admin entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(cancellationToken,entity.AdminId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
         public override async Task<WorkResult> Delete(Guid userId)
         {
             if (userId == Guid.Empty)
@@ -198,14 +217,15 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                // Check is userId owned Admin
+                Admin admin = await UnitOfWork.AdminRepository.FindById(userId);
+                if (admin != null)
                 {
+                    UnitOfWork.UserRepository.Remove(admin.User);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
@@ -221,14 +241,15 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(cancellationToken,userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                // Check is userId owned Admin
+                Admin admin = await UnitOfWork.AdminRepository.FindById(cancellationToken, userId);
+                if (admin != null)
                 {
+                    UnitOfWork.UserRepository.Remove(admin.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
@@ -244,14 +265,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
+                // Check is userId owned Admin
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                Admin admin = await UnitOfWork.AdminRepository.FindById(user.UserId);
+                if (admin != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {
@@ -267,14 +290,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
+                // Check is userId owned Admin
                 User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                Admin admin = await UnitOfWork.AdminRepository.FindById(cancellationToken, user.UserId);
+                if (admin != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Admin");
             }
             catch (Exception ex)
             {

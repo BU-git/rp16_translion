@@ -191,6 +191,25 @@ namespace BLL.Services.PersonageService
 
         #region Delete eployer
 
+
+        public override async Task<WorkResult> Delete(Employer entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.EmployerId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Employer entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(cancellationToken, entity.EmployerId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
         public override async Task<WorkResult> Delete(Guid userId)
         {
             if (userId == Guid.Empty)
@@ -199,14 +218,15 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                // Check is userId owned by Employer
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(userId);
+                if (employer != null)
                 {
+                    UnitOfWork.UserRepository.Remove(employer.User);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Employer");
             }
             catch (Exception ex)
             {
@@ -222,14 +242,15 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindById(cancellationToken, userId);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                // Check is userId owned by Employer
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(cancellationToken,userId);
+                if (employer != null)
                 {
+                    UnitOfWork.UserRepository.Remove(employer.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Employer");
             }
             catch (Exception ex)
             {
@@ -245,14 +266,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
+                // Check is userId owned by Employer
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges();
-                if (result > 0)
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(user.UserId);
+                if (employer != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Employer");
             }
             catch (Exception ex)
             {
@@ -268,14 +291,16 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
-                UnitOfWork.UserRepository.Remove(user);
-                int result = await UnitOfWork.SaveChanges(cancellationToken);
-                if (result > 0)
+                // Check is userId owned by Employer
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(cancellationToken,user.UserId);
+                if (employer != null)
                 {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("userId isn't owned by Employer");
             }
             catch (Exception ex)
             {
