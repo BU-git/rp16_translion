@@ -1,0 +1,44 @@
+﻿.btn { 
+	display:inline-block; 
+	margin:10px;
+}
+
+.pageViewer {
+	width: 75%;
+	margin: 0 auto;
+}
+
+
+/* slide container */
+.page {
+    border: 1px dashed #ddd;
+	box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd;
+    margin: 10px 10px 10px 30px;
+    padding: 10px 40px;
+}
+
+.pageTitle {
+    font-size: 1.5em;
+}
+
+/* override arrows size */
+.slick-prev:before, .slick-next:before {
+	font-size: 40px; 
+	color: #0E97C4;
+}
+
+.submitBtnBlock {
+    width: 35%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.submitTextBlock {
+    font-size: 1.2em;
+    padding: 20px 0;
+}
+
+.customBtn {
+    width: 200px;
+    font-size: 1.5em;
+}

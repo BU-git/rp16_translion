@@ -25,6 +25,7 @@ namespace IDAL.Models
         public virtual Page Page { get; set; }
 
         public virtual ICollection<Answer> Answers { get; set; }
+        public virtual ICollection<Answer> UserAnswers { get; set; } 
         #endregion
     }
 }

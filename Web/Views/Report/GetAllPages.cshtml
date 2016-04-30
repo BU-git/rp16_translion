@@ -4,14 +4,57 @@
     ViewBag.Title = "GetAllPages";
 }
 
+@section styles {
+    <!-- progressbar -->	
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="~/Content/jquery.stepProgressBar.css" rel="stylesheet" type="text/css">
 
-@foreach (var page in Model)
-{
-    <h2>@page.Name Order: @page.Order</h2>
-        <div class="row">
-            @foreach (var question in page.Questions)
-            {
-                @Html.CreateQuestion(question)
-            }
+    <!-- carousel -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css" />
+    <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.5.9/slick-theme.css"/>
+
+    <link href="../../Content/carousel.css" rel="stylesheet" type="text/css">
+}
+
+@Html.Hidden("PageCounterId", Model.Count)
+
+<div class="pageViewer">
+    <div id="progressbar">
+    </div>
+    @using (Html.BeginForm("LoadPreview", "Report", FormMethod.Post))
+    {
+    <div class="carousel">
+        @foreach (var page in Model)
+        {
+            <div class="page">
+                <div class="pageTitle">
+                    @page.Order. @page.Name
+                </div>
+                <div class="row">
+                    @foreach (var question in page.Questions)
+                    {
+                        @Html.CreateQuestion(question)
+                    }
+                </div>
+            </div>
+        }
+        <div class="page">
+            <div class="submitTextBlock col-centered">
+                <p>Ensure that you've filled all fields and press Submit to preview the whole report</p>
+            </div>
+            <div class="submitBtnBlock">
+                <input type="submit" class="btn btn-primary customBtn" />
+            </div>
         </div>
+    </div>
+    }
+</div>
+
+
+
+@section scripts {
+    <script src="http://cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
+    <script src="~/Scripts/jquery.stepProgressBar.js"></script>	
+    <script src="~/Scripts/report/passReport.js"></script>
 }

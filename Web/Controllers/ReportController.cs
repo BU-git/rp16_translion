@@ -50,5 +50,11 @@ namespace Web.Controllers
             return View(pages.OrderBy(p => p.Order).ToList());
         }
 
+        [HttpPost]
+        public async Task<ActionResult> LoadPreview(FormCollection formCollection)
+        {
+            return View();
+        }
+
     }
 }

@@ -147,6 +147,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\carousel.css" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\Images\AdminCreateEmployer.png" />
     <Content Include="Content\Images\AdminMessages.png" />
@@ -154,6 +155,7 @@
     <Content Include="Content\Images\pen.png" />
     <Content Include="Content\Images\UserHeader.png" />
     <Content Include="Content\Images\UserImg.png" />
+    <Content Include="Content\jquery.stepProgressBar.css" />
     <Content Include="Content\main.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\styles.css" />
@@ -172,12 +174,14 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.stepProgressBar.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\report\core.js" />
+    <Content Include="Scripts\report\passReport.js" />
     <Content Include="Scripts\search\fuser.js" />
     <Content Include="Scripts\search\search.js" />
     <Content Include="Scripts\tlrUserActions\deleteUser.js" />
