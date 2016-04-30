@@ -1,4 +1,5 @@
-﻿using IDAL.Interfaces.Repositories;
+﻿using System.Data.Entity;
+using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -10,9 +11,11 @@ namespace DAL.Repositories
         {
         }
 
-        public void AddEmployee(Employee employee, User user)
+        public async void AddEmployee(Employee employee)
         {
-            user.Employer.Employees.Add(employee);
+            Employer user = await FindById(employee.EmployerId);
+            user.Employees.Add(employee);
+            Update(user);
         }
     }
 }

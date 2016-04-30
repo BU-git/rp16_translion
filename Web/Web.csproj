@@ -179,6 +179,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Content\Images\loading.gif" />
+    <Content Include="Scripts\loadingoverlay.js" />
+    <Content Include="Scripts\loadingoverlay.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\report\core.js" />
     <Content Include="Scripts\report\passReport.js" />
@@ -270,6 +273,8 @@
     <Content Include="Views\Shared\_Comment.cshtml" />
     <Content Include="Views\Shared\_Radiobuttons.cshtml" />
     <Content Include="Views\Report\GetAllPages.cshtml" />
+    <Content Include="Views\Admin\RegisterEmployer.cshtml" />
+    <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

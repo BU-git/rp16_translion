@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BLL.Services.TestService.Interfaces;
+using IDAL;
 using IDAL.Interfaces;
 using IDAL.Models;
 
@@ -10,514 +11,643 @@ namespace BLL.Services.TestService
 {
     public class TestManager : ITestService
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         public TestManager(IUnitOfWork uow)
         {
-            _unitOfWork = uow;
+            UnitOfWork = uow;
         }
+
+        public IUnitOfWork UnitOfWork { get; }
 
         #region Get all pages
 
-        public List<Page> GetAllPages()
-            => _unitOfWork.PageRepository.GetAll();
+        public async Task<List<Page>> GetAllPages()
+        {
+            return await UnitOfWork.PageRepository.GetAll();
+        }
 
-        public Task<List<Page>> GetAllPagesAsync()
-            => _unitOfWork.PageRepository.GetAllAsync();
+        public Task<List<Page>> GetAllPages(CancellationToken cancellationToken)
+        {
+            return UnitOfWork.PageRepository.GetAll(cancellationToken);
+        }
 
-        public Task<List<Page>> GetAllPagesAsync(CancellationToken cancellationToken)
-            => _unitOfWork.PageRepository.GetAllAsync(cancellationToken);
         #endregion
 
         #region Add pages
-        public void AddPages(IEnumerable<Page> pages)
+
+        public async Task<WorkResult> AddPages(IEnumerable<Page> pages)
         {
             if (pages == null)
-                throw new ArgumentNullException(nameof(pages));
-
-            _unitOfWork.PageRepository.AddRange(pages);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Pages cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.AddRange(pages);
+                await UnitOfWork.SaveChanges();
+                return WorkResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddPagesAsync(IEnumerable<Page> pages)
+        public async Task<WorkResult> AddPages(CancellationToken cancellationToken, IEnumerable<Page> pages)
         {
             if (pages == null)
-                throw new ArgumentNullException(nameof(pages));
-
-            _unitOfWork.PageRepository.AddRange(pages);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Pages cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.AddRange(pages);
+                await UnitOfWork.SaveChanges(cancellationToken);
+                return WorkResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddPagesAsync(CancellationToken token, IEnumerable<Page> pages)
-        {
-            if (pages == null)
-                throw new ArgumentNullException(nameof(pages));
-
-            _unitOfWork.PageRepository.AddRange(pages);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Get page by id
-        public Page GetPageById(int pageId)
+
+        public async Task<Page> GetPageById(int pageId)
         {
             if (pageId <= 0)
-                throw new ArgumentException($"Id can't be {pageId}", nameof(pageId));
-
-            return _unitOfWork.PageRepository.FindById(pageId);
+            {
+                return null;
+            }
+            return await UnitOfWork.PageRepository.FindById(pageId);
         }
 
-        public Task<Page> GetPageByIdAsync(int pageId)
+        public async Task<Page> GetPageById(CancellationToken cancellationToken, int pageId)
         {
             if (pageId <= 0)
-                throw new ArgumentException($"Id can't be {pageId}", nameof(pageId));
-
-            return _unitOfWork.PageRepository.FindByIdAsync(pageId);
+            {
+                return null;
+            }
+            return await UnitOfWork.PageRepository.FindById(cancellationToken, pageId);
         }
 
-        public Task<Page> GetPageByIdAsync(CancellationToken cancellationToken, int pageId)
-        {
-            if (pageId <= 0)
-                throw new ArgumentException($"Id can't be {pageId}", nameof(pageId));
-
-            return _unitOfWork.PageRepository.FindByIdAsync(cancellationToken, pageId);
-        }
         #endregion
 
         #region Create page
-        public void CreatePage(Page page)
+
+        public async Task<WorkResult> CreatePage(Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Add(page);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Add(page);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> CreatePageAsync(Page page)
+        public async Task<WorkResult> CreatePage(CancellationToken cancellationToken, Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Add(page);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Add(page);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> CreatePageAsync(CancellationToken cancellationToken, Page page)
-        {
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Add(page);
-
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
         #endregion
 
         #region Update page
-        public void UpdatePage(Page page)
+
+        public async Task<WorkResult> UpdatePage(Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Update(page);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Update(page);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdatePageAsync(Page page)
+        public async Task<WorkResult> UpdatePage(CancellationToken cancellationToken, Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Update(page);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Update(page);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdatePageAsync(CancellationToken cancellationToken, Page page)
-        {
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Update(page);
-
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
         #endregion
 
         #region Delete page
-        public void DeletePage(Page page)
+
+        public async Task<WorkResult> DeletePage(Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Remove(page);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Remove(page);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> DeletePageAsync(Page page)
+        public async Task<WorkResult> DeletePage(CancellationToken cancellationToken, Page page)
         {
             if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Remove(page);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Page cannot be null");
+            }
+            try
+            {
+                UnitOfWork.PageRepository.Remove(page);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> DeletePageAsync(CancellationToken cancellationToken, Page page)
-        {
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            _unitOfWork.PageRepository.Remove(page);
-
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
         #endregion
 
         #region Delete all pages
-        public void DeleteAllPages()
-        {
-            var pages = _unitOfWork.PageRepository.GetAll();
 
-            if (pages != null && pages.Count > 0)
+        public async Task<WorkResult> DeleteAllPages()
+        {
+            List<Page> pages = await UnitOfWork.PageRepository.GetAll();
+            if (pages == null || pages.Count == 0)
+            {
+                return WorkResult.Failed("Page cannot be null or empty");
+            }
+            try
             {
                 foreach (var page in pages)
-                    _unitOfWork.PageRepository.Remove(page);
-
-                _unitOfWork.SaveChanges();
+                {
+                    UnitOfWork.PageRepository.Remove(page);
+                }
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
             }
         }
 
-        public async Task<int> DeleteAllPagesAsync()
+        public async Task<WorkResult> DeleteAllPages(CancellationToken cancellationToken)
         {
-            var pages = await _unitOfWork.PageRepository.GetAllAsync();
-
-            if (pages != null && pages.Count > 0)
+            List<Page> pages = await UnitOfWork.PageRepository.GetAll(cancellationToken);
+            if (pages == null || pages.Count == 0)
+            {
+                return WorkResult.Failed("Page cannot be null or empty");
+            }
+            try
             {
                 foreach (var page in pages)
-                    _unitOfWork.PageRepository.Remove(page);
-
-                return await _unitOfWork.SaveChangesAsync();
+                {
+                    UnitOfWork.PageRepository.Remove(page);
+                }
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
             }
-
-            return 0;
-        }
-
-        public async Task<int> DeleteAllPagesAsync(CancellationToken token)
-        {
-            var pages = await _unitOfWork.PageRepository.GetAllAsync(token);
-
-            if (pages != null && pages.Count > 0)
+            catch (Exception ex)
             {
-                foreach (var page in pages)
-                    _unitOfWork.PageRepository.Remove(page);
-
-                return await _unitOfWork.SaveChangesAsync(token);
+                return WorkResult.Failed(ex.Message);
             }
-
-            return 0;
         }
+
         #endregion
 
         #region Add question
-        public void AddQuestion(Question question, Page page)
+
+        public async Task<WorkResult> AddQuestion(Question question, Page page)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (!page.Questions.Contains(question))
-                page.Questions.Add(question);
-
-            _unitOfWork.SaveChanges();
+            if ((question == null) || (page == null))
+            {
+                return WorkResult.Failed("Page or question cannot be null");
+            }
+            try
+            {
+                if (!page.Questions.Contains(question))
+                {
+                    page.Questions.Add(question);
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current page hold this question");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddQuestionAsync(Question question, Page page)
+        public async Task<WorkResult> AddQuestion(CancellationToken cancellationToken, Question question, Page page)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (!page.Questions.Contains(question))
-                page.Questions.Add(question);
-
-            return _unitOfWork.SaveChangesAsync();
+            if ((question == null) || (page == null))
+            {
+                return WorkResult.Failed("Page or question cannot be null");
+            }
+            try
+            {
+                if (!page.Questions.Contains(question))
+                {
+                    page.Questions.Add(question);
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current page hold this question");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddQuestionAsync(CancellationToken token, Question question, Page page)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (!page.Questions.Contains(question))
-                page.Questions.Add(question);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Remove question
-        public void RemoveQuestion(Question question, Page page)
+
+        public async Task<WorkResult> RemoveQuestion(Question question, Page page)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (page.Questions.Contains(question))
-                page.Questions.Remove(question);
-
-            _unitOfWork.SaveChanges();
+            if ((question == null) || (page == null))
+            {
+                return WorkResult.Failed("Page or question cannot be null");
+            }
+            try
+            {
+                if (page.Questions.Contains(question))
+                {
+                    page.Questions.Remove(question);
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current page hold this question");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> RemoveQuestionAsync(Question question, Page page)
+        public async Task<WorkResult> RemoveQuestion(CancellationToken cancellationToken, Question question, Page page)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (page.Questions.Contains(question))
-                page.Questions.Remove(question);
-
-            return _unitOfWork.SaveChangesAsync();
+            if ((question == null) || (page == null))
+            {
+                return WorkResult.Failed("Page or question cannot be null");
+            }
+            try
+            {
+                if (page.Questions.Contains(question))
+                {
+                    page.Questions.Remove(question);
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current page hold this question");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> RemoveQuestionAsync(CancellationToken token, Question question, Page page)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (page == null)
-                throw new ArgumentNullException(nameof(page));
-
-            if (page.Questions.Contains(question))
-                page.Questions.Remove(question);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Update question
-        public void UpdateQuestion(Question question)
+
+        public async Task<WorkResult> UpdateQuestion(Question question)
         {
             if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            _unitOfWork.QuestionRepository.Update(question);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Question cannot be null");
+            }
+            try
+            {
+                UnitOfWork.QuestionRepository.Update(question);
+                await UnitOfWork.SaveChanges();
+                return WorkResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdateQuestionAsync(Question question)
+        public async Task<WorkResult> UpdateQuestion(CancellationToken cancellationToken, Question question)
         {
             if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            _unitOfWork.QuestionRepository.Update(question);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Question cannot be null");
+            }
+            try
+            {
+                UnitOfWork.QuestionRepository.Update(question);
+                await UnitOfWork.SaveChanges(cancellationToken);
+                return WorkResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdateQuestionAsync(CancellationToken token, Question question)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            _unitOfWork.QuestionRepository.Update(question);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Get question
-        public Question GetQuestion(int questionId)
+
+        public Task<Question> GetQuestion(int questionId)
         {
             if (questionId <= 0)
-                throw new ArgumentException($"Question's id can't be {questionId}", nameof(questionId));
-
-            return _unitOfWork.QuestionRepository.FindById(questionId);
+            {
+                return null;
+            }
+            return UnitOfWork.QuestionRepository.FindById(questionId);
         }
 
-        public Task<Question> GetQuestionAsync(int questionId)
+        public Task<Question> GetQuestion(CancellationToken cancellationToken, int questionId)
         {
             if (questionId <= 0)
-                throw new ArgumentException($"Question's id can't be {questionId}", nameof(questionId));
-
-            return _unitOfWork.QuestionRepository.FindByIdAsync(questionId);
-        }
-
-        public Task<Question> GetQuestionAsync(CancellationToken token, int questionId)
-        {
-            if (questionId <= 0)
-                throw new ArgumentException($"Question's id can't be {questionId}", nameof(questionId));
-
-            return _unitOfWork.QuestionRepository.FindByIdAsync(token, questionId);
+            {
+                return null;
+            }
+            return UnitOfWork.QuestionRepository.FindById(cancellationToken, questionId);
         }
 
         #endregion
 
         #region Add answer
-        public void AddAnswer(Answer answer, Question question)
+
+        public async Task<WorkResult> AddAnswer(Answer answer, Question question)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (!question.Answers.Contains(answer))
-                question.Answers.Add(answer);
-
-            _unitOfWork.SaveChanges();
+            if ((question == null) || (answer == null))
+            {
+                return WorkResult.Failed("Answer or question cannot be null");
+            }
+            try
+            {
+                if (!question.Answers.Contains(answer))
+                {
+                    question.Answers.Add(answer);
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current question hold this answer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddAnswerAsync(Answer answer, Question question)
+        public async Task<WorkResult> AddAnswer(CancellationToken cancellationToken, Answer answer, Question question)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (!question.Answers.Contains(answer))
-                question.Answers.Add(answer);
-
-            return _unitOfWork.SaveChangesAsync();
+            if ((question == null) || (answer == null))
+            {
+                return WorkResult.Failed("Answer or question cannot be null");
+            }
+            try
+            {
+                if (!question.Answers.Contains(answer))
+                {
+                    question.Answers.Add(answer);
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current question hold this answer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> AddAnswerAsync(CancellationToken token, Answer answer, Question question)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (!question.Answers.Contains(answer))
-                question.Answers.Add(answer);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Remove answer
-        public void RemoveAnswer(Answer answer, Question question)
+
+        public async Task<WorkResult> RemoveAnswer(Answer answer, Question question)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (question.Answers.Contains(answer))
-                question.Answers.Remove(answer);
-
-            _unitOfWork.SaveChanges();
+            if ((question == null) || (answer == null))
+            {
+                return WorkResult.Failed("Answer or question cannot be null");
+            }
+            try
+            {
+                if (question.Answers.Contains(answer))
+                {
+                    question.Answers.Remove(answer);
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current question not have this answer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> RemoveAnswerAsync(Answer answer, Question question)
+        public async Task<WorkResult> RemoveAnswer(CancellationToken cancellationToken, Answer answer, Question question)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (question.Answers.Contains(answer))
-                question.Answers.Remove(answer);
-
-            return _unitOfWork.SaveChangesAsync();
+            if ((question == null) || (answer == null))
+            {
+                return WorkResult.Failed("Answer or question cannot be null");
+            }
+            try
+            {
+                if (question.Answers.Contains(answer))
+                {
+                    question.Answers.Remove(answer);
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned 0");
+                }
+                return WorkResult.Failed("Current question not have this answer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> RemoveAnswerAsync(CancellationToken token, Answer answer, Question question)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            if (question.Answers.Contains(answer))
-                question.Answers.Remove(answer);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
+
         #region Update answer
-        public void UpdateAnswer(Answer answer)
+
+        public async Task<WorkResult> UpdateAnswer(Answer answer)
         {
             if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            _unitOfWork.AnswerRepository.Update(answer);
-
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Answer cannot be null");
+            }
+            try
+            {
+                UnitOfWork.AnswerRepository.Update(answer);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdateAnswerAsync(Answer answer)
+        public async Task<WorkResult> UpdateAnswer(CancellationToken cancellationToken, Answer answer)
         {
             if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            _unitOfWork.AnswerRepository.Update(answer);
-
-            return _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Answer cannot be null");
+            }
+            try
+            {
+                UnitOfWork.AnswerRepository.Update(answer);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges returned 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public Task<int> UpdateAnswerAsync(CancellationToken token, Answer answer)
-        {
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer));
-
-            _unitOfWork.AnswerRepository.Update(answer);
-
-            return _unitOfWork.SaveChangesAsync(token);
-        }
         #endregion
 
         #region Get answer
-        public Answer GetAnswer(int answerId)
+
+        public Task<Answer> GetAnswer(int answerId)
         {
             if (answerId <= 0)
-                throw new ArgumentException($"Answer's id can't be {answerId}", nameof(answerId));
-
-            return _unitOfWork.AnswerRepository.FindById(answerId);
+            {
+                return null;
+            }
+            return UnitOfWork.AnswerRepository.FindById(answerId);
         }
 
-        public Task<Answer> GetAnswerAsync(int answerId)
+        public Task<Answer> GetAnswer(CancellationToken cancellationToken, int answerId)
         {
             if (answerId <= 0)
-                throw new ArgumentException($"Answer's id can't be {answerId}", nameof(answerId));
-
-            return _unitOfWork.AnswerRepository.FindByIdAsync(answerId);
+            {
+                return null;
+            }
+            return UnitOfWork.AnswerRepository.FindById(cancellationToken, answerId);
         }
 
-        public Task<Answer> GetAnswerAsync(CancellationToken token, int answerId)
-        {
-            if (answerId <= 0)
-                throw new ArgumentException($"Answer's id can't be {answerId}", nameof(answerId));
-
-            return _unitOfWork.AnswerRepository.FindByIdAsync(token, answerId);
-        }
         #endregion
     }
 }

@@ -1,5 +1,5 @@
 ﻿@using Web.Infrastructure.HtmlHelpers
-@model List<IDAL.Models.Page>
+@model System.Collections.Generic.IEnumerable<IDAL.Models.Page>
 @{
     ViewBag.Title = "GetAllPages";
 }
@@ -25,18 +25,18 @@
     @using (Html.BeginForm("LoadPreview", "Report", FormMethod.Post))
     {
     <div class="carousel">
-        @foreach (var page in Model)
-        {
+@foreach (var page in Model)
+{
             <div class="page">
                 <div class="pageTitle">
                     @page.Order. @page.Name
                 </div>
-                <div class="row">
-                    @foreach (var question in page.Questions)
-                    {
-                        @Html.CreateQuestion(question)
-                    }
-                </div>
+        <div class="row">
+            @foreach (var question in page.Questions)
+            {
+                @Html.CreateQuestion(question)
+            }
+        </div>
             </div>
         }
         <div class="page">

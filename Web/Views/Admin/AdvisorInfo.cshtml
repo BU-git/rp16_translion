@@ -46,7 +46,7 @@
                     <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
                 </div>
                 <div class="modal-footer">
-                    @Html.ActionLink("Ja", "RemoveAdvisor", new { id = Model.AdvisorId }, new { @class = "btn btn-success" })
+                    @Html.ActionLink("Ja", "DeleteAdvisor", new { id = Model.AdvisorId }, new { @class = "btn btn-success" })
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
                 </div>
             </div>

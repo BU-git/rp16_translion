@@ -129,8 +129,15 @@ namespace Web.Controllers
 
             if (ModelState.IsValid)
             {
+                var identityUser = new IdentityUser
+                {
+                    UserName = model.UserName,
+                    Email = model.EmailAdress
+                };
+
                 var employer = new Employer
                 {
+                    EmployerId = identityUser.Id,
                     Adress = model.Adress,
                     City = model.City,
                     CompanyName = model.CompanyName,
@@ -140,21 +147,15 @@ namespace Web.Controllers
                     PostalCode = model.PostalCode,
                     TelephoneNumber = model.TelephoneNumber
                 };
-
-                var identityUser = new IdentityUser
-                {
-                    UserName = model.UserName,
-                    Email = model.EmailAdress
-                };
-
+                
                 var result = await _userManager.CreateAsync(identityUser, model.Password);
 
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
-                    var user = await _employerManager.GetUserByIdAsync(identityUser.Id);
+                    var user = await _employerManager.GetBaseUserByGuid(identityUser.Id.ToString());
 
-                    await _employerManager.CreateAsync(employer, user);
+                    await _employerManager.Create(employer);
                     await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");

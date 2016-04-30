@@ -23,10 +23,7 @@ namespace BLL.Identity.Stores
         {
             get
             {
-                return _unitOfWork.RoleRepository
-                    .GetAll()
-                    .Select(x => getIdentityRole(x))
-                    .AsQueryable();
+                return _unitOfWork.RoleRepository.GetAll().Result.Select(x => getIdentityRole(x)).AsQueryable();
             }
         }
 
@@ -51,7 +48,7 @@ namespace BLL.Identity.Stores
             var r = getRole(role);
 
             _unitOfWork.RoleRepository.Add(r);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
         public Task DeleteAsync(IdentityRole role)
@@ -62,19 +59,19 @@ namespace BLL.Identity.Stores
             var r = getRole(role);
 
             _unitOfWork.RoleRepository.Remove(r);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
-        public Task<IdentityRole> FindByIdAsync(Guid roleId)
+        public async Task<IdentityRole> FindByIdAsync(Guid roleId)
         {
-            var role = _unitOfWork.RoleRepository.FindById(roleId);
-            return Task.FromResult(getIdentityRole(role));
+            var role = await _unitOfWork.RoleRepository.FindById(roleId);
+            return  getIdentityRole(role);
         }
 
-        public Task<IdentityRole> FindByNameAsync(string roleName)
+        public async Task<IdentityRole> FindByNameAsync(string roleName)
         {
-            var role = _unitOfWork.RoleRepository.FindByName(roleName);
-            return Task.FromResult(getIdentityRole(role));
+            var role = await _unitOfWork.RoleRepository.FindByName(roleName);
+            return getIdentityRole(role);
         }
 
         public Task UpdateAsync(IdentityRole role)
@@ -83,7 +80,7 @@ namespace BLL.Identity.Stores
                 throw new ArgumentNullException("role");
             var r = getRole(role);
             _unitOfWork.RoleRepository.Update(r);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
         #endregion

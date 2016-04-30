@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DAL.Repositories;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 
 namespace DAL
 {
@@ -20,6 +20,9 @@ namespace DAL
             _employeeRepository = null;
             _advisorRepository = null;
             _alertRepository = null;
+            _answerRepository = null;
+            _pageRepository = null;
+            _questionRepository = null;
             _context.Dispose();
         }
 
@@ -115,19 +118,14 @@ namespace DAL
             get { return _questionRepository ?? (_questionRepository = new QuestionRepository(_context)); }
         }
 
-        public int SaveChanges()
+        public async Task<int> SaveChanges()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
-        public Task<int> SaveChangesAsync()
+        public async Task<int> SaveChanges(CancellationToken cancellationToken)
         {
-            return _context.SaveChangesAsync();
-        }
-
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            return _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
         }
 
         #endregion

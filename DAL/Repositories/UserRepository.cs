@@ -1,8 +1,8 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System;
+using System.Data.Entity;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -14,76 +14,67 @@ namespace DAL.Repositories
         {
         }
 
-        public User FindByEmail(string email)
-        {
-            return Set.FirstOrDefault(u => u.Email == email);
-        }
-
-        public Task<User> FindByEmailAsync(string email)
+        public Task<User> FindByEmail(string email)
         {
             return Set.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public Task<User> FindByEmailAsync(CancellationToken cancellationToken, string email)
+        public Task<User> FindByEmail(CancellationToken cancellationToken, string email)
         {
             return Set.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
-        public async Task AddEmployerAsync(Employer employer, object userId)
-        {
-            var user = await Set.FindAsync(userId);
-            user.Employer = employer;
-            Update(user);
-        }
-
-        public async Task AddEmployerAsync(Employer employer, string userName)
-        {
-            var user = await FindByUserNameAsync(userName);
-            user.Employer = employer;
-            Update(user);
-        }
-
-        public async Task AddAdminAsync(Admin admin, object userId)
-        {
-            var user = await Set.FindAsync(userId);
-            user.Admin = admin;
-            Update(user);
-        }
-
-        public async Task AddAdminAsync(Admin admin, string userName)
-        {
-            var user = await FindByUserNameAsync(userName);
-            user.Admin = admin;
-            Update(user);
-        }
-
-        public async Task AddAdvisorAsync(Advisor advisor, object userId)
-        {
-            var user = await Set.FindAsync(userId);
-            user.Advisor = advisor;
-            Update(user);
-        }
-
-        public async Task AddAdvisorAsync(Advisor advisor, string userName)
-        {
-            var user = await FindByUserNameAsync(userName);
-            user.Advisor = advisor;
-            Update(user);
-        }
-
-        public User FindByUserName(string username)
-        {
-            return  Set.FirstOrDefault(x => x.UserName == username);
-        }
-
-        public Task<User> FindByUserNameAsync(string username)
+        public Task<User> FindByUserName(string username)
         {
             return Set.FirstOrDefaultAsync(x => x.UserName == username);
         }
 
-        public Task<User> FindByUserNameAsync(CancellationToken cancellationToken, string username)
+        public Task<User> FindByUserName(CancellationToken cancellationToken, string username)
         {
             return Set.FirstOrDefaultAsync(x => x.UserName == username, cancellationToken);
+        }
+
+        public async void AddEmployer(Employer employer)
+        {
+            User user = await FindById(employer.EmployerId);
+            user.Employer = employer;
+            Update(user);
+        }
+
+        public async void AddAdmin(Admin admin)
+        {
+            User user = await FindById(admin.AdminId);
+            user.Admin = admin;
+            Update(user);
+        }
+
+        public async void AddAdvisor(Advisor advisor)
+        {
+            User user = await FindById(advisor.AdvisorId);
+            user.Advisor = advisor;
+            Update(user);
+        }
+
+
+        public async void AddEmployer(Employer employer, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Employer = employer;
+            Update(user);
+        }
+
+        public async void AddAdmin(Admin admin, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Admin = admin;
+            Update(user);
+        }
+
+        public async void AddAdvisor(Advisor advisor, object userId)
+        {
+            var user = await Set.FindAsync(userId);
+            user.Advisor = advisor;
+            Update(user);
         }
     }
 }

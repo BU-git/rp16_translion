@@ -1,8 +1,7 @@
 ﻿using System.Data.Entity;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IDAL.Interfaces.Repositories;
+using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories
@@ -14,17 +13,12 @@ namespace DAL.Repositories
         {
         }
 
-        public ExternalLogin GetByProviderAndKey(string loginProvider, string providerKey)
-        {
-            return Set.FirstOrDefault(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey);
-        }
-
-        public Task<ExternalLogin> GetByProviderAndKeyAsync(string loginProvider, string providerKey)
+        public Task<ExternalLogin> GetByProviderAndKey(string loginProvider, string providerKey)
         {
             return Set.FirstOrDefaultAsync(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey);
         }
 
-        public Task<ExternalLogin> GetByProviderAndKeyAsync(CancellationToken cancellationToken, string loginProvider,
+        public Task<ExternalLogin> GetByProviderAndKey(CancellationToken cancellationToken, string loginProvider,
             string providerKey)
         {
             return Set.FirstOrDefaultAsync(x => x.LoginProvider == loginProvider && x.ProviderKey == providerKey,

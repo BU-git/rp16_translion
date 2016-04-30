@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IDAL.Models;
 
-namespace IDAL.Interfaces.Managers
+namespace IDAL.Interfaces.IManagers
 {
     public interface IAlertManager
     {
@@ -19,17 +19,15 @@ namespace IDAL.Interfaces.Managers
         #endregion
 
         #region Get concrete type alert
-
-        //List<Alert> Get(AlertType alertType);
+            
         //Task<Alert> GetAsync(AlertType alertType);
         //Task<Alert> GetAsync(CancellationToken cancellationToken, AlertType alertType);
 
         #endregion
 
         #region Get with concrete status alerts
-        List<Alert> GetNew();
-        Task<List<Alert>> GetNewAsync();
-        Task<List<Alert>> GetNewAsync(CancellationToken cancellationToken);
+        Task<List<Alert>> GetNew();
+        Task<List<Alert>> GetNew(CancellationToken cancellationToken);
         #endregion
 
         #region Find employee
@@ -72,9 +70,9 @@ namespace IDAL.Interfaces.Managers
 
         #region Get Alert
 
-        Alert GetAlert(Guid? alertid);
-        Task<Alert> GetAlertAsync(Guid? alertid);
-        Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid? alertid);
+        Alert GetAlert(Guid alertid);
+        Task<Alert> GetAlertAsync(Guid alertid);
+        Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid alertid);
 
         #endregion
     }

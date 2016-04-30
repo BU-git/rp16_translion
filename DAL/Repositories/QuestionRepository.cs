@@ -1,4 +1,4 @@
-﻿using IDAL.Interfaces.Repositories;
+﻿using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
 
 namespace DAL.Repositories

@@ -20,8 +20,8 @@ namespace DAL.Configurations
                 .WithMany(x => x.Employees)
                 .HasForeignKey(x => x.EmployerId);
 
-            HasMany(x => x.Alerts)
-                .WithMany(x => x.Employees);
+            //HasMany(x => x.Alerts)
+            //    .WithMany(x => x.Employees);
 
 
             //HasMany(x => x.Employer.Alerts)

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IDAL;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Managers;
+using IDAL.Interfaces.IManagers;
 using IDAL.Models;
 
 namespace BLL.Services.PersonageService
@@ -13,284 +14,202 @@ namespace BLL.Services.PersonageService
     {
         public PersonManager(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork;
         }
 
-        public IUnitOfWork _unitOfWork { get; }
+        public IUnitOfWork UnitOfWork { get; }
+        public abstract Task<WorkResult> DeleteEmployee(Employee employee);
+        
+        #region Get User
 
-        public abstract void DeleteEmployee(User user, Employee employee);
-
-
-        #region Get user by username
-        public User GetUserByName(string userName)
+        public async Task<User> GetBaseUserByName(string userName)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
 
-            return _unitOfWork.UserRepository.FindByUserName(userName);
+            return await UnitOfWork.UserRepository.FindByUserName(userName);
         }
 
-        public async Task<User> GetUserByNameAsync(string userName)
+        public async Task<User> GetBaseUserByName(CancellationToken cancellationToken, string userName)
         {
             if (userName == null)
                 throw new ArgumentNullException(nameof(userName));
 
-            return await _unitOfWork.UserRepository.FindByUserNameAsync(userName);
+            return await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
         }
 
-        public async Task<User> GetUserByNameAsync(CancellationToken cancellationToken, string userName)
-        {
-            if (userName == null)
-                throw new ArgumentNullException(nameof(userName));
-
-            return await _unitOfWork.UserRepository.FindByUserNameAsync(cancellationToken, userName);
-        }
-        #endregion
-
-        #region Get user by id
-        public User GetUserById(string userId)
-        {
-            Guid gUserId;
-
-            if (!Guid.TryParse(userId, out gUserId))
-                throw new ArgumentException($"User's id can't be {userId}");
-
-            return GetUserById(gUserId);
-        }
-
-        public User GetUserById(Guid userId)
+        public async Task<User> GetBaseUserByGuid(Guid userId)
         {
             if (userId == Guid.Empty)
                 throw new ArgumentException($"User's id can't be {userId}");
 
-            return _unitOfWork.UserRepository.FindById(userId);
+            return await UnitOfWork.UserRepository.FindById(userId);
         }
 
-        public async Task<User> GetUserByIdAsync(Guid userId)
+        public async Task<User> GetBaseUserByGuid(CancellationToken cancellationToken, Guid userId)
         {
             if (userId == Guid.Empty)
                 throw new ArgumentException($"User's id can't be {userId}");
 
-            return await _unitOfWork.UserRepository.FindByIdAsync(userId);
+            return await UnitOfWork.UserRepository.FindById(cancellationToken, userId);
         }
 
-        public async Task<User> GetUserByIdAsync(CancellationToken cancellationToken, Guid userId)
+        public async Task<User> GetBaseUserByGuid(string userId)
         {
-            if (userId == Guid.Empty)
+            Guid userGuid;
+
+            if (!Guid.TryParse(userId, out userGuid))
                 throw new ArgumentException($"User's id can't be {userId}");
 
-            return await _unitOfWork.UserRepository.FindByIdAsync(cancellationToken, userId);
+            return await GetBaseUserByGuid(userGuid);
         }
 
-        public async Task<User> GetUserByIdAsync(string userId)
+        public async Task<User> GetBaseUserByGuid(CancellationToken cancellationToken, string userId)
         {
-            Guid gUserId;
+            Guid userGuid;
 
-            if (!Guid.TryParse(userId, out gUserId))
+            if (!Guid.TryParse(userId, out userGuid))
                 throw new ArgumentException($"User's id can't be {userId}");
 
-            return await GetUserByIdAsync(gUserId);
+            return await GetBaseUserByGuid(cancellationToken, userGuid);
         }
 
-        public async Task<User> GetUserByIdAsync(CancellationToken cancellationToken, string userId)
-        {
-            Guid gUserId;
-
-            if (!Guid.TryParse(userId, out gUserId))
-                throw new ArgumentException($"User's id can't be {userId}");
-
-            return await GetUserByIdAsync(cancellationToken, gUserId);
-        }
         #endregion
 
         #region GetAllEmployees
-
-        public List<Employee> GetAllEmployees(User user)
+        
+        public async Task<List<Employee>> GetAllEmployees(string userId)
         {
-            if (user == null)
+            if (userId == null)
             {
                 throw new ArgumentException("User is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name != "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            return _unitOfWork.EmployeeRepository.GetAllEmployees(user);
+            User user = await GetBaseUserByGuid(userId);
+            return await UnitOfWork.EmployeeRepository.GetAllEmployees(user.UserId);
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync(User user)
+        public async Task<List<Employee>> GetAllEmployees(CancellationToken cancellationToken, string userId)
         {
-            if (user == null)
+            if (userId == null)
             {
                 throw new ArgumentException("User is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name == "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            return await _unitOfWork.EmployeeRepository.GetAllEmployeesAsync(user);
+            User user = await GetBaseUserByGuid(cancellationToken, userId);
+            return await UnitOfWork.EmployeeRepository.GetAllEmployees(cancellationToken, user.UserId);
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken, User user)
+        public async Task<List<Employee>> GetAllEmployees(Guid userId)
         {
-            if (user == null)
+            if (userId == null || userId == Guid.Empty)
             {
                 throw new ArgumentException("User is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name == "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            return await _unitOfWork.EmployeeRepository.GetAllEmployeesAsync(cancellationToken, user);
+            return await UnitOfWork.EmployeeRepository.GetAllEmployees(userId);
         }
 
+        public async Task<List<Employee>> GetAllEmployees(CancellationToken cancellationToken, Guid userId)
+        {
+            if (userId == null || userId == Guid.Empty)
+            {
+                throw new ArgumentException("User is null. Wrong parameter");
+            }
+            return await UnitOfWork.EmployeeRepository.GetAllEmployees(cancellationToken, userId);
+        }
         #endregion
 
         #region GetEmployee
 
-        public Employee GetEmployee(Guid employeeId)
+        public async Task<Employee> GetEmployee(Guid employeeId)
         {
-            if (employeeId == null)
+            if (employeeId == null || employeeId == Guid.Empty)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
-            return _unitOfWork.EmployeeRepository.FindById(employeeId);
+            return await UnitOfWork.EmployeeRepository.FindById(employeeId);
         }
 
-        public async Task<Employee> GetEmployeeAsync(Guid employeeId)
+        public async Task<Employee> GetEmployee(CancellationToken cancellationToken, Guid employeeId)
         {
-            if (employeeId == null)
+            if (employeeId == null || employeeId == Guid.Empty)
             {
                 throw new ArgumentException("employeeId is null. Wrong parameter");
             }
-            return await _unitOfWork.EmployeeRepository.FindByIdAsync(employeeId);
-        }
-
-        public async Task<Employee> GetEmployeeAsync(CancellationToken cancellationToken, Guid employeeId)
-        {
-            if (employeeId == null)
-            {
-                throw new ArgumentException("employeeId is null. Wrong parameter");
-            }
-            return await _unitOfWork.EmployeeRepository.FindByIdAsync(cancellationToken, employeeId);
+            return await UnitOfWork.EmployeeRepository.FindById(cancellationToken, employeeId);
         }
 
         #endregion
 
         #region CreateEmployee
-
-        public void CreateEmployee(Employee employee, User user, Alert alert)
+        
+        public async Task<WorkResult> CreateEmployee(Employee employee)
         {
-            if (employee == null | user == null)
+            if (employee == null)
             {
-                throw new ArgumentException("employee or user is null. Wrong parameter");
+                return WorkResult.Failed("employee or user is null. Wrong parameter");
             }
-            if (user.Roles.Any(x => x.Name == "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-            _unitOfWork.AlertRepository.Add(alert);
-            _unitOfWork.SaveChanges();
+            UnitOfWork.EmployerRepository.AddEmployee(employee);
+            await UnitOfWork.SaveChanges();
+            
+            return WorkResult.Success();
         }
-
-        //public Task<int> CreateEmployeeAsync(Employee employee, User user, Alert alert)
-        //{
-        //    if (employee == null | user == null)
-        //    {
-        //        throw new ArgumentException("employee or user is null. Wrong parameter");
-        //    }
-        //    if (!user.Roles.Any(x => x.Name == "Employer"))
-        //    {
-        //        throw new ArgumentException("Only employer can have employees. User isn't employer");
-        //    }
-        //    _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-        //    _unitOfWork.AlertRepository.Add(alert);
-        //    return _unitOfWork.SaveChangesAsync();
-        //}
-
-        public Task<int> CreateEmployeeAsync(Employee employee, User user)
+        
+        public async Task<WorkResult> CreateEmployee(CancellationToken cancellationToken, Employee employee)
         {
-            if (employee == null | user == null)
+            if (employee == null)
             {
-                throw new ArgumentException("employee or user is null. Wrong parameter");
+                return WorkResult.Failed("employee or user is null. Wrong parameter");
             }
-            if (!user.Roles.Any(x => x.Name == "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-            //_unitOfWork.AlertRepository.Add(alert);
-            return _unitOfWork.SaveChangesAsync();
-        }
-
-
-        public Task<int> CreateEmployeeAsync(CancellationToken cancellationToken, Employee employee, User user, Alert alert)
-        {
-            if (employee == null | user == null)
-            {
-                throw new ArgumentException("employee or user is null. Wrong parameter");
-            }
-            if (user.Roles.Any(x => x.Name == "Employer"))
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            _unitOfWork.EmployerRepository.AddEmployee(employee, user);
-            _unitOfWork.AlertRepository.Add(alert);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
+            UnitOfWork.EmployerRepository.AddEmployee(employee);
+            await UnitOfWork.SaveChanges(cancellationToken);
+            return WorkResult.Success();
         }
 
         #endregion
 
         #region UpdateEmployee
-
-        public void UpdateEmployee(Employee employee, Alert alert)
+        
+        public async Task<WorkResult> UpdateEmployee(Employee employee)
         {
-            if (employee.EmployeeId == null)
+            if (employee == null)
             {
-                throw new ArgumentException("employeeId is null. Wrong parameter");
+                return WorkResult.Failed("EmployeeId is null. Wrong parameter");
             }
-            _unitOfWork.EmployeeRepository.Update(employee);
-            _unitOfWork.AlertRepository.Add(alert);
-            _unitOfWork.SaveChanges();
+            UnitOfWork.EmployeeRepository.Update(employee);
+            await UnitOfWork.SaveChanges();
+            return WorkResult.Success();
         }
-
-        public Task<int> UpdateEmployeeAsync(Employee employee)
+        public async Task<WorkResult> UpdateEmployee(CancellationToken cancellationToken, Employee employee)
         {
-            if (employee.EmployeeId == null)
+            if (employee == null)
             {
-                throw new ArgumentException("employeeId is null. Wrong parameter");
+                WorkResult.Failed("employeeId is null. Wrong parameter");
             }
-            _unitOfWork.EmployeeRepository.Update(employee);
-            return _unitOfWork.SaveChangesAsync();
+            UnitOfWork.EmployeeRepository.Update(employee);
+            await UnitOfWork.SaveChanges(cancellationToken);
+            return WorkResult.Success();
         }
-
-        public Task<int> UpdateEmployeeAsync(CancellationToken cancellationToken, Employee employee)
-        {
-            if (employee.EmployeeId == null)
-            {
-                throw new ArgumentException("employeeId is null. Wrong parameter");
-            }
-            _unitOfWork.EmployeeRepository.Update(employee);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-
-        public abstract List<TEntity> GetAll();
-        public abstract Task<List<TEntity>> GetAllAsync();
-        public abstract Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken);
-        public abstract TEntity Get(User user);
-        public abstract Task<TEntity> GetAsync(User user);
-        public abstract Task<TEntity> GetAsync(CancellationToken cancellationToken, User user);
-        public abstract void Create(TEntity entity, User user);
-        public abstract Task<int> CreateAsync(TEntity entity, User user);
-        public abstract Task<int> CreateAsync(CancellationToken cancellationToken, TEntity entity, User user);
-        public abstract void Update(TEntity entity);
-        public abstract Task<int> UpdateAsync(TEntity entity);
-        public abstract Task<int> UpdateAsync(CancellationToken cancellationToken, TEntity entity);
-        public abstract void Delete(User user);
-        public abstract Task<int> DeleteAsync(User user);
-        public abstract Task<int> DeleteAsync(CancellationToken cancellationToken, User user);
-
+        
         #endregion
+        
+        public abstract Task<List<TEntity>> GetAll();
+        public abstract Task<List<TEntity>> GetAll(CancellationToken cancellationToken);
+
+        public abstract Task<TEntity> Get(Guid userId);
+        public abstract Task<TEntity> Get(CancellationToken cancellationToken, Guid userId);
+        public abstract Task<TEntity> Get(string userName);
+        public abstract Task<TEntity> Get(CancellationToken cancellationToken, string userName);
+
+        public abstract Task<WorkResult> Create(TEntity entity);
+        public abstract Task<WorkResult> Create(CancellationToken cancellationToken, TEntity entity);
+
+        public abstract Task<WorkResult> Update(TEntity entity);
+        public abstract Task<WorkResult> Update(CancellationToken cancellationToken, TEntity entity);
+
+        public abstract Task<WorkResult> Delete(TEntity entity);
+        public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, TEntity entity);
+        public abstract Task<WorkResult> Delete(Guid userId);
+        public abstract  Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId);
+        public abstract  Task<WorkResult> Delete(string userName);
+        public abstract  Task<WorkResult> Delete(CancellationToken cancellationToken, string userName);
     }
 }

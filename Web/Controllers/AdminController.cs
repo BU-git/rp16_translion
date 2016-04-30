@@ -6,6 +6,7 @@ using BLL.Identity.Models;
 using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
+using IDAL;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Web.ViewModels;
@@ -31,13 +32,14 @@ namespace Web.Controllers
         {
         }
 
+        #region Advisors section
+
         [HttpGet]
         public async Task<ActionResult> AdvisorsList()
         {
-            return View(await advisorManager.GetAllAsync());
+            var advisorList = await advisorManager.GetAll();
+            return View(advisorList);
         }
-
-        #region Advisor's info
 
         [HttpGet]
         public async Task<JsonResult> CheckAdvisorName(string userName)
@@ -47,65 +49,62 @@ namespace Web.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(await adminManager.GetUserByNameAsync(userName) == null,
+            return Json(await adminManager.GetBaseUserByName(userName) == null,
                 JsonRequestBehavior.AllowGet);
         }
 
-        #endregion
-
-        #region Remove advisor
-
         [HttpGet]
-        public async Task<ActionResult> RemoveAdvisor(Guid? id)
+        public async Task<ActionResult> DeleteAdvisor(Guid? id)
         {
             var user = await GetUserIfAdvisorAsync(id);
 
-            if (user != null && await adminManager.DeleteAsync(user) > 0)
+            WorkResult result = await adminManager.Delete(user.UserId.ToString());
+            if (user != null && result.Succeeded)
+            {
                 return View("Settings");
+            }
 
             return RedirectToAction("AdvisorsList");
         }
 
         #endregion
 
-        #region View alerts
+        #region Alerts section
 
-        [HttpGet]
-        public ActionResult ViewAlerts()
+        public async Task<ActionResult> ViewAlerts()
         {
-            List<Alert> Alerts = new List<Alert>();
-            Alerts = alertManager.GetNew();
-            List<AdminAlertPanelViewModel> alertList = new List<AdminAlertPanelViewModel>();
-            foreach (var alert in Alerts)
+            var alerts = await alertManager.GetNew();
+            var alertList = new List<AdminAlertPanelViewModel>();
+            foreach (var alert in alerts)
             {
-                AdminAlertPanelViewModel a = MapAlertToTableView(alert);
-                alertList.Add(a);
+                var currentAlert = MapAlertToTableView(alert);
+                alertList.Add(currentAlert);
             }
-
             return View("AdminAlertPanel", alertList);
         }
 
-        #endregion
-
-        #region Approve alerts
-
-        public ActionResult ApproveAlert(Guid? alertId)
+        public async Task<ActionResult> ApproveAlert(Guid? alertId)
         {
-            Alert alertToApprove = alertManager.GetAlert(alertId);
+            if (alertId != null)
+            {
+            var alertToApprove = alertManager.GetAlert((Guid)alertId);
             alertManager.Approve(alertToApprove);
+                
+            }
 
-            List<Alert> Alerts = new List<Alert>();
-            Alerts = alertManager.GetNew();
-            List<AdminAlertPanelViewModel> alertList = new List<AdminAlertPanelViewModel>();
-            foreach (var alert in Alerts)
+            var alerts = await alertManager.GetNew();
+            var alertList = new List<AdminAlertPanelViewModel>();
+            foreach (var alert in alerts)
             {
-                AdminAlertPanelViewModel a = MapAlertToTableView(alert);
-                alertList.Add(a);
+                var currentAlert = MapAlertToTableView(alert);
+                alertList.Add(currentAlert);
             }
             return View("AdminAlertPanel", alertList);
         }
 
         #endregion
+
+        #region Helpers region
 
         [NonAction]
         private async Task<User> GetUserIfAdvisorAsync(Guid? id)
@@ -113,18 +112,18 @@ namespace Web.Controllers
             if (id == null || id.Value == Guid.Empty)
                 return null;
 
-            var user = await adminManager.GetUserByIdAsync(id.Value);
+            var user = await adminManager.GetBaseUserByGuid(id.ToString());
 
             return user?.Advisor != null ? user : null;
         }
 
         private AdminAlertPanelViewModel MapAlertToTableView(Alert alert)
         {
-            string EmployeeName = "n.v.t";
-            Alert alertToShow = alertManager.GetAlert(alert.AlertId);
+            var EmployeeName = "n.v.t";
+            var alertToShow = alertManager.GetAlert(alert.AlertId);
             if (alertToShow.Employees.Count != 0)
             {
-                Employee emp = alertManager.FindEmployee(alert);
+                var emp = alertManager.FindEmployee(alert);
                 EmployeeName = emp.LastName + " " + emp.FirstName;
             }
 
@@ -141,10 +140,12 @@ namespace Web.Controllers
             return AlertData;
         }
 
+        #endregion
+
         #region Add advisor
 
         [HttpGet]
-        public ViewResult AddAdvisor()
+        public  ViewResult AddAdvisor()
         {
             return View();
         }
@@ -156,25 +157,34 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
                 return View(advisorInfo);
 
+            User user = await adminManager.GetBaseUserByName(advisorInfo.Username);
 
-            if (await adminManager.GetUserByNameAsync(advisorInfo.Username) != null)
+            if (user != null)
             {
                 ModelState.AddModelError(nameof(advisorInfo.Username), USERNAME_IS_IN_USE_ERROR);
                 return View(advisorInfo);
             }
-
-            var creationRes = await
-                userManager.CreateAsync(new IdentityUser {Id = Guid.NewGuid(), UserName = advisorInfo.Username},
-                    advisorInfo.Password);
-
-            User user = null;
-
-            if (creationRes.Succeeded
-                && (user = await adminManager.GetUserByNameAsync(advisorInfo.Username)) != null)
+            
+            IdentityUser identityUser = new IdentityUser
             {
-                await advisorManager.CreateAsync(new Advisor {Name = advisorInfo.Name}, user);
+                Id = Guid.NewGuid(),
+                UserName = advisorInfo.Username
+            };
+            IdentityResult creationRes = await userManager.CreateAsync(
+                identityUser,
+                advisorInfo.Password);
+            
+            if (creationRes.Succeeded)
+            {
+                Advisor advisor = new Advisor()
+                {
+                    Name = advisorInfo.Name,
+                    AdvisorId = identityUser.Id
+                };
 
-                var roleResult = await userManager.AddToRoleAsync(user.UserId, ADVISOR_ROLE);
+                await advisorManager.Create(advisor);
+
+                var roleResult = await userManager.AddToRoleAsync(identityUser.Id, ADVISOR_ROLE);
 
                 if (roleResult.Succeeded)
                     return RedirectToAction("Settings");
@@ -216,8 +226,11 @@ namespace Web.Controllers
             {
                 user.Advisor.Name = advInfo.Name;
 
-                if (await advisorManager.UpdateAsync(user.Advisor) > 0)
+                WorkResult result = await advisorManager.Update(user.Advisor);
+                if (result.Succeeded)
+                {
                     return View("Settings");
+                }
             }
 
             ModelState.AddModelError("", SERVER_ERROR);

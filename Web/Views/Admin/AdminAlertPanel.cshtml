@@ -1,57 +1,24 @@
-﻿@using GridMvc.Html  
+﻿@using GridMvc.Html
 @model List<Web.ViewModels.AdminAlertPanelViewModel>
 @{
     ViewBag.Title = "AlertPanel";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<h2 class="centerText">Verzoek Inbox</h2>
-<h3 class="centerText">Verzoeken</h3>
-<div class="row">
-    <div class="col-md-4 col-centered">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Werkgever</th>
-                    <th>Bedrijf</th>
-                    <th>Werknemer</th>
-                    <th>Verzoek/Notificatie</th>
-                    <th>Comment</th>
-                    <th>Bevestiging</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.EmployerName</td>
-                        <td>@item.Company</td>
-                        <td>@item.EmployeeName</td>
-                        <td>@item.AlertType</td>
-                        <td>@item.Comment</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>*@
-
-
 <h2 class="centerText">Verzoek Inbox</h2>
 <h3 class="centerText">Verzoeken</h3>
 <div class="row">
     @Html.Grid(Model).Columns(columns =>
-{
-    columns.Add(c => c.EmployerName).Titled("Werkgever").Filterable(true);
-    columns.Add(c => c.Company).Titled("Bedrijf").Filterable(true);
-    columns.Add(c => c.EmployeeName).Titled("Werknemer").Filterable(true);
-    columns.Add(c => c.AlertType).Titled("Verzoek/Notificatie").Filterable(true);
-    columns.Add(c => c.Comment).Titled("Comment").Filterable(true);
-    columns.Add().Titled("Bevestiging")
-    .Encoded(false)
-    .Sanitized(false)
-    .SetWidth(30)
-    .RenderValueAs(o => Html.ActionLink("Bevestig", "ApproveAlert", new { alertId = o.alert.AlertId }, new { @class = "btn btn-danger pull-right" }));
-
-}).WithPaging(10).Sortable(true)
-</div>  
+    {
+        columns.Add(c => c.EmployerName).Titled("Werkgever").Filterable(true);
+        columns.Add(c => c.Company).Titled("Bedrijf").Filterable(true);
+        columns.Add(c => c.EmployeeName).Titled("Werknemer").Filterable(true);
+        columns.Add(c => c.AlertType).Titled("Verzoek/Notificatie").Filterable(true);
+        columns.Add(c => c.Comment).Titled("Comment").Filterable(true);
+        columns.Add().Titled("Bevestiging")
+            .Encoded(false)
+            .Sanitized(false)
+            .SetWidth(30)
+            .RenderValueAs(o => Html.ActionLink("Bevestig", "ApproveAlert", new {alertId = o.alert.AlertId}, new {@class = "btn btn-danger pull-right"}));
+    }).WithPaging(10).Sortable(true)
+</div>

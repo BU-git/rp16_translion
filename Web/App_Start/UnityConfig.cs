@@ -9,7 +9,7 @@ using BLL.Services.MailingService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Managers;
+using IDAL.Interfaces.IManagers;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

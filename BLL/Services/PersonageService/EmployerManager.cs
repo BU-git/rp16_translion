@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IDAL;
 using IDAL.Interfaces;
 using IDAL.Models;
 
@@ -14,151 +14,298 @@ namespace BLL.Services.PersonageService
         {
         }
 
-        public override void Update(Employer entity)
+        public override async Task<WorkResult> DeleteEmployee(Employee employee)
         {
-            if (entity == null)
+            if (employee == null)
             {
-                throw new ArgumentException("Employer is null. Wrong parameters");
+                return WorkResult.Failed("Employee name null");
             }
-            _unitOfWork.EmployerRepository.Update(entity);
-            _unitOfWork.SaveChanges();
-        }
-
-        public override Task<int> UpdateAsync(Employer entity)
-        {
-            if (entity == null)
+            try
             {
-                throw new ArgumentException("Employer is null. Wrong parameters");
+                employee.IsDeleted = true;
+                UnitOfWork.EmployeeRepository.Update(employee);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
             }
-            _unitOfWork.EmployerRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync();
-        }
-
-        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Employer entity)
-        {
-            if (entity == null)
+            catch (Exception ex)
             {
-                throw new ArgumentException("Employer is null. Wrong parameters");
+                return WorkResult.Failed(ex.Message);
             }
-            _unitOfWork.EmployerRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        public override void Delete(User user)
+        #region Get all employers()
+
+        public override async Task<List<Employer>> GetAll()
         {
-            if (user == null)
-            {
-                throw new ArgumentException("user is null. Wrong parameters");
-            }
-            _unitOfWork.UserRepository.Remove(user);
-            _unitOfWork.SaveChanges();
+            return await UnitOfWork.EmployerRepository.GetAll();
         }
 
-        public override Task<int> DeleteAsync(User user)
+        public override async Task<List<Employer>> GetAll(CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentException("user is null. Wrong parameters");
-            }
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync();
-        }
-
-        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
-        {
-            if (user == null)
-            {
-                throw new ArgumentException("user is null. Wrong parameters");
-            }
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-
-        public override void DeleteEmployee(User user, Employee employee)
-        {
-            if (user == null || employee == null)
-            {
-                throw new ArgumentException("User is null, employee is absent. Wrong parameters");
-            }
-            if (user.Employer == null)
-            {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
-            }
-            //TODO Check this!!!
-            Employee emp = user.Employer.Employees.FirstOrDefault(x => x.EmployeeId == employee.EmployeeId);
-            emp.IsDeleted = true;
-
-            this.UpdateEmployeeAsync(emp);
-            _unitOfWork.SaveChanges();
-        }
-
-        #region GetAll()
-
-        public override List<Employer> GetAll()
-        {
-            return _unitOfWork.EmployerRepository.GetAll();
-        }
-
-        public override async Task<List<Employer>> GetAllAsync()
-        {
-            return await _unitOfWork.EmployerRepository.GetAllAsync();
-        }
-
-        public override async Task<List<Employer>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _unitOfWork.EmployerRepository.GetAllAsync(cancellationToken);
+            return await UnitOfWork.EmployerRepository.GetAll(cancellationToken);
         }
 
         #endregion
 
-        #region Get
+        #region Get concrete eployer
 
-        public override Employer Get(User user)
+        public override async Task<Employer> Get(Guid userId)
         {
-            if (user == null)
+            if (userId != Guid.Empty)
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                return await UnitOfWork.EmployerRepository.FindById(userId);
             }
-            return _unitOfWork.EmployerRepository.FindById(user.UserId);
+            return null;
         }
 
-        public override async Task<Employer> GetAsync(User user)
+        public override async Task<Employer> Get(CancellationToken cancellationToken, Guid userId)
         {
-            if (user == null)
+            if (userId != Guid.Empty)
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                return await UnitOfWork.EmployerRepository.FindById(cancellationToken, userId);
             }
-            return await _unitOfWork.EmployerRepository.FindByIdAsync(user.UserId);
+            return null;
         }
 
-        public override async Task<Employer> GetAsync(CancellationToken cancellationToken, User user)
+        public override async Task<Employer> Get(string userName)
         {
-            if (user == null)
+            if (userName != null)
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                return await UnitOfWork.EmployerRepository.FindById(user.UserId);
             }
-            return await _unitOfWork.EmployerRepository.FindByIdAsync(cancellationToken, user.UserId);
+            return null;
         }
+
+        public override async Task<Employer> Get(CancellationToken cancellationToken, string userName)
+        {
+            if (userName != null)
+            {
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
+                return await UnitOfWork.EmployerRepository.FindById(cancellationToken, user.UserId);
+            }
+            return null;
+        }
+
         #endregion
 
-        #region Create
+        #region Create employer
 
-        public override async void Create(Employer entity, User user)
+        public override async Task<WorkResult> Create(Employer entity)
         {
-            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            await _unitOfWork.SaveChangesAsync();
+            if (entity == null)
+            {
+                return WorkResult.Failed("Wrong param. Entity is null");
+            }
+            try
+            {
+                UnitOfWork.UserRepository.AddEmployer(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override async Task<int> CreateAsync(Employer entity, User user)
+        public override async Task<WorkResult> Create(CancellationToken cancellationToken, Employer entity)
         {
-            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            return await _unitOfWork.SaveChangesAsync();
+            if (entity == null)
+            {
+                return WorkResult.Failed("Wrong param. Entity is null");
+            }
+            try
+            {
+                UnitOfWork.UserRepository.AddEmployer(entity);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Employer entity, User user)
+        #endregion
+
+        #region Update employer
+
+        public override async Task<WorkResult> Update(Employer entity)
         {
-            await _unitOfWork.UserRepository.AddEmployerAsync(entity, user.UserName);
-            return await _unitOfWork.SaveChangesAsync(cancellationToken);
+            if (entity == null)
+            {
+                WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                UnitOfWork.EmployerRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Update(CancellationToken cancellationToken, Employer entity)
+        {
+            if (entity == null)
+            {
+                WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                UnitOfWork.EmployerRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Delete eployer
+
+
+        public override async Task<WorkResult> Delete(Employer entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.EmployerId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Employer entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(cancellationToken, entity.EmployerId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned by Employer
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(userId);
+                if (employer != null)
+                {
+                    UnitOfWork.UserRepository.Remove(employer.User);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Employer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned by Employer
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(cancellationToken,userId);
+                if (employer != null)
+                {
+                    UnitOfWork.UserRepository.Remove(employer.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Employer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned by Employer
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(user.UserId);
+                if (employer != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Employer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned by Employer
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
+                Employer employer = await UnitOfWork.EmployerRepository.FindById(cancellationToken,user.UserId);
+                if (employer != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Employer");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
         #endregion

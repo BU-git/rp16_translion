@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IDAL;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Managers;
 using IDAL.Models;
 
 namespace BLL.Services.PersonageService
@@ -15,163 +14,300 @@ namespace BLL.Services.PersonageService
         {
         }
 
-        public override void DeleteEmployee(User user, Employee employee)
+        public override async Task<WorkResult> DeleteEmployee(Employee employee)
         {
-
-            if (user == null || employee == null)
+            if (employee == null)
             {
-                throw new ArgumentException("User is null, employee is absent. Wrong parameters");
+                return WorkResult.Failed("Employee name null");
             }
-            if (user.Employer==null)
+            try
             {
-                throw new ArgumentException("Only employer can have employees. User isn't employer");
+                UnitOfWork.EmployeeRepository.Remove(employee);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
             }
-            _unitOfWork.EmployeeRepository.Remove(employee);
-            _unitOfWork.SaveChanges();
-        }
-
-        public override List<Advisor> GetAll()
-        {
-            return _unitOfWork.AdvisorRepository.GetAll();
-        }
-
-        public override async Task<List<Advisor>> GetAllAsync()
-        {
-            return await _unitOfWork.AdvisorRepository.GetAllAsync();
-        }
-
-        public override async Task<List<Advisor>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _unitOfWork.AdvisorRepository.GetAllAsync(cancellationToken);
-        }
-
-        public override Advisor Get(User user)
-        {
-            if (user == null )
+            catch (Exception ex)
             {
-                throw new ArgumentException("User is null. Wrong parameters");
+                return WorkResult.Failed(ex.Message);
             }
-            return _unitOfWork.AdvisorRepository.FindById(user.UserId);
         }
 
-        public override async Task<Advisor> GetAsync(User user)
+        #region Get all advisors
+
+        public override async Task<List<Advisor>> GetAll()
         {
-            if (user == null)
-            {
-                throw new ArgumentException("User is null. Wrong parameters");
-            }
-            return await _unitOfWork.AdvisorRepository.FindByIdAsync(user.UserId);
+            return await UnitOfWork.AdvisorRepository.GetAll();
         }
 
-        public override async Task<Advisor> GetAsync(CancellationToken cancellationToken, User user)
+        public override async Task<List<Advisor>> GetAll(CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentException("User is null. Wrong parameters");
-            }
-            return await _unitOfWork.AdvisorRepository.FindByIdAsync(cancellationToken, user.UserId);
+            return await UnitOfWork.AdvisorRepository.GetAll(cancellationToken);
         }
 
-        public override async void Create(Advisor entity, User user)
+        #endregion
+
+        #region Get concrete advisor
+
+        public override async Task<Advisor> Get(Guid userId)
         {
-            if (entity == null||user==null)
+            if (userId != Guid.Empty)
             {
-                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+                return await UnitOfWork.AdvisorRepository.FindById(userId);
             }
-
-            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-            _unitOfWork.SaveChanges();
+            return null;
         }
 
-        public override async Task<int> CreateAsync(Advisor entity, User user)
+        public override async Task<Advisor> Get(CancellationToken cancellationToken, Guid userId)
         {
-            if (entity == null || user == null)
+            if (userId != Guid.Empty)
             {
-                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+                return await UnitOfWork.AdvisorRepository.FindById(cancellationToken,userId);
             }
-
-            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-
-            return await _unitOfWork.SaveChangesAsync();
+            return null;
         }
 
-        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Advisor entity, User user)
+        public override async Task<Advisor> Get(string userName)
         {
-            if (entity == null || user == null)
+            if (userName != null)
             {
-                throw new ArgumentException("Advisor or user are null. Wrong parameters");
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                return await UnitOfWork.AdvisorRepository.FindById(user.UserId);
             }
-
-            await _unitOfWork.UserRepository.AddAdvisorAsync(entity, user.UserName);
-
-            return await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return null;
         }
 
-        public override void Update(Advisor entity)
+        public override async Task<Advisor> Get(CancellationToken cancellationToken, string userName)
         {
-            if (entity == null )
+            if (userName != null)
             {
-                throw new ArgumentException("Advisor is null. Wrong parameters");
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                return await UnitOfWork.AdvisorRepository.FindById(user.UserId);
             }
-
-            _unitOfWork.AdvisorRepository.Update(entity);
-            _unitOfWork.SaveChanges();
-
+            return null;
         }
 
-        public override Task<int> UpdateAsync(Advisor entity)
+        #endregion
+
+        #region Create advisor
+
+        public override async Task<WorkResult> Create(Advisor entity)
         {
             if (entity == null)
             {
-                throw new ArgumentException("Advisor is null. Wrong parameters");
+                return WorkResult.Failed("Wrong param. Entity is null");
             }
-
-            _unitOfWork.AdvisorRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync();
+            try
+            {
+                UnitOfWork.UserRepository.AddAdvisor(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Advisor entity)
+        public override async Task<WorkResult> Create(CancellationToken cancellationToken, Advisor entity)
         {
             if (entity == null)
             {
-                throw new ArgumentException("Advisor is null. Wrong parameters");
+                return WorkResult.Failed("Wrong param. Entity is null");
             }
-
-            _unitOfWork.AdvisorRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-
-        public override void Delete(User user)
-        {
-            if (user == null)
+            try
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                UnitOfWork.UserRepository.AddAdvisor(entity);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
             }
-
-            _unitOfWork.UserRepository.Remove(user);
-             _unitOfWork.SaveChanges();
-        }
-
-        public override Task<int> DeleteAsync(User user)
-        {
-            if (user == null)
+            catch (Exception ex)
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                return WorkResult.Failed(ex.Message);
             }
-
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync();
         }
 
-        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
+        #endregion
+
+        #region Update advisor
+
+        public override async Task<WorkResult> Update(Advisor entity)
         {
-            if (user == null)
+            if (entity == null)
             {
-                throw new ArgumentException("user is null. Wrong parameters");
+                WorkResult.Failed("Wrong param.Entity is null");
             }
-
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
+            try
+            {
+                UnitOfWork.AdvisorRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
+
+        public override async Task<WorkResult> Update(CancellationToken cancellationToken, Advisor entity)
+        {
+            if (entity == null)
+            {
+                WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                UnitOfWork.AdvisorRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region Delete advisor
+
+
+        public override async Task<WorkResult> Delete(Advisor entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.AdvisorId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Advisor entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(cancellationToken, entity.AdvisorId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
+        }
+
+        public override async Task<WorkResult> Delete(Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Advisor
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(userId);
+                if (advisor != null)
+                {
+                    UnitOfWork.UserRepository.Remove(advisor.User);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Advisor
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,userId);
+                if (advisor != null)
+                {
+                    UnitOfWork.UserRepository.Remove(advisor.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Advisor
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(user.UserId);
+                if (advisor != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Advisor
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,user.UserId);
+                if (advisor != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        #endregion
     }
 }

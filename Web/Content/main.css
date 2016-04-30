@@ -1,15 +1,11 @@
-body
-{
-	padding: 100px;
-}
-
-.wrapper
+.innerWrapper
 {
 	margin: 0 auto;
 	height: 600px;
 	min-width: 700px;
 	max-width: 1000px;
 	border: 1px solid black;
+    margin-bottom: 50px;
 }
 
 .leftPagePanel
@@ -40,6 +36,9 @@ body
 	padding-right: 5px;
 }
 
+#btnSaveTest {
+    margin-top: 10px;
+}
 
 .btn-nav
 {
@@ -63,7 +62,7 @@ body
 
 .wrapperQuestion
 {
-	margin: 10px 0px;
+	margin: 10px 0;
 	display: block;
 }
 

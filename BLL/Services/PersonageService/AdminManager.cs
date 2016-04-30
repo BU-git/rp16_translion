@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IDAL;
 using IDAL.Interfaces;
-using IDAL.Interfaces.Managers;
 using IDAL.Models;
 
 namespace BLL.Services.PersonageService
@@ -14,145 +14,299 @@ namespace BLL.Services.PersonageService
         {
         }
 
-
-        public override async void DeleteEmployee(User user, Employee employee)
+        public override async Task<WorkResult> DeleteEmployee(Employee employee)
         {
             if (employee == null)
-                throw new ArgumentNullException(nameof(employee));
-
-            if (user.Employer == null)
-                throw new ArgumentException("User is not employer", nameof(user));
-
-            if (!user.Employer.Employees.Contains(employee))
-                throw new InvalidOperationException("Can't delete employee from current user, because he hasn't this employee");
-
-            _unitOfWork.EmployeeRepository.Remove(employee);
-            await _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Employee name null");
+            }
+            try
+            {
+                UnitOfWork.EmployeeRepository.Remove(employee);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
         #region Get all admins
-        public override List<Admin> GetAll()
-            => _unitOfWork.AdminRepository.GetAll();
 
-        public override Task<List<Admin>> GetAllAsync()
-            => _unitOfWork.AdminRepository.GetAllAsync();
+        public override Task<List<Admin>> GetAll()
+        {
+            return UnitOfWork.AdminRepository.GetAll();
+        }
 
-        public override Task<List<Admin>> GetAllAsync(CancellationToken cancellationToken)
-            => _unitOfWork.AdminRepository.GetAllAsync(cancellationToken);
+        public override Task<List<Admin>> GetAll(CancellationToken cancellationToken)
+        {
+            return UnitOfWork.AdminRepository.GetAll(cancellationToken);
+        }
+
         #endregion
 
         #region Get concrete admin
-        public override Admin Get(User user)
-        {
-            if (user.Admin == null)
-                throw new InvalidOperationException("User is not admin.");
 
-            return _unitOfWork.AdminRepository.FindById(user.UserId);
+        public override async Task<Admin> Get(Guid userId)
+        {
+            if (userId != Guid.Empty)
+            {
+                return await UnitOfWork.AdminRepository.FindById(userId);
+            }
+            return null;
         }
 
-        public override Task<Admin> GetAsync(User user)
+        public override async Task<Admin> Get(CancellationToken cancellationToken, Guid userId)
         {
-            if (user.Admin == null)
-                throw new InvalidOperationException("User is not admin.");
-
-            return _unitOfWork.AdminRepository.FindByIdAsync(user.UserId);
+            if (userId != Guid.Empty)
+            {
+                return await UnitOfWork.AdminRepository.FindById(userId);
+            }
+            return null;
         }
 
-        public override Task<Admin> GetAsync(CancellationToken cancellationToken, User user)
+        public override async Task<Admin> Get(string userName)
         {
-            if (user.Admin == null)
-                throw new InvalidOperationException("User is not admin.");
-
-            return _unitOfWork.AdminRepository.FindByIdAsync(cancellationToken, user.UserId);
+            if (userName != null)
+            {
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                return await UnitOfWork.AdminRepository.FindById(user.UserId);
+            }
+            return null;
         }
+
+        public override async Task<Admin> Get(CancellationToken cancellationToken, string userName)
+        {
+            if (userName != null)
+            {
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
+                return await UnitOfWork.AdminRepository.FindById(cancellationToken, user.UserId);
+            }
+            return null;
+        }
+
         #endregion
 
-        #region Create concrete admin
-        public override async void Create(Admin entity, User user)
+        #region Create admin
+
+        public override async Task<WorkResult> Create(Admin entity)
         {
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            _unitOfWork.SaveChanges();
+            {
+                return WorkResult.Failed("Wrong param. Entity is null");
+            }
+            try
+            {
+                UnitOfWork.UserRepository.AddAdmin(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override async Task<int> CreateAsync(Admin entity, User user)
+        public override async Task<WorkResult> Create(CancellationToken cancellationToken, Admin entity)
         {
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            return await _unitOfWork.SaveChangesAsync();
+            {
+                return WorkResult.Failed("Wrong param. Entity is null");
+            }
+            try
+            {
+                UnitOfWork.UserRepository.AddAdmin(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override async Task<int> CreateAsync(CancellationToken cancellationToken, Admin entity, User user)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            await _unitOfWork.UserRepository.AddAdminAsync(entity, user.UserId);
-            return await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
         #endregion
 
-        #region Update concrete admin
-        public override void Update(Admin entity)
+        #region Update admin
+
+        public override async Task<WorkResult> Update(Admin entity)
         {
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            _unitOfWork.AdminRepository.Update(entity);
-            _unitOfWork.SaveChanges();
+            {
+                WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                UnitOfWork.AdminRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override Task<int> UpdateAsync(Admin entity)
+        public override async Task<WorkResult> Update(CancellationToken cancellationToken, Admin entity)
         {
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            _unitOfWork.AdminRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync();
+            {
+                WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                UnitOfWork.AdminRepository.Update(entity);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
 
-        public override Task<int> UpdateAsync(CancellationToken cancellationToken, Admin entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            _unitOfWork.AdminRepository.Update(entity);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
         #endregion
 
-        #region Delete concrete admin
-        public override void Delete(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
+        #region Delete admin
 
-            _unitOfWork.UserRepository.Remove(user);
-            _unitOfWork.SaveChanges();
+
+        public override async Task<WorkResult> Delete(Admin entity)
+        {
+            if (entity != null)
+            {
+                return await Delete(entity.AdminId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
         }
 
-        public override Task<int> DeleteAsync(User user)
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Admin entity)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync();
+            if (entity != null)
+            {
+                return await Delete(cancellationToken,entity.AdminId);
+            }
+            return WorkResult.Failed("Admin cannot be null");
         }
 
-        public override Task<int> DeleteAsync(CancellationToken cancellationToken, User user)
+        public override async Task<WorkResult> Delete(Guid userId)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-
-            _unitOfWork.UserRepository.Remove(user);
-            return _unitOfWork.SaveChangesAsync(cancellationToken);
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Admin
+                Admin admin = await UnitOfWork.AdminRepository.FindById(userId);
+                if (admin != null)
+                {
+                    UnitOfWork.UserRepository.Remove(admin.User);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
         }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId)
+        {
+            if (userId == Guid.Empty)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Admin
+                Admin admin = await UnitOfWork.AdminRepository.FindById(cancellationToken, userId);
+                if (admin != null)
+                {
+                    UnitOfWork.UserRepository.Remove(admin.User);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Admin
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                Admin admin = await UnitOfWork.AdminRepository.FindById(user.UserId);
+                if (admin != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges();
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                // Check is userId owned Admin
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
+                Admin admin = await UnitOfWork.AdminRepository.FindById(cancellationToken, user.UserId);
+                if (admin != null)
+                {
+                    UnitOfWork.UserRepository.Remove(user);
+                    await UnitOfWork.SaveChanges(cancellationToken);
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("userId isn't owned by Admin");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
         #endregion
     }
 }

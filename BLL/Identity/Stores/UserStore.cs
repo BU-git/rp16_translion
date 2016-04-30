@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BLL.Identity.Models;
+using IDAL;
 using IDAL.Interfaces;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
@@ -26,7 +27,6 @@ namespace BLL.Identity.Stores
 
         public void Dispose()
         {
-            // Dispose does nothing since we want Unity to manage the lifecycle of our Unit of Work
         }
 
         #endregion
@@ -41,7 +41,7 @@ namespace BLL.Identity.Stores
             }
             var user = GetUser(identityUser);
             _unitOfWork.UserRepository.Add(user);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
         public Task DeleteAsync(IdentityUser user)
@@ -52,48 +52,48 @@ namespace BLL.Identity.Stores
             var u = GetUser(user);
 
             _unitOfWork.UserRepository.Remove(u);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
-        public Task<IdentityUser> FindByIdAsync(Guid userId)
+        public async Task<IdentityUser> FindByIdAsync(Guid userId)
         {
-            var user = _unitOfWork.UserRepository.FindById(userId);
-            return Task.FromResult(getIdentityUser(user));
+            var user = await _unitOfWork.UserRepository.FindById(userId);
+            return GetIdentityUser(user);
         }
 
-        public Task<IdentityUser> FindByNameAsync(string userName)
+        public async Task<IdentityUser> FindByNameAsync(string userName)
         {
-            var user = _unitOfWork.UserRepository.FindByUserName(userName);
-            return Task.FromResult(getIdentityUser(user));
+            var user = await _unitOfWork.UserRepository.FindByUserName(userName);
+            return GetIdentityUser(user);
         }
 
-        public Task UpdateAsync(IdentityUser user)
+        public async Task UpdateAsync(IdentityUser user)
         {
             if (user == null)
                 throw new ArgumentException("user");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
             PopulateUser(u, user);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         #endregion
 
         #region IUserClaimStore<IdentityUser, Guid> Members
 
-        public Task AddClaimAsync(IdentityUser user, Claim claim)
+        public async Task AddClaimAsync(IdentityUser user, Claim claim)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -106,7 +106,7 @@ namespace BLL.Identity.Stores
             u.Claims.Add(c);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         public Task<IList<Claim>> GetClaimsAsync(IdentityUser user)
@@ -114,21 +114,21 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = _unitOfWork.UserRepository.FindById(user.Id).Result;
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
             return Task.FromResult<IList<Claim>>(u.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)).ToList());
         }
 
-        public Task RemoveClaimAsync(IdentityUser user, Claim claim)
+        public async Task RemoveClaimAsync(IdentityUser user, Claim claim)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -136,21 +136,21 @@ namespace BLL.Identity.Stores
             u.Claims.Remove(c);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         #endregion
 
         #region IUserLoginStore<IdentityUser, Guid> Members
 
-        public Task AddLoginAsync(IdentityUser user, UserLoginInfo login)
+        public async Task AddLoginAsync(IdentityUser user, UserLoginInfo login)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -163,21 +163,22 @@ namespace BLL.Identity.Stores
             u.Logins.Add(l);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
-        public Task<IdentityUser> FindAsync(UserLoginInfo login)
+        public async Task<IdentityUser> FindAsync(UserLoginInfo login)
         {
             if (login == null)
                 throw new ArgumentNullException("login");
 
             var identityUser = default(IdentityUser);
 
-            var l = _unitOfWork.ExternalLoginRepository.GetByProviderAndKey(login.LoginProvider, login.ProviderKey);
+            var l =
+                await _unitOfWork.ExternalLoginRepository.GetByProviderAndKey(login.LoginProvider, login.ProviderKey);
             if (l != null)
-                identityUser = getIdentityUser(l.User);
+                identityUser = GetIdentityUser(l.User);
 
-            return Task.FromResult(identityUser);
+            return identityUser;
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(IdentityUser user)
@@ -185,7 +186,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = _unitOfWork.UserRepository.FindById(user.Id).Result;
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -201,7 +202,7 @@ namespace BLL.Identity.Stores
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = _unitOfWork.UserRepository.FindById(user.Id).Result;
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -211,31 +212,31 @@ namespace BLL.Identity.Stores
             u.Logins.Remove(l);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            return _unitOfWork.SaveChanges();
         }
 
         #endregion
 
         #region IUserRoleStore<IdentityUser, Guid> Members
 
-        public Task AddToRoleAsync(IdentityUser user, string roleName)
+        public async Task AddToRoleAsync(IdentityUser user, string roleName)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentException("Argument cannot be null, empty, or whitespace: roleName.");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
-            var r = _unitOfWork.RoleRepository.FindByName(roleName);
+            var r = await _unitOfWork.RoleRepository.FindByName(roleName);
             if (r == null)
                 throw new ArgumentException("roleName does not correspond to a Role entity.", "roleName");
 
             u.Roles.Add(r);
             _unitOfWork.UserRepository.Update(u);
 
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         public Task<IList<string>> GetRolesAsync(IdentityUser user)
@@ -243,35 +244,35 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = _unitOfWork.UserRepository.FindById(user.Id).Result;
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
             return Task.FromResult<IList<string>>(u.Roles.Select(x => x.Name).ToList());
         }
 
-        public Task<bool> IsInRoleAsync(IdentityUser user, string roleName)
+        public async Task<bool> IsInRoleAsync(IdentityUser user, string roleName)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentException("Argument cannot be null, empty, or whitespace: role.");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
-            return Task.FromResult(u.Roles.Any(x => x.Name == roleName));
+            return u.Roles.Any(x => x.Name == roleName);
         }
 
-        public Task RemoveFromRoleAsync(IdentityUser user, string roleName)
+        public async Task RemoveFromRoleAsync(IdentityUser user, string roleName)
         {
             if (user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(roleName))
                 throw new ArgumentException("Argument cannot be null, empty, or whitespace: role.");
 
-            var u = _unitOfWork.UserRepository.FindById(user.Id);
+            var u = await _unitOfWork.UserRepository.FindById(user.Id);
             if (u == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", "user");
 
@@ -279,7 +280,7 @@ namespace BLL.Identity.Stores
             u.Roles.Remove(r);
 
             _unitOfWork.UserRepository.Update(u);
-            return _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         #endregion
@@ -335,7 +336,7 @@ namespace BLL.Identity.Stores
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException($"Argument cannot be null, empty, or whitespace: {nameof(email)}.");
 
-            var foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+            var foundUser = await _unitOfWork.UserRepository.FindById(user.Id);
 
             if (foundUser == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
@@ -344,7 +345,7 @@ namespace BLL.Identity.Stores
 
             _unitOfWork.UserRepository.Update(foundUser);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         public Task<string> GetEmailAsync(IdentityUser user)
@@ -352,7 +353,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return _unitOfWork.UserRepository.FindByIdAsync(user.Id)
+            return _unitOfWork.UserRepository.FindById(user.Id)
                 .ContinueWith(u => u.Result.Email ?? null, TaskContinuationOptions.ExecuteSynchronously);
         }
 
@@ -361,7 +362,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return _unitOfWork.UserRepository.FindByIdAsync(user.Id)
+            return _unitOfWork.UserRepository.FindById(user.Id)
                 .ContinueWith(u =>
                 {
                     if (u.Result == null)
@@ -375,7 +376,7 @@ namespace BLL.Identity.Stores
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var foundUser = await _unitOfWork.UserRepository.FindByIdAsync(user.Id);
+            var foundUser = await _unitOfWork.UserRepository.FindById(user.Id);
 
             if (foundUser == null)
                 throw new ArgumentException("IdentityUser does not correspond to a User entity.", nameof(user));
@@ -384,7 +385,7 @@ namespace BLL.Identity.Stores
 
             _unitOfWork.UserRepository.Update(foundUser);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
         }
 
         public Task<IdentityUser> FindByEmailAsync(string email)
@@ -392,8 +393,8 @@ namespace BLL.Identity.Stores
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException($"Argument cannot be null, empty, or whitespace: {nameof(email)}.");
 
-            return _unitOfWork.UserRepository.FindByEmailAsync(email)
-                .ContinueWith(u => getIdentityUser(u.Result), TaskContinuationOptions.ExecuteSynchronously);
+            return _unitOfWork.UserRepository.FindByEmail(email)
+                .ContinueWith(u => GetIdentityUser(u.Result), TaskContinuationOptions.ExecuteSynchronously);
         }
 
         #endregion
@@ -421,7 +422,7 @@ namespace BLL.Identity.Stores
             user.EmailConfirmed = identityUser.EmailConfirmed;
         }
 
-        private IdentityUser getIdentityUser(User user)
+        private IdentityUser GetIdentityUser(User user)
         {
             if (user == null)
                 return null;
