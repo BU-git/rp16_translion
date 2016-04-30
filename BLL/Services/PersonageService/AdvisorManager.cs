@@ -186,30 +186,16 @@ namespace BLL.Services.PersonageService
             }
         }
 
-        public override Task<WorkResult> Delete(Guid userId)
+        public override async Task<WorkResult> Delete(Guid userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public override Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Delete advisor
-
-        public override async Task<WorkResult> Delete(string userId)
-        {
-            if (userId == null)
+            if (userId == Guid.Empty)
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
             try
             {
-                Advisor user = await UnitOfWork.AdvisorRepository.FindById(userId);
-                UnitOfWork.AdvisorRepository.Remove(user);
+                User user = await UnitOfWork.UserRepository.FindById(userId);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges();
                 if (result > 0)
                 {
@@ -223,16 +209,66 @@ namespace BLL.Services.PersonageService
             }
         }
 
-        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userId)
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId)
         {
-            if (userId == null)
+            if (userId == Guid.Empty)
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
             try
             {
-                Advisor user = await UnitOfWork.AdvisorRepository.FindById(cancellationToken, userId);
-                UnitOfWork.AdvisorRepository.Remove(user);
+                User user = await UnitOfWork.UserRepository.FindById(cancellationToken,userId);
+                UnitOfWork.UserRepository.Remove(user);
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Delete advisor
+
+        public override async Task<WorkResult> Delete(string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
+                UnitOfWork.UserRepository.Remove(user);
+                int result = await UnitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    return WorkResult.Success();
+                }
+                return WorkResult.Failed("SaveChanges result is 0");
+            }
+            catch (Exception ex)
+            {
+                return WorkResult.Failed(ex.Message);
+            }
+        }
+
+        public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
+        {
+            if (userName == null)
+            {
+                return WorkResult.Failed("Wrong param.Entity is null");
+            }
+            try
+            {
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges(cancellationToken);
                 if (result > 0)
                 {

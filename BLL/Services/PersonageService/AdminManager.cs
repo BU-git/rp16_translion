@@ -198,8 +198,8 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                Admin user = await UnitOfWork.AdminRepository.FindById(userId);
-                UnitOfWork.AdminRepository.Remove(user);
+                User user = await UnitOfWork.UserRepository.FindById(userId);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges();
                 if (result > 0)
                 {
@@ -221,8 +221,8 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                Admin user = await UnitOfWork.AdminRepository.FindById(cancellationToken, userId);
-                UnitOfWork.AdminRepository.Remove(user);
+                User user = await UnitOfWork.UserRepository.FindById(cancellationToken,userId);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges(cancellationToken);
                 if (result > 0)
                 {
@@ -245,7 +245,7 @@ namespace BLL.Services.PersonageService
             try
             {
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                UnitOfWork.AdminRepository.Remove(user.Admin);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges();
                 if (result > 0)
                 {

@@ -246,7 +246,7 @@ namespace BLL.Services.PersonageService
             try
             {
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                UnitOfWork.EmployerRepository.Remove(user.Employer);
+                UnitOfWork.UserRepository.Remove(user);
                 int result = await UnitOfWork.SaveChanges();
                 if (result > 0)
                 {

@@ -151,11 +151,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteEmployer(string Id)
         {
-            var employer = await employerManager.GetBaseUserByGuid(Id);
-            await employerManager.Delete(employer.UserName);
+            User user = await employerManager.GetBaseUserByGuid(Id);
+            await employerManager.Delete(user.UserId);
 
             var messageInfo = new AdminDeleteEmployerMessageBuilder();
-            await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
+            await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, user.Email);
 
             return RedirectToAction("Index");
         }
