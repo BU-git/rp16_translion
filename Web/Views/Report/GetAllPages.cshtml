@@ -1,5 +1,5 @@
 ﻿@using Web.Infrastructure.HtmlHelpers
-@model List<IDAL.Models.Page>
+@model System.Collections.Generic.IEnumerable<IDAL.Models.Page>
 @{
     ViewBag.Title = "GetAllPages";
 }
@@ -7,7 +7,7 @@
 
 @foreach (var page in Model)
 {
-    <h2>@page.Name Order: @page.Order</h2>
+    <h2>@page.Name</h2>
         <div class="row">
             @foreach (var question in page.Questions)
             {

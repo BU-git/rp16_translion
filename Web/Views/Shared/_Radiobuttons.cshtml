@@ -1,4 +1,5 @@
-﻿@model IDAL.Models.Question
+﻿@using System
+@model IDAL.Models.Question
 <div class="question">
     <!--Question-->
     <h3>@Model.QuestionName</h3>
@@ -9,7 +10,7 @@
         foreach (var answer in Model.Answers)
         {
             <label class="radio-inline">
-                <input type="radio" name='Question1.'/>
+                <input type="radio" name="@String.Format("p{0}q{1}a{2}", Model.PageId, Model.Id, answer.Id)" value="@answer.Name"/>
                 @answer.Name
             </label>
         }
@@ -19,7 +20,7 @@
         foreach (var answer in Model.Answers)
         {
             <div class="radio">
-                <label><input type="radio" name='@String.Format("page{0}qa{1}",Model.PageId, Model.Id)'>@answer.Name</label>
+                <label><input type="radio" name="@String.Format("p{0}q{1}a{2}", Model.PageId, Model.Id, answer.Id)" value="@answer.Name" />@answer.Name</label>
             </div>
         }
     }

@@ -1,8 +1,9 @@
-﻿@model IDAL.Models.Question
+﻿@using System
+@model IDAL.Models.Question
 <div class="question">
     <!--Question-->
     <h3>@Model.QuestionName</h3>
     <div class="form-group">
-        <textarea class="form-control" name="@String.Format("page{0}qa{1}",Model.PageId, Model.Id)"></textarea>
+        <textarea class="form-control" name="@String.Format("p{0}q{1}",Model.PageId, Model.Id)"></textarea>
     </div>
 </div>
