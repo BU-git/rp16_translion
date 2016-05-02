@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BLL.Services.TestService.Interfaces;
@@ -648,6 +649,19 @@ namespace BLL.Services.TestService
             return UnitOfWork.AnswerRepository.FindById(cancellationToken, answerId);
         }
 
+        #endregion
+
+        #region Parse answer name
+
+        public void ParseAnswerName(string questionName, out int pageId, out int questionId)
+        {
+            string pattern = @"\d+";
+
+            var pIdMatch = Regex.Matches(questionName, pattern)[0].Value;
+            pageId = Convert.ToInt32(pIdMatch);
+            var qIdMatch = Regex.Matches(questionName, pattern)[1].Value;
+            questionId = Convert.ToInt32(qIdMatch);
+        }
         #endregion
     }
 }

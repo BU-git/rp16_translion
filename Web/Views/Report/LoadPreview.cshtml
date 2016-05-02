@@ -1,0 +1,33 @@
+﻿@using Web.Infrastructure.HtmlHelpers
+@model List<IDAL.Models.Page>
+@{
+    ViewBag.Title = "Report Preview";
+}
+
+@using (Html.BeginForm("SaveTest", "Report", FormMethod.Post))
+{
+    <div class="preview">
+        @foreach (var page in Model)
+        {
+            <div class="block">
+                <div class="pageTitle">
+                    @page.Order. @page.Name
+                </div>
+                <div class="row">
+                    @foreach (var question in page.Questions)
+                    {
+                        <div question></div>
+                    }
+                </div>
+            </div>
+        }
+        <div class="block">
+            <div class="submitTextBlock col-centered">
+                <p>Press Save to generate new reoprt</p>
+            </div>
+            <div class="submitBtnBlock">
+                <input type="submit" class="btn btn-primary customBtn" />
+            </div>
+        </div>
+    </div>
+}

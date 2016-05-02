@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -51,10 +52,25 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> LoadPreview(FormCollection formCollection)
+        public async Task<ActionResult> SaveReport(FormCollection formCollection)
         {
-            return View();
-        }
+            var pages = await _testService.GetAllPages();
 
+            int pageId, questionId;
+
+            foreach (var name in formCollection.AllKeys)
+            {
+                _testService.ParseAnswerName(name, out pageId, out questionId);
+
+                var question = await _testService.GetQuestion(questionId);
+
+                // TODO: implement business logic for report generating. Create structure Questions-Answers
+                // FormCollection should be represented as a structure Questions-Answers
+                // Here methods from BLL will be called to generate new reports based on from data
+
+            }
+
+            return View(pages.ToList());
+        }
     }
 }

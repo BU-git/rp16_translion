@@ -207,6 +207,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\HtmlHelpers\CreatePreviewHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\CreateQuestionHelpers.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AdminAlertPanelViewModel.cs" />
@@ -275,6 +276,8 @@
     <Content Include="Views\Report\GetAllPages.cshtml" />
     <Content Include="Views\Admin\RegisterEmployer.cshtml" />
     <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
+    <Content Include="Views\Report\LoadPreview.cshtml" />
+    <Content Include="Views\Shared\_QuestionPreview.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

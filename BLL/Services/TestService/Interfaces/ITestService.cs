@@ -88,7 +88,7 @@ namespace BLL.Services.TestService.Interfaces
 
         #endregion
 
-        #region Add answer to question
+        #region Add possible answer to question
 
         Task<WorkResult> AddAnswer(Answer answer, Question question);
         Task<WorkResult> AddAnswer(CancellationToken token, Answer answer, Question question);
@@ -113,6 +113,12 @@ namespace BLL.Services.TestService.Interfaces
 
         Task<Answer> GetAnswer(int answerId);
         Task<Answer> GetAnswer(CancellationToken cancellationToken, int answerId);
+
+        #endregion
+
+        #region Parse Answer Name
+
+        void ParseAnswerName(string questionName, out int pageId, out int questionId);
 
         #endregion
     }
