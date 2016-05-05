@@ -33,6 +33,17 @@ namespace Web.Controllers
         }
 
         #region Advisors section
+        
+        [HttpGet]
+        public async Task<ActionResult> AdvisorInfo(Guid? id)
+        {
+            var user = await GetUserIfAdvisorAsync(id);
+
+            if (user != null)
+                return View(user.Advisor);
+
+            return RedirectToAction("AdvisorsList");
+        }
 
         [HttpGet]
         public async Task<ActionResult> AdvisorsList()
@@ -58,7 +69,7 @@ namespace Web.Controllers
         {
             var user = await GetUserIfAdvisorAsync(id);
 
-            WorkResult result = await adminManager.Delete(user.UserId.ToString());
+            WorkResult result = await advisorManager.Delete(user.UserId);
             if (user != null && result.Succeeded)
             {
                 return View("Settings");

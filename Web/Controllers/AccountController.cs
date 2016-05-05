@@ -1,39 +1,41 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using BLL.Identity.Models;
+using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
-using IDAL.Interfaces;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.DataProtection;
 using Web.ViewModels;
 
 namespace Web.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly PersonManager<Admin> _adminManager;
+        private readonly PersonManager<Advisor> _advisorManager;
+        private readonly AlertManager _alertManager;
         private readonly PersonManager<Employer> _employerManager;
+        private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
 
-        public AccountController(UserManager<IdentityUser, Guid> userManager, PersonManager<Employer> employerManager,
-            IMailingService emailService, IUnitOfWork unitOfWork)
+        public AccountController(UserManager<IdentityUser, Guid> userManager,
+            PersonManager<Admin> adminManager,
+            PersonManager<Advisor> advisorManager,
+            PersonManager<Employer> employerManager,
+            AlertManager alertManager,
+            IMailingService mailingService)
         {
             _userManager = userManager;
-            //bad solutions
-            _userManager.EmailService = emailService;
-            _userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
-                new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
-
+            _adminManager = adminManager;
+            _advisorManager = advisorManager;
             _employerManager = employerManager;
-            emailService.IgnoreQueue();
+            _alertManager = alertManager;
+            _mailingService = mailingService;
         }
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
@@ -126,7 +128,6 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var identityUser = new IdentityUser
@@ -147,7 +148,7 @@ namespace Web.Controllers
                     PostalCode = model.PostalCode,
                     TelephoneNumber = model.TelephoneNumber
                 };
-                
+
                 var result = await _userManager.CreateAsync(identityUser, model.Password);
 
                 if (result.Succeeded)
@@ -159,7 +160,6 @@ namespace Web.Controllers
                     await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");
-                    
                 }
             }
             return View(model);
@@ -391,7 +391,7 @@ namespace Web.Controllers
 
             return employer;
         }
-        
+
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();

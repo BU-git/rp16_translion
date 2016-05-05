@@ -126,6 +126,7 @@ namespace Web.Controllers
                 employer.PostalCode = model.PostalCode;
                 employer.Prefix = model.Prefix;
                 employer.TelephoneNumber = model.TelephoneNumber;
+                model.EmployerId = employer.EmployerId;
 
                 await employerManager.Update(employer);
 
