@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.Types;
 using Microsoft.AspNet.Identity;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BLL.Services.MailingService
 {
@@ -18,10 +20,9 @@ namespace BLL.Services.MailingService
     {
         private readonly string m_from; //sender address
         private readonly MailQueue m_queue; //mailing queue
-
         private readonly SmtpClient m_sender; //email sender
-        private bool m_disposed;
 
+        private bool m_disposed;
         private bool m_queueIgnored;
 
         public MailingService(string from, string password, string host)
@@ -31,12 +32,14 @@ namespace BLL.Services.MailingService
 
         public MailingService(NetworkCredential credentials, string host) : this(credentials.UserName)
         {
-            m_sender = new SmtpClient();
-            m_sender.Credentials = credentials;
-            m_sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-            m_sender.Host = host;
-            m_sender.EnableSsl = true;
-            m_sender.Timeout = 10000;
+            m_sender = new SmtpClient
+            {
+                Credentials = credentials,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Host = host,
+                EnableSsl = true,
+                Timeout = 10000
+            };
         }
 
         private MailingService(string from)
@@ -61,7 +64,8 @@ namespace BLL.Services.MailingService
             return SendMail(createdMessage);
         }
 
-        public SendStatus SendMail(string body, string subject, string to) => SendMail(body, subject, new[] {to});
+        public SendStatus SendMail(string body, string subject, string to) 
+            => SendMail(body, subject, new[] {to});
 
         public Task<SendStatus> SendMailAsync(string body, string subject, params string[] to)
         {
@@ -83,35 +87,36 @@ namespace BLL.Services.MailingService
         /// </returns>
         public SendStatus SendMail(MailMessage message)
         {
-            if (CheckMessageValidity(message))
+            if (!CheckMessageValidity(message))
             {
-                try
+                return new SendStatus
                 {
-                    m_sender.Send(message);
-                    return new SendStatus {HasError = false, Status = MessageStatus.Sent};
-                }
-                catch (SmtpException ex) //delivering exception
-                {
-                    if (!m_queueIgnored) //if not ignore queue adding
-                    {
-                        m_queue.AddMessage(message); //adding message to queue
-                        return new SendStatus {HasError = false, Status = MessageStatus.InQueue};
-                    }
-
-                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
-                }
-                catch (Exception ex)
-                {
-                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
-                }
+                    ErrorMessage = "Message is invalid, check recievers, sender or message data",
+                    HasError = true,
+                    Status = MessageStatus.Error
+                };
             }
-            //message is invalid
-            return new SendStatus
+
+            message.From = new MailAddress(m_from); //setting valid sender
+
+            try
             {
-                ErrorMessage = "Message is invalid, check recievers,sender or message data",
-                HasError = true,
-                Status = MessageStatus.Error
-            };
+                m_sender.Send(message);
+                return new SendStatus {HasError = false, Status = MessageStatus.Sent};
+            }
+            catch (SmtpException ex) //delivering exception
+            {
+                if (m_queueIgnored)
+                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
+
+                m_queue.AddMessage(message); //adding message to queue
+
+                return new SendStatus {HasError = false, Status = MessageStatus.InQueue};
+            }
+            catch (Exception ex)
+            {
+                return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
+            }
         }
 
         /// <summary>
@@ -124,35 +129,36 @@ namespace BLL.Services.MailingService
         /// </returns>
         public async Task<SendStatus> SendMailAsync(MailMessage message)
         {
-            if (CheckMessageValidity(message))
+            if (!CheckMessageValidity(message))
             {
-                try
+                return new SendStatus
                 {
-                    await m_sender.SendMailAsync(message);
-                    return new SendStatus {HasError = false, Status = MessageStatus.Sent};
-                }
-                catch (SmtpException ex) //delivering exception
-                {
-                    if (!m_queueIgnored) //if not ignore queue adding
-                    {
-                        m_queue.AddMessage(message); //adding message to queue
-                        return new SendStatus {HasError = false, Status = MessageStatus.InQueue};
-                    }
-
-                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
-                }
-                catch (Exception ex)
-                {
-                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
-                }
+                    ErrorMessage = "Message is invalid, check recievers, sender or message data",
+                    HasError = true,
+                    Status = MessageStatus.Error
+                };
             }
-            //message is invalid
-            return new SendStatus
+
+            message.From = new MailAddress(m_from); //setting valid sender   
+
+            try
             {
-                ErrorMessage = "Message is invalid, check recievers,sender or message data",
-                HasError = true,
-                Status = MessageStatus.Error
-            };
+                await m_sender.SendMailAsync(message);
+                return new SendStatus {HasError = false, Status = MessageStatus.Sent};
+            }
+            catch (SmtpException ex) //delivering exception
+            {
+                if (m_queueIgnored)
+                    return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
+
+                m_queue.AddMessage(message); //adding message to queue
+
+                return new SendStatus {HasError = false, Status = MessageStatus.InQueue};
+            }
+            catch (Exception ex)
+            {
+                return new SendStatus {HasError = true, Status = MessageStatus.Error, ErrorMessage = ex.Message};
+            }
         }
 
         public void Dispose()
@@ -164,14 +170,12 @@ namespace BLL.Services.MailingService
             }
         }
 
-
         public void IgnoreQueue()
         {
             m_queueIgnored = true;
         }
 
         #region Identity
-
         /// <summary>
         ///     Allows identity message sending
         /// </summary>
@@ -195,42 +199,30 @@ namespace BLL.Services.MailingService
         /// <param name="addresses">Recievers addresses</param>
         /// <param name="attachment">Attachments</param>
         /// <returns>New MailMessage</returns>
-        private MailMessage CreateMessage(string subject, string body, IEnumerable<byte> attachment,
-            params string[] addresses)
+        private MailMessage CreateMessage(string subject, string body,
+            IEnumerable<byte> attachment, params string[] addresses)
         {
-            try
+            var message = new MailMessage
             {
-                var message = new MailMessage();
-                //setting message values
-                message.Body = body;
-                message.Subject = subject;
-                message.SubjectEncoding = Encoding.UTF8;
-                message.BodyEncoding = Encoding.UTF8;
+                Body = body,
+                Subject = subject,
+                SubjectEncoding = Encoding.UTF8,
+                BodyEncoding = Encoding.UTF8,
+                IsBodyHtml = true
+            };
 
-                message.From = new MailAddress(m_from);
-
-
-                message.IsBodyHtml = true;
-
-                //adding addresses to mail message
-                if (addresses != null)
-                {
-                    foreach (var address in addresses)
-                        message.To.Add(new MailAddress(address));
-                }
-                
-                return message;
-            }
-            catch (FormatException)
-            {
+            if (!CheckRecieversCollection(addresses))
                 return null;
-            }
+
+            foreach (var address in addresses)
+                message.To.Add(new MailAddress(address));
+
+            return message;
         }
 
         #endregion
 
         #region Validation
-
         /// <summary>
         ///     Checks message for valid content
         /// </summary>
@@ -238,30 +230,25 @@ namespace BLL.Services.MailingService
         /// <returns>Checking result</returns>
         private bool CheckMessageValidity(MailMessage message)
         {
-            return message != null && !string.IsNullOrEmpty(message.Body) && message.From != null &&
-                   !string.IsNullOrEmpty(message.From.Address)
-                   && CheckRecieversCollection(message) && !string.IsNullOrEmpty(message.Subject);
+            return message != null 
+                   && !string.IsNullOrWhiteSpace(message.Body) 
+                   && !string.IsNullOrWhiteSpace(message.Subject);
         }
 
         /// <summary>
         ///     Checks recievers collection for validity
         /// </summary>
-        /// <param name="message">Mail message to check</param>
+        /// <param name="recievers">Collection of addresses</param>
         /// <returns>Validation result</returns>
-        private bool CheckRecieversCollection(MailMessage message)
+        private bool CheckRecieversCollection(IEnumerable<string> recievers)
         {
-            if (message.To == null || message.To.Count == 0)
+            if (recievers == null)
                 return false;
 
-            foreach (var address in message.To)
-            {
-                if (string.IsNullOrEmpty(address.Address)) //foreach address in addresses -> check address validity
-                    return false;
-            }
-
-            return true;
+            //checks if it is valid string and has email format
+            return 
+                !recievers.Any(r => String.IsNullOrWhiteSpace(r) || !Regex.IsMatch(r, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"));
         }
-
         #endregion
     }
 }
