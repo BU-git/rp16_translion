@@ -170,7 +170,7 @@ namespace Web.Controllers
         #region Add new admin by admin
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult AddAdmin()
         {
             return View();
@@ -178,7 +178,7 @@ namespace Web.Controllers
 
         //TODO: set authorize attribute for AddAdmin Method
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
         {
             if (ModelState.IsValid)

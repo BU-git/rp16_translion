@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels
 {
     public class AddEmployeeViewModel
     {
+        public Guid EmployerID { get; set; }
         [Required(ErrorMessage = "Vul voornaam in")]
         [Display(Name = "Voornaam")]
         [StringLength(15, ErrorMessage = "Too long username")]
