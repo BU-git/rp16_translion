@@ -36,7 +36,7 @@ namespace Web.ViewModels
 
         [Required]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email-adres")]
+        [Display(Name = "E-mailadres")]
         [EmailAddress]
         public string EmailAdress { get; set; }
 

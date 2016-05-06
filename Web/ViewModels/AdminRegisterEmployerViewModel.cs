@@ -32,7 +32,7 @@ namespace Web.ViewModels
 
         [Required(ErrorMessage = "Uw emailadres is niet correct, controleer dit aub.")]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email-adres")]
+        [Display(Name = "E-mailadres")]
         [EmailAddress]
         public string EmailAdress { get; set; }
 

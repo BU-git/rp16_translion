@@ -190,7 +190,8 @@ namespace Web.Controllers
         #endregion
 
         #region Employer profile
-        
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Advisor")]
         [HttpGet]
         public async Task<ActionResult> EmployerProfile(string Id)
         {
