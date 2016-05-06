@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using BLL.Identity.Models;
 using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
+using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
@@ -71,6 +72,63 @@ namespace Web.Controllers
                 }
             }
             return View("Index");
+        }
+
+        [HttpGet]
+        public override async Task<ActionResult> AddEmployee(Guid? userId = null)
+        {
+            if (userId == null || userId == Guid.Empty)
+            {
+                var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
+                ViewBag.EmployerId = user.UserId;
+                return View();
+            }
+            ViewBag.EmployerId = userId;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async override Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel, string id)
+        {
+            if (!ModelState.IsValid)
+                return View(employeeViewModel);
+
+            var user = await employerManager.GetBaseUserByName(User.Identity.Name);
+
+            if (user == null)
+                return RedirectToAction("Logout");
+
+            await employerManager.CreateEmployee(new Employee
+            {
+                EmployerId = user.UserId,
+                EmployeeId = Guid.NewGuid(),
+                LastName = employeeViewModel.LastName,
+                FirstName = employeeViewModel.FirstName,
+                Prefix = employeeViewModel.Prefix
+            });
+
+            var mailMessageData = new CreateEmployeeMailMessageBuilder(User.Identity.Name,
+                $"{employeeViewModel.FirstName} {employeeViewModel.Prefix} {employeeViewModel.LastName}");
+
+            await mailingService.SendMailAsync(mailMessageData.Body, mailMessageData.Subject,
+                await GetAllAdminsEmailsAsync());
+
+            return View("AddEmployeeSuccess");
+        }
+
+        [NonAction]
+        private async Task<string[]> GetAllAdminsEmailsAsync()
+        {
+            var admins = await adminManager.GetAll();
+
+            if (admins.Count == 0)
+                return null;
+
+            return admins
+                .Select(adm => adm.User.Email)
+                .ToArray();
         }
     }
 }

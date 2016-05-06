@@ -259,7 +259,6 @@
     <Content Include="Views\Advisor\Index.cshtml" />
     <Content Include="Views\Advisor\Settings.cshtml" />
     <Content Include="Views\Shared\EmployerProfile.cshtml" />
-    <Content Include="Views\Shared\AddEmployee.cshtml" />
     <Content Include="Views\Shared\RegisterEmployer.cshtml" />
     <Content Include="Views\Shared\ChangeEmployeeName.cshtml" />
     <Content Include="Views\Shared\EditEmployer.cshtml" />
@@ -276,6 +275,7 @@
     <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
     <Content Include="Views\Report\LoadPreview.cshtml" />
     <Content Include="Views\Shared\_QuestionPreview.cshtml" />
+    <Content Include="Views\Employer\AddEmployee.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

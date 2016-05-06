@@ -330,9 +330,9 @@ namespace Web.Controllers
         #region Add Employee
 
         [HttpGet]
-        public async Task<ActionResult> AddEmployee(Guid? userId = null)
+        public  virtual async Task<ActionResult> AddEmployee(Guid? userId = null)
         {
-            if (userId == null)
+            if (userId == null || userId == Guid.Empty)
             {
                 var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
                 ViewBag.EmployerId = user.UserId;
@@ -344,7 +344,7 @@ namespace Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel model, string id)
+        public  virtual async Task<ActionResult> AddEmployee(AddEmployeeViewModel model, string id)
         {
             if (!ModelState.IsValid)
             {
