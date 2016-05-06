@@ -28,7 +28,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -65,14 +65,14 @@ namespace BLL.Services.PersonageService
         {
             if (userId != Guid.Empty)
             {
-                return await UnitOfWork.AdvisorRepository.FindById(cancellationToken,userId);
+                return await UnitOfWork.AdvisorRepository.FindById(cancellationToken, userId);
             }
             return null;
         }
 
         public override async Task<Advisor> Get(string userName)
         {
-            if (userName != null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
                 return await UnitOfWork.AdvisorRepository.FindById(user.UserId);
@@ -82,10 +82,10 @@ namespace BLL.Services.PersonageService
 
         public override async Task<Advisor> Get(CancellationToken cancellationToken, string userName)
         {
-            if (userName != null)
+            if (!string.IsNullOrEmpty(userName))
             {
-                User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                return await UnitOfWork.AdvisorRepository.FindById(user.UserId);
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
+                return await UnitOfWork.AdvisorRepository.FindById(cancellationToken, user.UserId);
             }
             return null;
         }
@@ -108,7 +108,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -130,7 +130,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -156,7 +156,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -178,7 +178,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -186,11 +186,9 @@ namespace BLL.Services.PersonageService
             }
         }
 
-
         #endregion
 
         #region Delete advisor
-
 
         public override async Task<WorkResult> Delete(Advisor entity)
         {
@@ -223,8 +221,12 @@ namespace BLL.Services.PersonageService
                 if (advisor != null)
                 {
                     UnitOfWork.UserRepository.Remove(advisor.User);
-                    await UnitOfWork.SaveChanges();
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -243,12 +245,16 @@ namespace BLL.Services.PersonageService
             try
             {
                 // Check is userId owned Advisor
-                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,userId);
+                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken, userId);
                 if (advisor != null)
                 {
                     UnitOfWork.UserRepository.Remove(advisor.User);
-                    await UnitOfWork.SaveChanges(cancellationToken);
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -260,7 +266,7 @@ namespace BLL.Services.PersonageService
 
         public override async Task<WorkResult> Delete(string userName)
         {
-            if (userName == null)
+            if (string.IsNullOrEmpty(userName))
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
@@ -268,12 +274,15 @@ namespace BLL.Services.PersonageService
             {
                 // Check is userId owned Advisor
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(user.UserId);
-                if (advisor != null)
+                if (user.Advisor != null)
                 {
                     UnitOfWork.UserRepository.Remove(user);
-                    await UnitOfWork.SaveChanges();
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -285,20 +294,23 @@ namespace BLL.Services.PersonageService
 
         public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
         {
-            if (userName == null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
             try
             {
                 // Check is userId owned Advisor
-                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken,userName);
-                Advisor advisor = await UnitOfWork.AdvisorRepository.FindById(cancellationToken,user.UserId);
-                if (advisor != null)
+                User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
+                if (user.Advisor != null)
                 {
                     UnitOfWork.UserRepository.Remove(user);
-                    await UnitOfWork.SaveChanges(cancellationToken);
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
