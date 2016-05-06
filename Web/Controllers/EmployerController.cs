@@ -40,7 +40,9 @@ namespace Web.Controllers
             var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
             if (user?.Employer != null)
-                return View(user.Employer.Employees.Where(empl => !empl.IsDeleted));
+                return View(user.Employer.Employees
+                    .Where(empl => !empl.IsDeleted && empl.IsApprove)
+                    .ToList());
 
             return RedirectToAction("Logout");
         }

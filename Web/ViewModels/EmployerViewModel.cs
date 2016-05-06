@@ -32,6 +32,7 @@ namespace Web.ViewModels
         [Required]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Telefoon")]
+        [StringLength(11)]
         public string TelephoneNumber { get; set; }
 
         [Required]
@@ -42,6 +43,7 @@ namespace Web.ViewModels
 
         [Required]
         [Display(Name = "Postcode")]
+        [StringLength(6)]
         public string PostalCode { get; set; }
 
         [Required]

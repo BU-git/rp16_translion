@@ -28,6 +28,7 @@ namespace Web.ViewModels
         [Required(ErrorMessage = "There's no phone number correctly entered, please check this.")]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Telefoon")]
+        [StringLength(11)]
         public string TelephoneNumber { get; set; }
 
         [Required(ErrorMessage = "Uw emailadres is niet correct, controleer dit aub.")]
@@ -38,6 +39,7 @@ namespace Web.ViewModels
 
         [Required(ErrorMessage = "Uw postcode is niet correct. Uw postcode mag niet meer als 6 karakters bevatten.")]
         [Display(Name = "Postcode")]
+        [StringLength(6)]
         public string PostalCode { get; set; }
 
         [Required(ErrorMessage = "Uw adres is niet correct ingevuld, controleer dit aub.")]
