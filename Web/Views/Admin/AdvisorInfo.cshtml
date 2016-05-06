@@ -18,7 +18,7 @@
     </div>
     <!--New report section-->
     <div class="row">
-        @Html.ActionLink("Naam verranden", "ChangeAdvisorName", "Admin", new { id = Model.AdvisorId }, new { @class = "admSettingsButton" })
+        @Html.ActionLink("Naam veranderen", "ChangeAdvisorName", "Admin", new { id = Model.AdvisorId }, new { @class = "admSettingsButton" })
     </div>
     <!--Modal button-->
     <div class="row">
@@ -43,7 +43,7 @@
                     <h4 class="modal-title text-center">Adviseur verwijderen!</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
+                    <p>Weet u zeker dat u deze adviseur wil verwijderen.</p>
                 </div>
                 <div class="modal-footer">
                     @Html.ActionLink("Ja", "DeleteAdvisor", new { id = Model.AdvisorId }, new { @class = "btn btn-success" })

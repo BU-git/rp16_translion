@@ -25,7 +25,7 @@ namespace Web.ViewModels
 
         [Display(Name = "Bevestig wachtwoord")]
         [Required(ErrorMessage = "Vul Bevestig wachtwoord in")]
-        [FromDataAnnotations.Compare(nameof(Password), ErrorMessage = "Wachtwoord kom niet overeen")]
+        [FromDataAnnotations.Compare(nameof(Password), ErrorMessage = "Wachtwoord komt niet overeen")]
         public String ConfirmPassword { get; set; }
     }
 }
