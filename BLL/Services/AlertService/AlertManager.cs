@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using IDAL.Interfaces;
 using IDAL.Interfaces.IManagers;
 using IDAL.Models;
@@ -34,10 +35,22 @@ namespace BLL.Services.AlertService
 
         #region Find employee
 
-        public Employee FindEmployee(Alert alert)
+        public async Task<Employee> FindEmployeeAsync(Alert alert)
         {
-            Employee employee = alert.Employees.FirstOrDefault(e => e.EmployerId == alert.AlertEmployerId);
-            return employee;
+            if (alert.EmployeeId != Guid.Empty)
+            {
+                return await _unitOfWork.EmployeeRepository.FindById(alert.EmployeeId);
+            }
+            return null;
+        }
+
+        public async Task<Employer> FindEmployerAsync(Alert alert)
+        {
+            if (alert.EmployerId != Guid.Empty)
+            {
+                return await _unitOfWork.EmployerRepository.FindById(alert.EmployerId);
+            }
+            return null;
         }
 
         #endregion
@@ -61,7 +74,7 @@ namespace BLL.Services.AlertService
             {
                 throw new ArgumentException("alert is null. Wrong parameter");
             }
-
+            User user = await _unitOfWork.UserRepository.FindById(alert.UserId);
             _unitOfWork.AlertRepository.Add(alert);
             return await _unitOfWork.SaveChanges();
         }
@@ -99,17 +112,17 @@ namespace BLL.Services.AlertService
 
         #region Approve
 
-        public void Approve(Alert alert)
+        public async Task<int> Approve(Alert alert)
         {
             if (alert.AlertType==AlertType.Employee_Add)
             {
-                Employee employee = this.FindEmployee(alert);
+                Employee employee = await this.FindEmployeeAsync(alert);
                 employee.IsApprove = true;
                 _unitOfWork.EmployeeRepository.Update(employee);
             }
             alert.AlertIsDeleted = true;
             _unitOfWork.AlertRepository.Update(alert);
-            _unitOfWork.SaveChanges();
+            return await _unitOfWork.SaveChanges();
         }
 
         //public async Task<int> ApproveAsync(Alert alert, User user)

@@ -86,9 +86,10 @@ namespace Web.Controllers
         {
             var alerts = await alertManager.GetNew();
             var alertList = new List<AdminAlertPanelViewModel>();
+
             foreach (var alert in alerts)
             {
-                var currentAlert = MapAlertToTableView(alert);
+                var currentAlert = await MapAlertToTableView(alert);
                 alertList.Add(currentAlert);
             }
             return View("AdminAlertPanel", alertList);
@@ -99,7 +100,7 @@ namespace Web.Controllers
             if (alertId != null)
             {
             var alertToApprove = alertManager.GetAlert((Guid)alertId);
-            alertManager.Approve(alertToApprove);
+            await alertManager.Approve(alertToApprove);
                 
             }
 
@@ -107,7 +108,7 @@ namespace Web.Controllers
             var alertList = new List<AdminAlertPanelViewModel>();
             foreach (var alert in alerts)
             {
-                var currentAlert = MapAlertToTableView(alert);
+                var currentAlert = await MapAlertToTableView(alert);
                 alertList.Add(currentAlert);
             }
             return View("AdminAlertPanel", alertList);
@@ -128,21 +129,24 @@ namespace Web.Controllers
             return user?.Advisor != null ? user : null;
         }
 
-        private AdminAlertPanelViewModel MapAlertToTableView(Alert alert)
+        private async Task<AdminAlertPanelViewModel> MapAlertToTableView(Alert alert)
         {
             var EmployeeName = "n.v.t";
             var alertToShow = alertManager.GetAlert(alert.AlertId);
-            if (alertToShow.Employees.Count != 0)
+
+            if (alertToShow.EmployeeId != null)
             {
-                var emp = alertManager.FindEmployee(alert);
+                var emp = await alertManager.FindEmployeeAsync(alert);
                 EmployeeName = emp.LastName + " " + emp.FirstName;
             }
+
+            Employer employer = await alertManager.FindEmployerAsync(alert);
 
             var AlertData = new AdminAlertPanelViewModel
             {
                 alert = alert,
-                EmployerName = alert.Employer.LastName + " " + alert.Employer.FirstName,
-                Company = alert.Employer.CompanyName,
+                EmployerName = employer.LastName + " " + employer.FirstName,
+                Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
                 AlertType = "Demo",
                 Comment = alert.AlertComment
@@ -152,7 +156,7 @@ namespace Web.Controllers
         }
 
         #endregion
-        
+
         #region Add advisor
 
         [HttpGet]

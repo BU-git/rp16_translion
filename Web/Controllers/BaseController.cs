@@ -366,7 +366,7 @@ namespace Web.Controllers
             Alert alert = new Alert
             {
                 AlertId = Guid.NewGuid(),
-                AlertEmployerId = employer.UserId,
+                EmployerId = employer.UserId,
                 AlertType = AlertType.Employee_Add,
                 AlertComment = "",
                 AlertCreateTS = DateTime.Now,
@@ -456,7 +456,7 @@ namespace Web.Controllers
                 var alert = new Alert
                 {
                     AlertId = Guid.NewGuid(),
-                    AlertEmployerId = employee.EmployerId,
+                    EmployerId = employee.EmployerId,
                     AlertType = AlertType.Employee_Rename,
                     AlertComment = employee.LastName + " " + employee.FirstName, //old name
                     AlertIsDeleted = false,
@@ -464,7 +464,7 @@ namespace Web.Controllers
                     AlertUpdateTS = DateTime.Now
                 };
 
-                await alertManager.CreateAsync(alert);
+                //await alertManager.CreateAsync(alert);
                 WorkResult result = await adminManager.UpdateEmployee(employee);
                 if (result.Succeeded)
                 {

@@ -157,6 +157,20 @@ namespace Web.Controllers
                     var user = await _employerManager.GetBaseUserByGuid(identityUser.Id.ToString());
 
                     await _employerManager.Create(employer);
+
+                    var alert = new Alert();
+                    {
+                        alert.AlertId = Guid.NewGuid();
+                        alert.EmployerId = identityUser.Id;
+                        alert.AlertType = AlertType.Employer_Create;
+                        alert.AlertIsDeleted = false;
+                        alert.AlertComment = "";
+                        alert.AlertCreateTS = DateTime.Now;
+                        alert.AlertUpdateTS = DateTime.Now;
+                        alert.UserId = user.UserId;
+                    };
+                    await _alertManager.CreateAsync(alert);
+
                     await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");

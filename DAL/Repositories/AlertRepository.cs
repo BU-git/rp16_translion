@@ -18,17 +18,17 @@ namespace DAL.Repositories
 
         public async Task<List<Alert>> GetNewAlerts()
         {
-            return await Set.Where(a => !a.AlertIsDeleted).Include(x => x.Employees).ToListAsync();
+            return await Set.Where(a => !a.AlertIsDeleted).ToListAsync();
         }
 
         public async Task<List<Alert>> GetNewAlerts(CancellationToken cancellationToken)
         {
-            return await Set.Where(a => !a.AlertIsDeleted).Include(x => x.Employees).ToListAsync(cancellationToken);
+            return await Set.Where(a => !a.AlertIsDeleted).ToListAsync(cancellationToken);
         }
 
         public Task<Alert> FindAlertById(Guid id)
         {
-            return Set.Include(a => a.Employees).FirstOrDefaultAsync(a => a.AlertId == id);
+            return Set.FirstOrDefaultAsync(a => a.AlertId == id);
         }
     }
 }

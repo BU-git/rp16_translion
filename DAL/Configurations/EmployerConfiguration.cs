@@ -15,9 +15,7 @@ namespace DAL.Configurations
                 .WithRequired(x => x.Employer)
                 .HasForeignKey(x => x.EmployerId);
 
-            //HasMany(x => x.Alerts)
-            //    .WithRequired(x => x.Employer)
-            //    .HasForeignKey(x => x.AlertEmployerId);
+
         }
     }
 }

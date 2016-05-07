@@ -32,7 +32,13 @@ namespace IDAL.Interfaces.IManagers
 
         #region Find employee
 
-        Employee FindEmployee(Alert alert);
+        Task<Employee> FindEmployeeAsync(Alert alert);
+
+        #endregion
+
+        #region Find employer
+
+        Task<Employer> FindEmployerAsync(Alert alert);
 
         #endregion
 
@@ -54,7 +60,7 @@ namespace IDAL.Interfaces.IManagers
 
         #region Approve
 
-        void Approve(Alert alert);
+        Task<int> Approve(Alert alert);
         //Task<int> ApproveAsync(Alert alert, User user);
         //Task<int> ApproveAsync(CancellationToken cancellationToken, Alert alert, User user);
 

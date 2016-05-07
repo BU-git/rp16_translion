@@ -1,32 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+ 
 
 namespace IDAL.Models
 {
     public class Alert
     {
-        #region Fields
 
-        private ICollection<Employee> _employees;
-
-        #endregion
-
-        #region Navigation Properties
-
-        public virtual Employer Employer { get; set; }
-
-        #endregion
-
-        public ICollection<Employee> Employees
-        {
-            get { return _employees ?? (_employees = new List<Employee>()); }
-            set { _employees = value; }
-        }
-
+        public virtual User User { get; set; }
         #region Scalar Properties
 
         public Guid AlertId { get; set; }
-        public Guid AlertEmployerId { get; set; }
+        public Guid EmployerId { get; set; }
+        public Guid? EmployeeId { get; set; }
+        public Guid UserId { get; set; } 
         public AlertType AlertType { get; set; }
         public string AlertComment { get; set; }
         public virtual bool AlertIsDeleted { get; set; }

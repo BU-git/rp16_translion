@@ -10,6 +10,7 @@ namespace IDAL.Models
         private ICollection<Claim> _claims;
         private ICollection<ExternalLogin> _externalLogins;
         private ICollection<Role> _roles;
+        private ICollection<Alert> _alerts;
 
         #endregion
 
@@ -50,6 +51,12 @@ namespace IDAL.Models
         {
             get { return _roles ?? (_roles = new List<Role>()); }
             set { _roles = value; }
+        }
+
+        public virtual ICollection<Alert> Alerts
+        {
+            get { return _alerts ?? (_alerts = new List<Alert>()); }
+            set { _alerts = value; }
         }
 
         #endregion
