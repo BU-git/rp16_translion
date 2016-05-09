@@ -5,7 +5,6 @@ namespace IDAL.Models
 {
     public class Employee
     {
-        private ICollection<Alert> _alerts;
         private Employer _employer;
 
 
@@ -31,15 +30,7 @@ namespace IDAL.Models
 
             }
         }
-
-
-        public virtual ICollection<Alert> Alerts
-        {
-            get { return _alerts ?? (_alerts = new List<Alert>()); }
-            set { _alerts = value; }
-        }
-
-
+        
         #endregion
     }
 }

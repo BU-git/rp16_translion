@@ -26,11 +26,6 @@
                 </a>
             }
         </div>
-        <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
-            <a href="#">
-                <img src="~/Content/Images/UserHeader.png" alt="@User.Identity.Name" class="tlr-logged-img"/>
-            </a>
-        </div>
         <div class="col-sm-8 col-md-8 col-lg-8">
             @if (User.IsInRole("Admin"))
             {

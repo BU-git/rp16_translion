@@ -19,7 +19,7 @@ namespace Web.ViewModels
 
         [Required(ErrorMessage = "Wachtwoord kom niet overeen")]
         [Display(Name = "Bevestig wachtwoord")]
-        [Compare(nameof(Password), ErrorMessage = "Wachtwoord kom niet overeen")]
+        [Compare(nameof(Password), ErrorMessage = "Wachtwoord komt niet overeen")]
         public String ConfirmationalPassword { get; set; }
 
         [Required]

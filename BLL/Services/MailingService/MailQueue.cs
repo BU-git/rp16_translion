@@ -17,10 +17,8 @@ namespace BLL.Services.MailingService
             m_deletionDelta = TimeSpan.FromMinutes(3.0);
         }
 
-        internal static MailQueue Queue
-        {
-            get { return m_obj.Value; }
-        } //returns this class instance
+        internal static MailQueue Queue => m_obj.Value;
+        //returns this class instance
 
         //stops queue (calls dispose of all disposable objects)
         internal static void Stop()

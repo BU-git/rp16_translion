@@ -23,6 +23,11 @@ namespace DAL.Configurations
                 .IsRequired();
 
             Property(x => x.AlertComment)
+                .HasColumnName("EmployeeId")
+                .HasColumnType("uniqueidentifier")
+                .IsOptional();
+
+            Property(x => x.AlertComment)
                 .HasColumnName("AlertComment")
                 .HasColumnType("nvarchar")
                 .IsMaxLength()
@@ -48,11 +53,14 @@ namespace DAL.Configurations
             #region Relationship configuration
 
             //HasRequired(x => x.Employer)
-            //    .WithMany(x => x.Alerts)
-            //    .HasForeignKey(x => x.AlertEmployerId);
+            //    .WithRequiredDependent();
 
-            //HasMany(x => x.Employees)
-            //    .WithMany(x => x.Alerts);
+            //HasRequired(x => x.User)
+            //    .WithMany(x => x.Alerts)
+            //    .HasForeignKey(x => x.UserId)
+            //    .WillCascadeOnDelete();
+
+
 
 
             #endregion

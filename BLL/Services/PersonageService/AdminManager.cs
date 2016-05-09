@@ -28,7 +28,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -65,14 +65,14 @@ namespace BLL.Services.PersonageService
         {
             if (userId != Guid.Empty)
             {
-                return await UnitOfWork.AdminRepository.FindById(userId);
+                return await UnitOfWork.AdminRepository.FindById(cancellationToken, userId);
             }
             return null;
         }
 
         public override async Task<Admin> Get(string userName)
         {
-            if (userName != null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
                 return await UnitOfWork.AdminRepository.FindById(user.UserId);
@@ -82,7 +82,7 @@ namespace BLL.Services.PersonageService
 
         public override async Task<Admin> Get(CancellationToken cancellationToken, string userName)
         {
-            if (userName != null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
                 return await UnitOfWork.AdminRepository.FindById(cancellationToken, user.UserId);
@@ -108,7 +108,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -125,12 +125,12 @@ namespace BLL.Services.PersonageService
             try
             {
                 UnitOfWork.UserRepository.AddAdmin(entity);
-                int result = await UnitOfWork.SaveChanges();
+                int result = await UnitOfWork.SaveChanges(cancellationToken);
                 if (result > 0)
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -156,7 +156,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -178,7 +178,7 @@ namespace BLL.Services.PersonageService
                 {
                     return WorkResult.Success();
                 }
-                return WorkResult.Failed("SaveChanges result is 0");
+                return WorkResult.Failed("SaveChanges returned result 0");
             }
             catch (Exception ex)
             {
@@ -189,7 +189,6 @@ namespace BLL.Services.PersonageService
         #endregion
 
         #region Delete admin
-
 
         public override async Task<WorkResult> Delete(Admin entity)
         {
@@ -204,7 +203,7 @@ namespace BLL.Services.PersonageService
         {
             if (entity != null)
             {
-                return await Delete(cancellationToken,entity.AdminId);
+                return await Delete(cancellationToken, entity.AdminId);
             }
             return WorkResult.Failed("Admin cannot be null");
         }
@@ -222,8 +221,12 @@ namespace BLL.Services.PersonageService
                 if (admin != null)
                 {
                     UnitOfWork.UserRepository.Remove(admin.User);
-                    await UnitOfWork.SaveChanges();
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -246,8 +249,12 @@ namespace BLL.Services.PersonageService
                 if (admin != null)
                 {
                     UnitOfWork.UserRepository.Remove(admin.User);
-                    await UnitOfWork.SaveChanges(cancellationToken);
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -259,7 +266,7 @@ namespace BLL.Services.PersonageService
 
         public override async Task<WorkResult> Delete(string userName)
         {
-            if (userName == null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
@@ -267,12 +274,15 @@ namespace BLL.Services.PersonageService
             {
                 // Check is userId owned Admin
                 User user = await UnitOfWork.UserRepository.FindByUserName(userName);
-                Admin admin = await UnitOfWork.AdminRepository.FindById(user.UserId);
-                if (admin != null)
+                if (user.Admin != null)
                 {
                     UnitOfWork.UserRepository.Remove(user);
-                    await UnitOfWork.SaveChanges();
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges();
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }
@@ -284,7 +294,7 @@ namespace BLL.Services.PersonageService
 
         public override async Task<WorkResult> Delete(CancellationToken cancellationToken, string userName)
         {
-            if (userName == null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 return WorkResult.Failed("Wrong param.Entity is null");
             }
@@ -292,12 +302,15 @@ namespace BLL.Services.PersonageService
             {
                 // Check is userId owned Admin
                 User user = await UnitOfWork.UserRepository.FindByUserName(cancellationToken, userName);
-                Admin admin = await UnitOfWork.AdminRepository.FindById(cancellationToken, user.UserId);
-                if (admin != null)
+                if (user.Admin != null)
                 {
                     UnitOfWork.UserRepository.Remove(user);
-                    await UnitOfWork.SaveChanges(cancellationToken);
-                    return WorkResult.Success();
+                    int result = await UnitOfWork.SaveChanges(cancellationToken);
+                    if (result > 0)
+                    {
+                        return WorkResult.Success();
+                    }
+                    return WorkResult.Failed("SaveChanges returned result 0");
                 }
                 return WorkResult.Failed("userId isn't owned by Admin");
             }

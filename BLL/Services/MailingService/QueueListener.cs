@@ -15,8 +15,7 @@ namespace BLL.Services.MailingService
             m_sender = mailingService;
             m_sender.IgnoreQueue(); //doesn't add message to queue
             m_logger = logger;
-            m_backgrndWorker = new Thread(() => BackgrndAction()); //setting thread action
-            m_backgrndWorker.IsBackground = true; //this thread will work in background
+            m_backgrndWorker = new Thread(BackgrndAction) {IsBackground = true}; //setting thread action
             m_maxSendTries = 3;
             StartBackgrndProcessing(); //starts listener
         }
@@ -41,18 +40,16 @@ namespace BLL.Services.MailingService
         {
             try
             {
-                QueuedMessage message = null; //message to resend
-                SendStatus sendResult;
                 while (true)
                 {
-                    message = MailQueue.Queue.GetMessage(); //getting message from queue
+                    var message = MailQueue.Queue.GetMessage(); //message to resend
 
                     if (message != null)
                     {
                         if (message.TimeToRemove > DateTime.Now && message.SendingAttempts < m_maxSendTries)
                             //checks if it can send message
                         {
-                            sendResult = m_sender.SendMail(message.Message);
+                            var sendResult = m_sender.SendMail(message.Message);
 
                             if (sendResult.Status == MessageStatus.Error && ++message.SendingAttempts <= m_maxSendTries)
                                 //another sending fail

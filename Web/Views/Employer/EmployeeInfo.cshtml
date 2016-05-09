@@ -21,7 +21,7 @@
             {
                 <p class="leftAlignText">@report</p>
             }
-            <p class="leftAlignText">There aren't any reports now.</p>
+            <p class="leftAlignText">Er zijn nog geen rapportages aangemaakt.</p>
         </div>
     </div>
     <!--New report section-->
@@ -58,7 +58,7 @@
                     <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
                 </div>
                 <div class="modal-footer">
-                    @Html.ActionLink("Ja", "RemoveEmployee", new { id = Model.Id }, new { @class = "btn btn-success"} )
+                    @Html.ActionLink("Ja", "DeleteEmployee", new { id = Model.Id }, new { @class = "btn btn-success"} )
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
                 </div>
             </div>

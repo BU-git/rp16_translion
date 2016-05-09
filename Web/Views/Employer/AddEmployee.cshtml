@@ -1,50 +1,54 @@
-﻿@{
+﻿@model Web.ViewModels.AddEmployeeViewModel
+
+@{
     ViewBag.Title = "Add Employee";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model Web.ViewModels.AddEmployeeViewModel
-
-<div class="row">
-    <div class="col-md-12 col-centered addEmployeeHeader">
-        Werknemer toevoegen
-    </div>
-</div>
-
-<section class="registrationForm">
-    @using (Html.BeginForm("AddEmployee", "Employer", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+<div class="row col-centered">
+    @using (Html.BeginForm("AddEmployee", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
-        <div class="form-group">
-            @Html.LabelFor(m => m.FirstName, new {@class = "col-md-5 control-label"})
-            <div class="col-md-6">
-                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(m => m.Prefix, new {@class = "col-md-5 control-label"})
-            <div class="col-md-6">
-                @Html.ValidationMessageFor(m => m.Prefix, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.Prefix, new {@class = "form-control"})
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(m => m.LastName, new {@class = "col-md-5 control-label"})
-            <div class="col-md-6">
-                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-5">
-                @Html.ActionLink("Annuleren", "Index", "Employer", null, new {@class = "btn btn-danger pull-right"})
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
             </div>
-            <div class="col-md-7">
-                <input type="submit" value="Account aanmaaken" class="btn btn-success"/>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Prefix, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.Prefix, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Prefix, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @Html.Hidden("id", (Guid)ViewBag.EmployerId)
+
+            <div class="row">
+                <div class="col-md-5">
+                    @Html.ActionLink("Annuleren", "EmployerProfile", null, new {id = ViewBag.EmployerId}, new { @class = "btn btn-default pull-right" })
+                </div>
+                <div class="col-md-7">
+                    <input type="submit" value="Profiel aanmaken" class="btn btn-primary pull-left" />
+                </div>
             </div>
         </div>
     }
-</section>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

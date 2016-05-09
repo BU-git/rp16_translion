@@ -66,6 +66,9 @@ namespace DAL.Configurations
                 .WithRequired(x => x.User)
                 .HasForeignKey(x => x.UserId);
 
+            //HasMany(x => x.Alerts)
+            //    .WithRequired(x => x.User);
+
             #endregion
         }
     }

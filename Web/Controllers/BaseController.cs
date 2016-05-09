@@ -21,17 +21,19 @@ namespace Web.Controllers
     public abstract class BaseController : Controller
     {
         #region common problems messages
+
         internal const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
         internal const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
         internal const string ADVISOR_ROLE = "Advisor";
+
         #endregion
 
-        internal readonly UserManager<IdentityUser, Guid> userManager;
         internal readonly PersonManager<Admin> adminManager;
         internal readonly PersonManager<Advisor> advisorManager;
-        internal readonly PersonManager<Employer> employerManager;
         internal readonly IAlertManager alertManager;
+        internal readonly PersonManager<Employer> employerManager;
         internal readonly IMailingService mailingService;
+        internal readonly UserManager<IdentityUser, Guid> userManager;
 
         public BaseController(
             UserManager<IdentityUser, Guid> userManager,
@@ -51,11 +53,145 @@ namespace Web.Controllers
 
         internal IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
+        public async Task<ActionResult> Index()
+        {
+            List<Employer> employers = await employerManager.GetAll();
+            return View(employers);
+        }
+
+        public ActionResult Logout()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public virtual async Task<ViewResult> Settings()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> PasswordChange()
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user != null)
+            {
+                var token = await userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                if (!string.IsNullOrWhiteSpace(token))
+                    return View(new ChangePasswordViewModel {Id = user.Id, Token = token});
+            }
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof (HttpAntiForgeryException), View = "AntiForgeryError")]
+        public async Task<ActionResult> PasswordChange(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldPassValid = false;
+
+                var user = await userManager.FindByIdAsync(model.Id);
+
+                if (user != null && (oldPassValid = await userManager.CheckPasswordAsync(user, model.OldPassword)))
+                {
+                    var opResult =
+                        await userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.Password);
+
+                    if (opResult.Succeeded)
+                        return RedirectToAction("Index");
+                }
+                else if (!oldPassValid)
+                    ModelState.AddModelError(nameof(model.OldPassword), "Old password is invalid");
+            }
+            else
+                ModelState.AddModelError("", "Server probleem(Probeer a.u.b.later)");
+
+            return View("PasswordChange");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                userManager.Dispose();
+                mailingService.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+        
         #region Employer
 
-        #region Employer profile
+        #region Register Employer
 
-        // Admin advisor
+        [HttpGet]
+        public ActionResult RegisterEmployer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterEmployer(AdminRegisterEmployerViewModel model)
+        {
+            var password = Membership.GeneratePassword(12, 4);
+
+            if (ModelState.IsValid)
+            {
+                var employer = MapRegisterViewModelToEmployer(model);
+                var identityUser = new IdentityUser
+                {
+                    UserName = model.LoginName,
+                    Email = model.EmailAdress
+                };
+
+                var result = await userManager.CreateAsync(identityUser, password);
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(identityUser.Id, "Employer");
+
+                    employer.EmployerId = identityUser.Id;
+                    await employerManager.Create(employer);
+
+                    var messageInfo = new AdminRegEmployerMessageBuilder(model.LoginName, password);
+                    var mailingResult =
+                        await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, model.EmailAdress);
+
+                    return RedirectToAction("Index", "Admin");
+                }
+            }
+            return View(model);
+        }
+
+        private Employer MapRegisterViewModelToEmployer(AdminRegisterEmployerViewModel model)
+        {
+            var employer = new Employer
+            {
+                Adress = model.Adress,
+                City = model.City,
+                CompanyName = model.CompanyName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Prefix = model.Prefix,
+                PostalCode = model.PostalCode,
+                TelephoneNumber = model.TelephoneNumber
+            };
+
+            return employer;
+        }
+
+        #endregion
+
+        #region Employer profile
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Advisor")]
         [HttpGet]
         public async Task<ActionResult> EmployerProfile(string Id)
         {
@@ -126,6 +262,7 @@ namespace Web.Controllers
                 employer.PostalCode = model.PostalCode;
                 employer.Prefix = model.Prefix;
                 employer.TelephoneNumber = model.TelephoneNumber;
+                model.EmployerId = employer.EmployerId;
 
                 await employerManager.Update(employer);
 
@@ -140,13 +277,15 @@ namespace Web.Controllers
                     employer.Adress,
                     employer.City);
                 await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, user.Email);
-                
+
                 return View("EmployerProfile", model);
             }
             return View(model);
         }
 
         #endregion
+
+        #region Delete employer
 
         [HttpGet]
         public async Task<ActionResult> DeleteEmployer(string Id)
@@ -160,82 +299,53 @@ namespace Web.Controllers
             return RedirectToAction("Index");
         }
 
-        #region RegisterEmployer
-        [HttpGet]
-        public ActionResult RegisterEmployer()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterEmployer(AdminRegisterEmployerViewModel model)
-        {
-            var password = Membership.GeneratePassword(12, 4);
-
-            if (ModelState.IsValid)
-            {
-                var employer = MapRegisterViewModelToEmployer(model);
-                var identityUser = new IdentityUser
-                {
-                    UserName = model.LoginName,
-                    Email = model.EmailAdress
-                };
-
-                var result = await userManager.CreateAsync(identityUser, password);
-
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(identityUser.Id, "Employer");
-
-                    employer.EmployerId = identityUser.Id;
-                    await employerManager.Create(employer);
-
-                    var messageInfo = new AdminRegEmployerMessageBuilder(model.LoginName, password);
-                    var mailingResult =
-                        await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, model.EmailAdress);
-
-                    return RedirectToAction("Index", "Admin");
-                }
-            }
-            return View(model);
-        }
-
-        private Employer MapRegisterViewModelToEmployer(AdminRegisterEmployerViewModel model)
-        {
-            var employer = new Employer
-            {
-                Adress = model.Adress,
-                City = model.City,
-                CompanyName = model.CompanyName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Prefix = model.Prefix,
-                PostalCode = model.PostalCode,
-                TelephoneNumber = model.TelephoneNumber
-            };
-
-            return employer;
-        }
-
         #endregion
 
         #endregion
 
         #region Employee
+        
+        #region Employee Info
+
+        [HttpGet]
+        public async Task<ActionResult> EmployeeInfo(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+                return RedirectToAction("Index");
+
+            var employee = await adminManager.GetEmployee(id.Value);
+
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            return View(new EmployeeInfoViewModel
+            {
+                Id = employee.EmployeeId,
+                Reports = new string[] { }, //TODO: change this in future
+                FullName = $"{employee.FirstName} {employee.Prefix} {employee.LastName}"
+            });
+        }
+
+        #endregion
 
         #region Add Employee
+
         [HttpGet]
-        public ActionResult AddEmployee(string id)
+        public  virtual async Task<ActionResult> AddEmployee(Guid? userId = null)
         {
-            ViewBag.EmployerId = id;
+            if (userId == null || userId == Guid.Empty)
+            {
+                var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
+                ViewBag.EmployerId = user.UserId;
+                return View();
+            }
+            ViewBag.EmployerId = userId;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel model, string id)
+        public  virtual async Task<ActionResult> AddEmployee(AddEmployeeViewModel model, string id)
         {
             if (!ModelState.IsValid)
             {
@@ -244,7 +354,7 @@ namespace Web.Controllers
 
             var employer = await adminManager.GetBaseUserByGuid(id);
 
-            var employee = new Employee()
+            var employee = new Employee
             {
                 EmployeeId = Guid.NewGuid(),
                 LastName = model.LastName,
@@ -253,10 +363,10 @@ namespace Web.Controllers
                 Prefix = model.Prefix
             };
 
-            Alert alert = new Alert()
+            Alert alert = new Alert
             {
                 AlertId = Guid.NewGuid(),
-                AlertEmployerId = employer.UserId,
+                EmployerId = employer.UserId,
                 AlertType = AlertType.Employee_Add,
                 AlertComment = "",
                 AlertCreateTS = DateTime.Now,
@@ -265,12 +375,14 @@ namespace Web.Controllers
 
             await employerManager.CreateEmployee(employee);
             await alertManager.CreateAsync(alert);
-            
-            var messageInfo = new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+            var messageInfo =
+                new AdminAddEmployeeMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
             await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject, employer.Email);
 
             return RedirectToAction("Index");
         }
+
         #endregion
 
         #region Delete Employee
@@ -282,8 +394,7 @@ namespace Web.Controllers
             {
                 var employee = await advisorManager.GetEmployee(id.Value);
 
-                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId.ToString());
-
+                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
 
 
                 if (employee != null && employer != null)
@@ -292,7 +403,8 @@ namespace Web.Controllers
 
                     // TODO: send mails to admins also
                     var mailInfo =
-                       new DeleteEmployeeMailMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+                        new DeleteEmployeeMailMessageBuilder(
+                            $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
                     await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
                 }
@@ -301,10 +413,10 @@ namespace Web.Controllers
             return RedirectToAction("Index");
         }
 
-
         #endregion
 
         #region Change Employee's name
+
         [HttpGet]
         public async Task<ActionResult> ChangeEmployeeName(Guid? id)
         {
@@ -341,10 +453,10 @@ namespace Web.Controllers
                 employee.LastName = employeeInfo.LastName;
                 employee.Prefix = employeeInfo.Prefix;
 
-                var alert = new Alert()
+                var alert = new Alert
                 {
                     AlertId = Guid.NewGuid(),
-                    AlertEmployerId = employee.EmployerId,
+                    EmployerId = employee.EmployerId,
                     AlertType = AlertType.Employee_Rename,
                     AlertComment = employee.LastName + " " + employee.FirstName, //old name
                     AlertIsDeleted = false,
@@ -352,17 +464,18 @@ namespace Web.Controllers
                     AlertUpdateTS = DateTime.Now
                 };
 
-                await alertManager.CreateAsync(alert);
+                //await alertManager.CreateAsync(alert);
                 WorkResult result = await adminManager.UpdateEmployee(employee);
                 if (result.Succeeded)
                 {
                     var messageInfo =
-                        new ChangeEmployeeNameMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+                        new ChangeEmployeeNameMessageBuilder(
+                            $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
                     await mailingService.SendMailAsync(messageInfo.Body, messageInfo.Subject,
-                            employee.Employer.User.Email);
+                        employee.Employer.User.Email);
 
-                    return RedirectToAction("EmployerProfile", new { id = employee.EmployerId });
+                    return RedirectToAction("EmployerProfile", new {id = employee.EmployerId});
                 }
             }
 
@@ -378,81 +491,9 @@ namespace Web.Controllers
 
             return adminManager.GetEmployee(id.Value);
         }
-        #endregion
 
         #endregion
 
-        public async Task<ActionResult> Index()
-        {
-            List<Employer> employers = await employerManager.GetAll();
-            return View(employers);
-        }
-
-        public ActionResult Logout()
-        {
-            AuthenticationManager.SignOut();
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public ViewResult Settings()
-        {
-            return View();
-        }
-        
-        [HttpGet]
-        public async Task<ActionResult> PasswordChange()
-        {
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-
-            if (user != null)
-            {
-                var token = await userManager.GeneratePasswordResetTokenAsync(user.Id);
-
-                if (!string.IsNullOrWhiteSpace(token))
-                    return View(new ChangePasswordViewModel { Id = user.Id, Token = token });
-            }
-
-            return View("Index");
-        }
-        
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async Task<ActionResult> PasswordChange(ChangePasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var oldPassValid = false;
-
-                var user = await userManager.FindByIdAsync(model.Id);
-
-                if (user != null && (oldPassValid = await userManager.CheckPasswordAsync(user, model.OldPassword)))
-                {
-                    var opResult =
-                        await userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.Password);
-
-                    if (opResult.Succeeded)
-                        return RedirectToAction("Index");
-                }
-                else if (!oldPassValid)
-                    ModelState.AddModelError(nameof(model.OldPassword), "Old password is invalid");
-            }
-            else
-                ModelState.AddModelError("", "Server probleem(Probeer a.u.b.later)");
-
-            return View("PasswordChange");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                userManager.Dispose();
-                mailingService.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
+        #endregion
     }
 }

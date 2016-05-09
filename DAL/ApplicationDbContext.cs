@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Data;
+using System.Data.Entity;
 using System.Data.Entity.SqlServer;
 using DAL.Configurations;
 using IDAL.Models;

@@ -22,17 +22,19 @@ namespace Web.ViewModels
 
         [Required(ErrorMessage = "There's no phone number correctly entered, please check this.")]
         [DataType(DataType.PhoneNumber)]
+        [StringLength(11)]
         [Display(Name = "Telefoon")]
         public string TelephoneNumber { get; set; }
 
         [Required(ErrorMessage = "Uw emailadres is niet correct, controleer dit aub.")]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email-adres")]
+        [Display(Name = "E-mailadres")]
         [EmailAddress]
         public string EmailAdress { get; set; }
 
         [Required(ErrorMessage = "Uw postcode is niet correct. Uw postcode mag niet meer als 6 karakters bevatten.")]
         [Display(Name = "Postcode")]
+        [StringLength(6)]
         public string PostalCode { get; set; }
 
         [Required(ErrorMessage = "Uw adres is niet correct ingevuld, controleer dit aub.")]

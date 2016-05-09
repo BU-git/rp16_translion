@@ -8,7 +8,6 @@ namespace IDAL.Models
         #region Fields
 
         private ICollection<Employee> _employees;
-        private ICollection<Alert> _alerts; 
 
         #endregion
 
@@ -35,13 +34,8 @@ namespace IDAL.Models
             set { _employees = value; }
         }
 
-        public virtual ICollection<Alert> Alerts
-        {
-            get { return _alerts ?? (_alerts = new List<Alert>()); }
-            set { _alerts = value; }
-        }
-
         public virtual User User { get; set; }
+        //public virtual Alert Alert { get; set; }
 
         #endregion
     }
