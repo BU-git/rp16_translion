@@ -149,8 +149,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\carousel.css" />
     <Content Include="Content\Gridmvc.css" />
+    <Content Include="Content\Images\deleteQuestion.png" />
     <Content Include="Content\Images\AdminCreateEmployer.png" />
     <Content Include="Content\Images\AdminMessages.png" />
+    <Content Include="Content\Images\dateImg.png" />
     <Content Include="Content\Images\logoTransLion.png" />
     <Content Include="Content\Images\pen.png" />
     <Content Include="Content\Images\UserHeader.png" />
