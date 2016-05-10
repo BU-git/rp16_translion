@@ -29,6 +29,7 @@ $(document).ready(function () {
 
             if (pages.currentValue === pageNum) {
                 $('input, textarea').each(function() {
+                    var id = '#' + $(this).attr('id');
                     var name = $(this).attr('name');
                     var type = $(this).attr('type');
                     var value = $(this).val();
@@ -37,14 +38,13 @@ $(document).ready(function () {
                     var element = document.getElementById(labelId);
 
                     if (element != null) {
-                        if (type === 'checkbox') {
-                            $("input:checkbox[name=" + name + "]:checked").each(function() {
-                                element.innerHTML += value;
-                            });
+                        if (type === 'checkbox' || type === 'radio') {
+                            if ($(id).is(":checked")) {
+                                element.innerHTML += value + '\n';
+                            }
                         } else {
                             element.innerHTML = value;
                         }
-
                     }
                         
                 });

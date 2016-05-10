@@ -2,9 +2,9 @@
 
 <div class="questionPreviw">
     <!--Question-->
-    <h3>@Model.QuestionName</h3>
+    <span>@Model.QuestionName :</span>
     @{
-        string labelId = @String.Format("viewp{0}q{1}", Model.PageId, Model.Id);
+        string labelId = String.Format("viewp{0}q{1}", Model.PageId, Model.Id);
     }
     <label id=@labelId>
         
