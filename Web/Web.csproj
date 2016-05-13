@@ -173,6 +173,7 @@
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
     <Content Include="Scripts\gridmvc.min.js" />
+    <Content Include="Scripts\helpers\postValidator.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -249,7 +250,7 @@
     <Content Include="Views\Shared\_LoggedUserPartial.cshtml" />
     <Content Include="Views\Employer\Settings.cshtml" />
     <Content Include="Views\Employer\PasswordChange.cshtml" />
-    <Content Include="Views\Employer\AddEmployeeSuccess.cshtml" />
+    <Content Include="Views\Shared\AddEmployeeSuccess.cshtml" />
     <Content Include="Views\Account\AddAdmin.cshtml" />
     <Content Include="Views\Account\RegisterEmployer.cshtml" />
     <Content Include="Views\Employer\EmployeeInfo.cshtml" />
@@ -277,7 +278,7 @@
     <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
     <Content Include="Views\Report\LoadPreview.cshtml" />
     <Content Include="Views\Shared\_QuestionPreview.cshtml" />
-    <Content Include="Views\Employer\AddEmployee.cshtml" />
+    <Content Include="Views\Shared\AddEmployee.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

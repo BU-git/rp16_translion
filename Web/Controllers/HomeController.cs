@@ -1,33 +1,33 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using BLL.Identity.Models;
+using BLL.Services.MailingService;
+using BLL.Services.PersonageService;
+using IDAL.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private readonly PersonManager<Advisor> _userManager;
+
+        public HomeController(PersonManager<Advisor> userManager)
         {
-            return RedirectIfSignedIn() ?? RedirectToAction("Login", "Account");
+            _userManager = userManager;
         }
 
-        [NonAction]
-        private ActionResult RedirectIfSignedIn()
+        public async Task<ActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Admin"))
-                {
-                    RedirectToAction("Index", "Admin");
-                }
-                if (User.IsInRole("Advisor"))
-                {
-                    RedirectToAction("Index", "Advisor");
-                }
-                if (User.IsInRole("Employer"))
-                {
-                    RedirectToAction("Index", "Employer");
-                }
-            }
-            return null;
+            var roles = await _userManager.GetUserRolesById(User.Identity.GetUserId());
+
+            return roles.Count == 0
+                ? RedirectToAction("Login", "Account")
+                : RedirectToAction("Index", roles.First().Name);
         }
     }
 }

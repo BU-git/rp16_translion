@@ -190,9 +190,8 @@ namespace Web.Controllers
         #endregion
 
         #region Employer profile
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Advisor")]
         [HttpGet]
+        [Authorize(Roles = "Admin,Advisor")]
         public async Task<ActionResult> EmployerProfile(string Id)
         {
             var user = await employerManager.GetBaseUserByGuid(Id);
@@ -331,15 +330,14 @@ namespace Web.Controllers
         #region Add Employee
 
         [HttpGet]
-        public  virtual async Task<ActionResult> AddEmployee(Guid? userId = null)
+        public  virtual async Task<ActionResult> AddEmployee(Guid? id)
         {
-            if (userId == null || userId == Guid.Empty)
+            if (id == null || id == Guid.Empty)
             {
-                var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
-                ViewBag.EmployerId = user.UserId;
-                return View();
+                return RedirectToAction("Index");
             }
-            ViewBag.EmployerId = userId;
+
+            ViewBag.EmployerId = id;
             return View();
         }
 
@@ -368,9 +366,11 @@ namespace Web.Controllers
                 AlertId = Guid.NewGuid(),
                 EmployerId = employer.UserId,
                 AlertType = AlertType.Employee_Add,
-                AlertComment = "",
+                AlertComment = "New employee has been created",
                 AlertCreateTS = DateTime.Now,
-                AlertUpdateTS = DateTime.Now
+                AlertUpdateTS = DateTime.Now,
+                UserId = employer.UserId,
+                EmployeeId = employee.EmployeeId
             };
 
             await employerManager.CreateEmployee(employee);
@@ -390,24 +390,27 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteEmployee(Guid? id)
         {
-            if (id != null)
+            if (id == null)
+                return RedirectToAction("Index");
+
+            var employee = await advisorManager.GetEmployee(id.Value);
+
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
+
+
+            if (employer != null)
             {
-                var employee = await advisorManager.GetEmployee(id.Value);
+                await advisorManager.DeleteEmployee(employee);
 
-                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
+                // TODO: send mails to admins also
+                var mailInfo =
+                    new DeleteEmployeeMailMessageBuilder(
+                        $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
-
-                if (employee != null && employer != null)
-                {
-                    await advisorManager.DeleteEmployee(employee);
-
-                    // TODO: send mails to admins also
-                    var mailInfo =
-                        new DeleteEmployeeMailMessageBuilder(
-                            $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
-
-                    await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
-                }
+                await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
             }
 
             return RedirectToAction("Index");

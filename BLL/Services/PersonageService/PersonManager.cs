@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IDAL;
@@ -35,6 +36,8 @@ namespace BLL.Services.PersonageService
         public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, Guid userId);
         public abstract Task<WorkResult> Delete(string userName);
         public abstract Task<WorkResult> Delete(CancellationToken cancellationToken, string userName);
+        
+
         public abstract Task<WorkResult> DeleteEmployee(Employee employee);
 
         public abstract Task<WorkResult> Delete(TEntity entity);
@@ -240,6 +243,22 @@ namespace BLL.Services.PersonageService
             return WorkResult.Failed("Wrong param.Entity is null");
         }
 
+        #endregion
+
+        #region Get user's roles by id
+        public async Task<List<Role>> GetUserRolesById(string userId)
+        {
+            var user = await GetBaseUserByGuid(userId);
+
+            return user?.Roles.ToList() ?? new List<Role>();
+        }
+
+        public async Task<List<Role>> GetUserRolesById(CancellationToken cancellationToken, string userId)
+        {
+            var user = await GetBaseUserByGuid(cancellationToken, userId);
+
+            return user?.Roles.ToList() ?? new List<Role>();
+        }
         #endregion
     }
 }
