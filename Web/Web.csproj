@@ -270,15 +270,17 @@
     <Content Include="Views\Shared\_GridPager.cshtml" />
     <Content Include="Views\Shared\_Grid.cshtml" />
     <Content Include="Views\Report\CreateReport.cshtml" />
-    <Content Include="Views\Shared\_Checkboxes.cshtml" />
-    <Content Include="Views\Shared\_Comment.cshtml" />
-    <Content Include="Views\Shared\_Radiobuttons.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_Checkboxes.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_Comment.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_Radiobuttons.cshtml" />
     <Content Include="Views\Report\GetAllPages.cshtml" />
     <Content Include="Views\Admin\RegisterEmployer.cshtml" />
     <Content Include="Views\Advisor\RegisterEmployer.cshtml" />
-    <Content Include="Views\Report\LoadPreview.cshtml" />
-    <Content Include="Views\Shared\_QuestionPreview.cshtml" />
+    <Content Include="Views\Report\_QuestionPreview.cshtml" />
     <Content Include="Views\Shared\AddEmployee.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_CompType1.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_CompType2.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_CompType3.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

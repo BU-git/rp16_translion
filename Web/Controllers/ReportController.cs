@@ -58,11 +58,15 @@ namespace Web.Controllers
 
             int pageId, questionId;
 
-            foreach (var name in formCollection.AllKeys)
+            foreach (var key in formCollection.AllKeys)
             {
-                _testService.ParseAnswerName(name, out pageId, out questionId);
+                _testService.ParseAnswerName(key, out pageId, out questionId);
 
+                var page = await _testService.GetPageById(pageId);
                 var question = await _testService.GetQuestion(questionId);
+                var answer = formCollection[key];
+                
+
 
                 // TODO: implement business logic for report generating. Create structure Questions-Answers
                 // FormCollection should be represented as a structure Questions-Answers

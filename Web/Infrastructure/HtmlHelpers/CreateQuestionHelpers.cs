@@ -8,6 +8,6 @@ namespace Web.Infrastructure.HtmlHelpers
     public static class CreateQuestionHelpers
     {
         public static MvcHtmlString CreateQuestion(this HtmlHelper html, Question question)
-            => html.Partial(String.Format("_{0}", question.TypeAnswer), question);
+            => html.Partial(String.Format("QuestionsPartial/_{0}", question.TypeAnswer), question);
     }
 }
