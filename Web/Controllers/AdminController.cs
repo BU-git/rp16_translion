@@ -129,7 +129,7 @@ namespace Web.Controllers
             return user?.Advisor != null ? user : null;
         }
 
-        private async Task<AdminAlertPanelViewModel> MapAlertToTableView(Alert alert)
+        protected async Task<AdminAlertPanelViewModel> MapAlertToTableView(Alert alert)
         {
             var EmployeeName = "n.v.t";
             var alertToShow = alertManager.GetAlert(alert.AlertId);
@@ -148,7 +148,7 @@ namespace Web.Controllers
                 EmployerName = employer.LastName + " " + employer.FirstName,
                 Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
-                AlertType = "Demo",
+                AlertType = alert.AlertType.ToString(),
                 Comment = alert.AlertComment
             };
 

@@ -51,7 +51,7 @@ namespace DAL
             Admin adminInfo = new Admin()
             {
                 AdminId = defaultAdmin.UserId,
-                Name = "Sample name",
+                Name = "Default Admin",
                 User = defaultAdmin
             };
             defaultAdmin.Admin = adminInfo;
@@ -88,7 +88,7 @@ namespace DAL
             {
                User = defaultAdvisor,
                AdvisorId = Guid.NewGuid(),
-               Name = "Sample name"
+               Name = "Default Advisor"
             };
             defaultAdvisor.Advisor = advisorInfo;
             #endregion

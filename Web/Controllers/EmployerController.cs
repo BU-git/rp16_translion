@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -35,15 +36,16 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public new async Task<ActionResult> Index()
         {
             var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
-            if (user?.Employer != null)
-                return View(user.Employer.Employees
-                    .Where(empl => !empl.IsDeleted && empl.IsApprove)
-                    .ToList());
-
+            if (user.Employer != null)
+            {
+                List<Employee> employees =
+                    user.Employer.Employees.Where(e => !e.IsDeleted && e.IsApprove).ToList<Employee>();
+                return View(employees);
+            }
             return RedirectToAction("Logout");
         }
 
@@ -102,14 +104,33 @@ namespace Web.Controllers
             if (user == null)
                 return RedirectToAction("Logout");
 
-            await employerManager.CreateEmployee(new Employee
+
+            var employee = new Employee
             {
                 EmployerId = user.UserId,
                 EmployeeId = Guid.NewGuid(),
                 LastName = employeeViewModel.LastName,
                 FirstName = employeeViewModel.FirstName,
-                Prefix = employeeViewModel.Prefix
-            });
+                Prefix = employeeViewModel.Prefix,
+                IsApprove = false
+            };
+
+
+            await employerManager.CreateEmployee(employee);
+
+            var alert = new Alert();
+            {
+                alert.AlertId = Guid.NewGuid();
+                alert.EmployerId = user.UserId;
+                alert.EmployeeId = employee.EmployeeId;
+                alert.AlertType = AlertType.Employee_Add;
+                alert.AlertIsDeleted = false;
+                alert.AlertComment = "";
+                alert.AlertCreateTS = DateTime.Now;
+                alert.AlertUpdateTS = DateTime.Now;
+                alert.UserId = user.UserId;
+            };
+            await alertManager.CreateAsync(alert);
 
             var mailMessageData = new CreateEmployeeMailMessageBuilder(User.Identity.Name,
                 $"{employeeViewModel.FirstName} {employeeViewModel.Prefix} {employeeViewModel.LastName}");

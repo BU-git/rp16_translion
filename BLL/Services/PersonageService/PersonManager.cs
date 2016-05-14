@@ -111,6 +111,28 @@ namespace BLL.Services.PersonageService
             return null;
         }
 
+        public async Task<string> GetModUserName(Guid userId)
+        {
+            var user = await GetBaseUserByGuid(userId);
+            string FullName=null;
+            if (user.Employer == null)
+            {
+                FullName = user.Advisor != null ? user.Advisor.Name : user.Admin.Name;
+            }
+                return FullName;
+        }
+
+        public async Task<string> GetModUserName(CancellationToken cancellationToken, Guid userId)
+        {
+            var user = await GetBaseUserByGuid(cancellationToken, userId);
+            string FullName = null;
+            if (user.Employer == null)
+            {
+                FullName = user.Advisor != null ? user.Advisor.Name : user.Admin.Name;
+            }
+            return FullName;
+        }
+
         #endregion
 
         #region GetAllEmployees

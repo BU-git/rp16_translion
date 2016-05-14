@@ -15,10 +15,5 @@
         columns.Add(c => c.EmployeeName).Titled("Werknemer").Filterable(true);
         columns.Add(c => c.AlertType).Titled("Verzoek/Notificatie").Filterable(true);
         columns.Add(c => c.Comment).Titled("Comment").Filterable(true);
-        columns.Add().Titled("Bevestiging")
-            .Encoded(false)
-            .Sanitized(false)
-            .SetWidth(30)
-            .RenderValueAs(o => Html.ActionLink("Bevestig", "ApproveAlert", new {alertId = o.alert.AlertId}, new {@class = "btn btn-danger pull-right"}));
     }).WithPaging(20).Sortable(true)
 </div>
