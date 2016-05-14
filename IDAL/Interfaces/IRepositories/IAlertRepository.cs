@@ -11,5 +11,7 @@ namespace IDAL.Interfaces.IRepositories
         Task<List<Alert>> GetNewAlerts();
         Task<List<Alert>> GetNewAlerts(CancellationToken cancellationToken);
         Task<Alert> FindAlertById(Guid alertId);
+        Task<List<Alert>> GetAdvisorAlerts(Guid userId);
+        Task<List<Alert>> GetAdvisorAlerts(CancellationToken cancellationToken, Guid userId);
     }
 }

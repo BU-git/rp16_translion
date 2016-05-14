@@ -20,7 +20,7 @@ namespace BLL.Services.AlertService
 
         public IUnitOfWork _unitOfWork { get; }
 
-        #region Get with concrete status alerts
+        #region Get all alerts
 
         public async Task<List<Alert>> GetNew()
         {
@@ -31,6 +31,20 @@ namespace BLL.Services.AlertService
         {
             return await _unitOfWork.AlertRepository.GetNewAlerts(cancellationToken);
         }
+        #endregion
+
+        #region Get advisor alerts
+
+        public async Task<List<Alert>> GetAdvisorAlerts(Guid userId)
+        {
+            return await _unitOfWork.AlertRepository.GetAdvisorAlerts(userId);
+        }
+
+        public async Task<List<Alert>> GetAdvisorAlerts(CancellationToken cancellationToken, Guid userId)
+        {
+            return await _unitOfWork.AlertRepository.GetAdvisorAlerts(cancellationToken, userId);
+        }
+
         #endregion
 
         #region Find employee
@@ -121,20 +135,12 @@ namespace BLL.Services.AlertService
                 _unitOfWork.EmployeeRepository.Update(employee);
             }
             alert.AlertIsDeleted = true;
+            alert.AlertUpdateTS = DateTime.Now;
             _unitOfWork.AlertRepository.Update(alert);
             return await _unitOfWork.SaveChanges();
         }
 
-        //public async Task<int> ApproveAsync(Alert alert, User user)
-        //{
-
-        //}
-
-        //public async Task<int> ApproveAsync(CancellationToken cancellationToken, Alert alert, User user)
-        //{
-
-        //}
-
+       
         #endregion
 
         #region Clean all

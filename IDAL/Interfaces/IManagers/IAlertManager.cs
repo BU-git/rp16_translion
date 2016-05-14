@@ -18,13 +18,6 @@ namespace IDAL.Interfaces.IManagers
 
         #endregion
 
-        #region Get concrete type alert
-            
-        //Task<Alert> GetAsync(AlertType alertType);
-        //Task<Alert> GetAsync(CancellationToken cancellationToken, AlertType alertType);
-
-        #endregion
-
         #region Get with concrete status alerts
         Task<List<Alert>> GetNew();
         Task<List<Alert>> GetNew(CancellationToken cancellationToken);
@@ -79,6 +72,8 @@ namespace IDAL.Interfaces.IManagers
         Alert GetAlert(Guid alertid);
         Task<Alert> GetAlertAsync(Guid alertid);
         Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid alertid);
+        Task<List<Alert>> GetAdvisorAlerts(Guid userId);
+        Task<List<Alert>> GetAdvisorAlerts(CancellationToken cancellationToken, Guid userId);
 
         #endregion
     }

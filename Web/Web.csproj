@@ -276,6 +276,10 @@
     <Content Include="Views\Report\LoadPreview.cshtml" />
     <Content Include="Views\Shared\_QuestionPreview.cshtml" />
     <Content Include="Views\Employer\AddEmployee.cshtml" />
+    <Content Include="Views\Advisor\AdvisorAlertPanel.cshtml" />
+    <Content Include="Views\Shared\AddEmployee.cshtml" />
+    <Content Include="Views\Shared\AddEmployeeSuccess.cshtml" />
+    <Content Include="Views\Shared\EmployeeInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

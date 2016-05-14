@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "AddEmployeeSuccess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-5 col-centered addEmployeeSuccessBorderWrapper">
+    <span class="addEmployeeSuccessHeader">Verzoek ingediend!</span>
+    <br />
+    <br />
+    <span>
+        Uw verzoek voor het toevoegen van een nieuwe werknemer is ontvangen, zodra wij deze aanvraag goedkeuren kunt u aan de slag. Voor overige vragen kunt u contact met ons opnemen.
+    </span>
+    <br />
+    <br />
+    @Html.ActionLink("Terug naar de homepage", "Index", "Employer", null, new { @class = "btn btn-default" })
+</div>

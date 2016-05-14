@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Employee's info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="tlr-usr-section">
+    <h3 class="leftAlignText">Medewerker</h3>
+    <!--Main info-->
+    <div class="row employeeInfoRow">
+        <!--Image column-->
+        <div class="col-xs-6 col-sm-6 col-md-5 col-lg-4" id="emplSettingsMainImage">
+            <p>@Model.FullName</p>
+            <a href="@Url.Action("EmployeeInfo", new { id = Model.Id })">
+                <img src="~/Content/Images/UserImg.png" alt="@Model.FullName" />
+            </a>
+        </div>
+        <!--Reports column-->
+        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+            <p class="leftAlignText">Rapportage geschiedenis</p>
+            @foreach (string report in Model.Reports)
+            {
+                <p class="leftAlignText">@report</p>
+            }
+            <p class="leftAlignText">Er zijn nog geen rapportages aangemaakt.</p>
+        </div>
+    </div>
+    <!--New report section-->
+    <div class="row employeeInfoRow">
+        <div class="col-sm-offset-6 col-md-offset-5 col-lg-offset-4">
+            @Html.ActionLink("Start nieuwe rapportage", "unknwn", "unknwn", null, new { @class = "emplSettingsButton pull-left" })
+        </div>
+    </div>
+    <!--Modal button-->
+    <div class="row employeeInfoRow">
+        <div class="col-sm-6 col-md-3">
+            <button type="button" class="emplSettingsButton pull-left" data-toggle="modal" data-target="#delEmployee">
+                Account verwijderen
+            </button>
+        </div>
+    </div>
+    <!--Return-->
+    <div class="row employeeInfoRow">
+        <div class="col-sm-6 col-md-3">
+            @Html.ActionLink("Terug", "Index", null, new { @class = "emplSettingsButton pull-left" })
+        </div>
+    </div>
+    <!--Modal Window-->
+    <div id="delEmployee" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Werknemer verwijderen!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("Ja", "DeleteEmployee", new { id = Model.Id }, new { @class = "btn btn-success" })
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
