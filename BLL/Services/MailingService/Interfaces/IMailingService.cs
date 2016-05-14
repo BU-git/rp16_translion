@@ -31,6 +31,18 @@ namespace BLL.Services.MailingService.Interfaces
         SendStatus SendMail(string body, string subject, params string[] to);
 
         /// <summary>
+        /// Sends mail with attachment
+        /// </summary>
+        SendStatus SendMail(string body, string subject, byte[] attachment,
+            string fileName, params string[] to);
+
+        /// <summary>
+        /// Sends mail with attachment
+        /// </summary>
+        SendStatus SendMail(string body, string subject, byte[] attachment,
+            string fileName, string to);
+
+        /// <summary>
         ///     Async analogue of <see cref="SendMail(MailMessage)" />
         /// </summary>
         /// <returns>Async operation's task object</returns>
@@ -43,10 +55,17 @@ namespace BLL.Services.MailingService.Interfaces
         Task<SendStatus> SendMailAsync(string body, string subject, string to);
 
         /// <summary>
-        ///     Async SendMail <see cref="SendMail(String[])" /> analogue.
+        ///     Async SendMail <see cref="SendMail(String, String, String[])" /> analogue.
         /// </summary>
         /// <returns>Async operation's task object</returns>
         Task<SendStatus> SendMailAsync(string body, string subject, params string[] to);
+
+
+        Task<SendStatus> SendMailAsync(string body, string subject, byte[] attachment,
+            string fileName, params string[] to);
+
+        Task<SendStatus> SendMailAsync(string body, string subject, byte[] attachment,
+            string fileName, string to);
 
         /// <summary>
         ///     Doesn't add message to queue

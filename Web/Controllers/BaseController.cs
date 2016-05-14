@@ -226,9 +226,9 @@ namespace Web.Controllers
         #endregion
 
         #region Employer profile
-        [Authorize(Roles = "Admin, Advisor")]
         [HttpGet]
-        public async Task<ActionResult> EmployerProfile(Guid Id)
+        [Authorize(Roles = "Admin,Advisor")]
+        public async Task<ActionResult> EmployerProfile(string Id)
         {
             var user = await employerManager.GetBaseUserByGuid(Id);
             var employer = await employerManager.Get(user.UserId);
@@ -395,15 +395,14 @@ namespace Web.Controllers
         #region Add Employee
 
         [HttpGet]
-        public  virtual async Task<ActionResult> AddEmployee(Guid? userId = null)
+        public  virtual async Task<ActionResult> AddEmployee(Guid? id)
         {
-            if (userId == null || userId == Guid.Empty)
+            if (id == null || id == Guid.Empty)
             {
-                var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
-                ViewBag.EmployerId = user.UserId;
-                return View();
+                return RedirectToAction("Index");
             }
-            ViewBag.EmployerId = userId;
+
+            ViewBag.EmployerId = id;
             return View();
         }
 
@@ -460,16 +459,20 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteEmployee(Guid? id)
         {
-            if (id != null)
+            if (id == null)
+                return RedirectToAction("Index");
+
+            var employee = await advisorManager.GetEmployee(id.Value);
+
+            if (employee == null)
+                return RedirectToAction("Index");
+
+            var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
+
+
+            if (employer != null)
             {
-                var employee = await advisorManager.GetEmployee(id.Value);
-
-                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
-
-
-                if (employee != null && employer != null)
-                {
-                    await advisorManager.DeleteEmployee(employee);
+                await advisorManager.DeleteEmployee(employee);
 
                     var user = await adminManager.GetBaseUserByName(User.Identity.Name);
                     string userName = await adminManager.GetModUserName(user.UserId);
@@ -487,13 +490,12 @@ namespace Web.Controllers
                     };
                     await alertManager.CreateAsync(alert);
 
-                    // TODO: send mails to admins also
-                    var mailInfo =
-                        new DeleteEmployeeMailMessageBuilder(
-                            $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+                // TODO: send mails to admins also
+                var mailInfo =
+                    new DeleteEmployeeMailMessageBuilder(
+                        $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
 
-                    await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
-                }
+                await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
             }
 
             return RedirectToAction("Index");

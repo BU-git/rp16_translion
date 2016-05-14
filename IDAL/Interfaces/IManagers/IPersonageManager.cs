@@ -46,5 +46,13 @@ namespace IDAL.Interfaces.IManagers
         Task<WorkResult> Delete(CancellationToken cancellationToken, string userName);
 
         #endregion
+
+
+        #region Get user's roles by id
+
+        Task<List<Role>> GetUserRolesById(string userId);
+        Task<List<Role>> GetUserRolesById(CancellationToken cancellationToken, string userId);
+
+        #endregion
     }
 }

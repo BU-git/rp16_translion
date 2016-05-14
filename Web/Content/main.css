@@ -70,7 +70,7 @@
 {
 	display: inline-block;
 	margin-bottom: 5px;
-	margin-left: 12px;
+	/*margin-left: 12px;*/
 }
 
 .editQuestion:hover, .deleteQuestion:hover
@@ -121,4 +121,56 @@
 	text-align:center;
 	font-size: 20px;
 }
+
+.compType1Datepicker
+{
+	width: 100px;
+	margin-right: 5px;
+	display: inline-block;
+}
+
+.wrapperDatepicker>.ui-datepicker-trigger
+{
+	display: inline-block;
+	margin-top: 5px;
+	width: 25px;
+}
+
+.ui-datepicker-trigger:hover
+{
+	cursor: pointer;
+}
+
+.wrapperDatepicker
+{
+	padding:0;
+	width: 22%;
+}
+
+.compType1Select
+{
+	text-align: center;
+	margin-top: 7px;
+	width: 140px;
+	padding: 0;
+	margin-right: 5px;
+}
+
+.compType1Input
+{
+	width: 100px;
+	margin-right: 5px;
+}
+
+.wrapperAnswer
+{
+	margin-top: 10px;
+}
+
+#myModal>.modal-dialog
+{
+	width: 750px;
+}
+
+
 

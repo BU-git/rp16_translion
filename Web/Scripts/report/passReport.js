@@ -28,11 +28,25 @@ $(document).ready(function () {
             $('#progressbar').stepProgressBar('setCurrentValue', ++pages.currentValue);
 
             if (pages.currentValue === pageNum) {
-                //var firstname = document.getElementById('p1q1').value;
-                //document.getElementById('firstname').innerHTML = firstname;
+                $('input, textarea').each(function() {
+                    var id = '#' + $(this).attr('id');
+                    var name = $(this).attr('name');
+                    var type = $(this).attr('type');
+                    var value = $(this).val();
+                    var labelId = "view" + name;
 
-                $("input:checkbox[name=p3q5]:checked").each(function () {
-                    document.getElementById('firstname').innerHTML += $(this).val();
+                    var element = document.getElementById(labelId);
+
+                    if (element != null) {
+                        if (type === 'checkbox' || type === 'radio') {
+                            if ($(id).is(":checked")) {
+                                element.innerHTML += value + '\n';
+                            }
+                        } else {
+                            element.innerHTML = value;
+                        }
+                    }
+                        
                 });
             }
         }

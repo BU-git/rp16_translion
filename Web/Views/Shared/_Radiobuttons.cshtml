@@ -10,7 +10,7 @@
         foreach (var answer in Model.Answers)
         {
             <label class="radio-inline">
-                <input type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id, answer.Id)" value="@answer.Name"/>
+                <input id="@answer.Id" type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" value="@answer.Name"/>
                 @answer.Name
             </label>
         }
@@ -20,7 +20,7 @@
         foreach (var answer in Model.Answers)
         {
             <div class="radio">
-                <label><input type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id, answer.Id)" value="@answer.Name" />@answer.Name</label>
+                <label><input id="@answer.Id" type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" value="@answer.Name" />@answer.Name</label>
             </div>
         }
     }
