@@ -5,7 +5,7 @@
 }
 
 <section class="registrationForm">
-    @using (Html.BeginForm("RegisterEmployer", "Advisor", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+    @using (Html.BeginForm("RegisterEmployer", "Admin", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new {@class = "text-danger"})

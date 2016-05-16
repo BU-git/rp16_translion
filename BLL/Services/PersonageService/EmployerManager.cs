@@ -189,7 +189,7 @@ namespace BLL.Services.PersonageService
 
         #endregion
 
-        #region Delete eployer
+        #region Delete employer
 
         public override async Task<WorkResult> Delete(Employer entity)
         {

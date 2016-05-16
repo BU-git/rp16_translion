@@ -1,0 +1,27 @@
+﻿@using System
+@model IDAL.Models.Question
+<div class="question">
+    <!--Question-->
+    <h3>@Model.QuestionName</h3>
+    <!--Answers-->
+    <!--If there are only two answers - inline form-->
+    @if (Model.Answers.Count == 2)
+    {
+        foreach (var answer in Model.Answers)
+        {
+            <label class="radio-inline">
+                <input id="@answer.Id" type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" value="@answer.Name"/>
+                @answer.Name
+            </label>
+        }
+    }
+    else
+    {
+        foreach (var answer in Model.Answers)
+        {
+            <div class="radio">
+                <label><input id="@answer.Id" type="radio" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" value="@answer.Name" />@answer.Name</label>
+            </div>
+        }
+    }
+</div>

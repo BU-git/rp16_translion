@@ -1,0 +1,27 @@
+﻿@model IDAL.Models.Question
+<div class="questionComplicated" id="@String.Format("p{0}q{1}", Model.PageId, Model.Id)">
+    <div class="compType1">
+        <h3>@Model.QuestionName</h3>
+
+        <input class="compType1Input" type="date" />
+        <select class="compType1Select" id="select1">
+            <option value="Ongeschoold">Ongeschoold</option>
+            <option value="Basisschool">Basisschool</option>
+            <option value="Praktijkonderwijs">Praktijkonderwijs</option>
+            <option value="Mavo">Mavo</option>
+            <option value="Havo">Havo</option>
+            <option value="Vwo">Vwo</option>
+            <option value="MBO">MBO</option>
+            <option value="HBO">HBO</option>
+            <option value="WO">WO</option>
+        </select>
+        <input type="text" class="compType1Input form-control col-md-4" />
+        <select class="compType1Select" id="select2">
+            <option value="In afwachting">In afwachting</option>
+            <option value="Afgewezen">Afgewezen</option>
+            <option value="Proefperiode">Proefperiode</option>
+            <option value="Aangenomen">Aangenomen</option>
+        </select>
+    </div>
+</div>
+
