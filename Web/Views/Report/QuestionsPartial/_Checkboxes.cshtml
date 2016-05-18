@@ -9,7 +9,7 @@
         foreach (var answer in Model.Answers)
         {
             <label class="checkbox-inline">
-                <input id="@answer.Id" type="checkbox" value="@answer.Id" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" placeholder="@answer.Name"/>
+                <input id="@answer.Id" type="checkbox" value="@answer.Name" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)"/>
                 @answer.Name
             </label>
         }
@@ -20,7 +20,7 @@
         {
             <div class="checkbox">
                 <label>
-                    <input id="@answer.Id" type="checkbox" value="@answer.Id" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)" placeholder="@answer.Name"/>
+                    <input id="@answer.Id" type="checkbox" value="@answer.Name" name="@String.Format("p{0}q{1}", Model.PageId, Model.Id)"/>
                         @answer.Name
                 </label>
             </div>

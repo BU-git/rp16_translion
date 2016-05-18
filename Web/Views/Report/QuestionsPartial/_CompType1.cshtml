@@ -1,27 +1,25 @@
 ﻿@model IDAL.Models.Question
-<div class="questionComplicated" id="@String.Format("p{0}q{1}", Model.PageId, Model.Id)">
-    <div class="compType1">
-        <h3>@Model.QuestionName</h3>
+<div class="questionComplicated">
+    <h3>@Model.QuestionName</h3>
 
-        <input class="compType1Input" type="date" />
-        <select class="compType1Select" id="select1">
-            <option value="Ongeschoold">Ongeschoold</option>
-            <option value="Basisschool">Basisschool</option>
-            <option value="Praktijkonderwijs">Praktijkonderwijs</option>
-            <option value="Mavo">Mavo</option>
-            <option value="Havo">Havo</option>
-            <option value="Vwo">Vwo</option>
-            <option value="MBO">MBO</option>
-            <option value="HBO">HBO</option>
-            <option value="WO">WO</option>
-        </select>
-        <input type="text" class="compType1Input form-control col-md-4" />
-        <select class="compType1Select" id="select2">
-            <option value="In afwachting">In afwachting</option>
-            <option value="Afgewezen">Afgewezen</option>
-            <option value="Proefperiode">Proefperiode</option>
-            <option value="Aangenomen">Aangenomen</option>
-        </select>
-    </div>
+    <input class="compType1Input" placeholder="type1date" type="date" name="@String.Format("p{0}q{1}t1a0", Model.PageId, Model.Id)"/>
+    <select class="compType1Select" placeholder="Ontstaan" name="@String.Format("p{0}q{1}t1a1", Model.PageId, Model.Id)">
+        <option value="Ongeschoold">Ongeschoold</option>
+        <option value="Basisschool">Basisschool</option>
+        <option value="Praktijkonderwijs">Praktijkonderwijs</option>
+        <option value="Mavo">Mavo</option>
+        <option value="Havo">Havo</option>
+        <option value="Vwo">Vwo</option>
+        <option value="MBO">MBO</option>
+        <option value="HBO">HBO</option>
+        <option value="WO">WO</option>
+    </select>
+    <input type="text" placeholder="type1text" class="compType1Input form-control col-md-4"  name="@String.Format("p{0}q{1}t1a2", Model.PageId, Model.Id)"/>
+    <select class="compType1Select" placeholder="type1Select2" name="@String.Format("p{0}q{1}t1a3", Model.PageId, Model.Id)">
+        <option value="In afwachting">In afwachting</option>
+        <option value="Afgewezen">Afgewezen</option>
+        <option value="Proefperiode">Proefperiode</option>
+        <option value="Aangenomen">Aangenomen</option>
+    </select>
 </div>
 

@@ -1,8 +1,8 @@
 ﻿@model IDAL.Models.Question
 
-<div class="questionComplicated" id="@String.Format("p{0}q{1}",Model.PageId, Model.Id)">
+<div class="questionComplicated">
     <h3>@Model.QuestionName</h3>
 
-    <input type="text" class="form-control col-md-4" />
-    <input type="date" />
+    <input type="text" class="form-control col-md-4" name="@String.Format("p{0}q{1}t3a1", Model.PageId, Model.Id)"/>
+    <input type="date" name="@String.Format("p{0}q{1}t3a2", Model.PageId, Model.Id)"/>
 </div>

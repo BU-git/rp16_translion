@@ -29,11 +29,11 @@ $(document).ready(function () {
 
             if (pages.currentValue === pageNum) {
                 $('.question').each(function() {
-                    $('input, textarea').each(function () {
+                    $(this).children('input, textarea').each(function () {
                         var id = '#' + $(this).attr('id');
                         var name = $(this).attr('name');
                         var type = $(this).attr('type');
-                        var value = $(this).attr('placeholder');
+                        var value = $(this).val();
                         var labelId = "view" + name;
 
                         var element = document.getElementById(labelId);
@@ -49,16 +49,33 @@ $(document).ready(function () {
                         }
                     });
                 });
-                $('.questionComplicated').each(function() {
-                    var date = new Date($(this).find('input[type="date"]').val());
-                    var id = $(this).attr('id');
-                    var labelId = "view" + id;
+                $('.questionComplicated').each(function () {
+                    var labelId = null;
+                    var names = [];
+                    var values = [];
+
+                    $(this).children('input, select').each(function() {
+                        var question = $(this).attr('placeholder');
+                        var value = $(this).val();
+                        names.push(question);
+                        values.push(value);
+
+                        var name = $(this).attr('name');
+                        labelId = "view" + name.slice(0, 4);
+                    });
 
                     var element = document.getElementById(labelId);
 
-                    if (element != null) {
-                        element.innerHTML = "Date: " + date.toISOString().slice(0, 10);
+                    var insertHtml = '';
+                    for (var i = 0; i < names.length; i++) {
+                        var add = names[i] + ": " + values[i] + "\n";
+                        insertHtml += add;
                     }
+
+                    if (element != null) {
+                        element.innerHTML = insertHtml;
+                    }
+                    //var date = new Date($(this).find('input[type="date"]').val());
                 });
             }
         }
