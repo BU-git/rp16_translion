@@ -42,13 +42,17 @@
 
 .btn-nav
 {
-	margin-bottom: 5px;
-	background-color: #3E4349;
+    border-radius: 0;
+    padding: 10px;
+    border: none;
+	background-color: #F57B00;
 	color: white;
+    min-width: 100px;
 }
 
 .btn-nav:hover{
-	background-color: #F57B00;
+	background-color: #3E4349;
+    color: white;
 }
 
 .containerQuestions

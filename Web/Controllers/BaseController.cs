@@ -124,7 +124,6 @@ namespace Web.Controllers
                         }
                         return RedirectToAction("Index");
                     }
-                       
                 }
                 else if (!oldPassValid)
                     ModelState.AddModelError(nameof(model.OldPassword), "Old password is invalid");
@@ -179,7 +178,6 @@ namespace Web.Controllers
 
                     employer.EmployerId = identityUser.Id;
                     await employerManager.Create(employer);
-
 
                     var user = await adminManager.GetBaseUserByName(User.Identity.Name);
                     string userName = await adminManager.GetModUserName(user.UserId);
@@ -364,7 +362,6 @@ namespace Web.Controllers
         }
 
         #endregion
-
         #endregion
 
         #region Employee
@@ -425,7 +422,6 @@ namespace Web.Controllers
                 FirstName = model.FirstName,
                 Prefix = model.Prefix
             };
-
             
             await employerManager.CreateEmployee(employee);
 
@@ -474,21 +470,22 @@ namespace Web.Controllers
             {
                 await advisorManager.DeleteEmployee(employee);
 
-                    var user = await adminManager.GetBaseUserByName(User.Identity.Name);
-                    string userName = await adminManager.GetModUserName(user.UserId);
-                    var alert = new Alert();
-                    {
-                        alert.AlertId = Guid.NewGuid();
-                        alert.EmployerId = employer.UserId;
-                        alert.EmployeeId = employee.EmployeeId;
-                        alert.AlertType = AlertType.Employee_Delete;
-                        alert.AlertIsDeleted = false;
-                        alert.AlertComment = userName == null ? "" : userName;
-                        alert.AlertCreateTS = DateTime.Now;
-                        alert.AlertUpdateTS = DateTime.Now;
-                        alert.UserId = user.UserId;
-                    };
-                    await alertManager.CreateAsync(alert);
+                var user = await adminManager.GetBaseUserByName(User.Identity.Name);
+                string userName = await adminManager.GetModUserName(user.UserId);
+                var alert = new Alert();
+                {
+                    alert.AlertId = Guid.NewGuid();
+                    alert.EmployerId = employer.UserId;
+                    alert.EmployeeId = employee.EmployeeId;
+                    alert.AlertType = AlertType.Employee_Delete;
+                    alert.AlertIsDeleted = false;
+                    alert.AlertComment = userName == null ? "" : userName;
+                    alert.AlertCreateTS = DateTime.Now;
+                    alert.AlertUpdateTS = DateTime.Now;
+                    alert.UserId = user.UserId;
+                }
+                ;
+                await alertManager.CreateAsync(alert);
 
                 // TODO: send mails to admins also
                 var mailInfo =
@@ -534,6 +531,7 @@ namespace Web.Controllers
                 return View(employeeInfo);
 
             var employee = await adminManager.GetEmployee(employeeInfo.Id);
+
             string employeeOldName = employee.LastName + " " + employee.FirstName;
 
             if (employee != null)
@@ -562,7 +560,7 @@ namespace Web.Controllers
                         alert.UserId = user.UserId;
                     };
                     await alertManager.CreateAsync(alert);
-
+                    
                     var messageInfo =
                         new ChangeEmployeeNameMessageBuilder(
                             $"{employee.FirstName} {employee.Prefix} {employee.LastName}");

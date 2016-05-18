@@ -84,15 +84,14 @@
         </div>  
         <!--Left button-->
         <div class="col-sm-4 col-md-3">
-            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new { @class= "emplSettingsButton" })
+            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new { @class= "btn btn-nav" })
         </div>
     </div>
 
     <!--Back-->
-    <div class="row emplSettingsBottom">
+    <div class="row">
         <div class="col-sm-6 col-md-3">
-            @Html.ActionLink("Terug", "Index", null, new { @class = "emplSettingsButton" })
-        </div>
-        
+            @Html.ActionLink("Terug", "Index", null, new { @class = "btn btn-nav pull-left" })
+        </div>  
     </div>
 </section>
