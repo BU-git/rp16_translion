@@ -10,6 +10,8 @@ using BLL.Services.TestService;
 using BLL.Services.TestService.Interfaces;
 using IDAL.Interfaces;
 using IDAL.Models;
+using Microsoft.AspNet.Identity.Owin;
+using Newtonsoft.Json;
 
 namespace Web.Controllers
 {
@@ -54,27 +56,70 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveReport(FormCollection formCollection)
         {
-            var pages = await _testService.GetAllPages();
+            var pages = new List<Page>();
 
             int pageId, questionId;
+            int? questionType, answerId; // for complicated question
 
             foreach (var key in formCollection.AllKeys)
             {
-                _testService.ParseAnswerName(key, out pageId, out questionId);
+                _testService.ParseAnswerName(key, out pageId, out questionId, out questionType, out answerId);
 
-                var page = await _testService.GetPageById(pageId);
-                var question = await _testService.GetQuestion(questionId);
-                var answer = formCollection[key];
+                var page = pages.FirstOrDefault(p => p.Id == pageId);
+                if (page == null)
+                {
+                    var dbPage = await _testService.GetPageById(pageId);
+
+                    page = new Page
+                    {
+                        Id = dbPage.Id,
+                        Name = dbPage.Name,
+                        Order = dbPage.Order,
+                        Questions = new List<Question>()
+                    };
+                }
+                else
+                {
+                    var oldPage = page;
+                    pages.Remove(oldPage);
+                }
                 
+                var question = page.Questions.FirstOrDefault(q => q.Id == questionId);
+                if (question == null)
+                {
+                    var dbQuestion = await _testService.GetQuestion(questionId);
+                    question = new Question
+                    {
+                        Id = dbQuestion.Id,
+                        QuestionName = dbQuestion.QuestionName,
+                        TypeAnswer = dbQuestion.TypeAnswer,
+                        PageId = dbQuestion.PageId,
+                        Answers = new List<Answer>()
+                    };
+                }
+                else
+                {
+                    var oldQuestion = question;
+                    page.Questions.Remove(oldQuestion);
+                }
 
-
-                // TODO: implement business logic for report generating. Create structure Questions-Answers
-                // FormCollection should be represented as a structure Questions-Answers
-                // Here methods from BLL will be called to generate new reports based on from data
-
+                foreach (var value in formCollection[key].Split(','))
+                {
+                    var answer = new Answer
+                    {
+                        Name = value,
+                        QuestionId = question.Id
+                    };
+                    question.Answers.Add(answer);
+                }
+                
+                page.Questions.Add(question);
+                pages.Add(page);
             }
 
-            return View(pages.ToList());
+            string json = JsonConvert.SerializeObject(pages);
+
+            return View();
         }
     }
 }

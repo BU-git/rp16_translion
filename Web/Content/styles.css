@@ -461,3 +461,9 @@ section.borderedSection {
     padding-top: 200px;
     text-align: left;
 }
+
+/* Passing test: question styles */
+
+.questionComplicated {
+    padding: 15px 0;
+}

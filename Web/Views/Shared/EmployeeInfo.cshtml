@@ -10,7 +10,7 @@
         <!--Image column-->
         <div class="col-xs-6 col-sm-6 col-md-5 col-lg-4" id="emplSettingsMainImage">
             <p>@Model.FullName</p>
-            <a href="@Url.Action("EmployeeInfo", new { id = Model.Id })">
+            <a href="@Url.Action("EmployeeInfo", "Admin", new { id = Model.Id })">
                 <img src="~/Content/Images/UserImg.png" alt="@Model.FullName" />
             </a>
         </div>
@@ -27,7 +27,7 @@
     <!--New report section-->
     <div class="row employeeInfoRow">
         <div class="col-sm-offset-6 col-md-offset-5 col-lg-offset-4">
-            @Html.ActionLink("Start nieuwe rapportage", "unknwn", "unknwn", null, new { @class = "emplSettingsButton pull-left" })
+            @Html.ActionLink("Start nieuwe rapportage", "GetAllPages", "Report", null, new { @class = "emplSettingsButton pull-left" })
         </div>
     </div>
     <!--Modal button-->
