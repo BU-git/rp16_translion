@@ -1,8 +1,33 @@
 ﻿@model IDAL.Models.Question
 <div class="questionComplicated">
     <h3>@Model.QuestionName</h3>
-
-    <input class="compType1Input" placeholder="type1date" type="date" name="@String.Format("p{0}q{1}t1a0", Model.PageId, Model.Id)"/>
+    <div class="containerAnswers">
+        <div class="container-fluid wrapperAnswer row">
+            <div class="col-xs-3 wrapperDatepicker">
+                <input type="text" class="form-control datepicker col-xs-6 compType1Datepicker hasDatepicker" id="dp1463634113100" />
+                <img class="ui-datepicker-trigger" src="../Content/Images/dateImg.png" alt="..." title="...">
+            </div>
+            <select class="col-xs-2 compType1Select">
+                <option value="Ongeschoold">Ongeschoold</option>
+                <option value="Basisschool">Basisschool</option>
+                <option value="Praktijkonderwijs">Praktijkonderwijs</option>
+                <option value="Mavo">Mavo</option>
+                <option value="Havo">Havo</option>
+                <option value="Vwo">Vwo</option>
+                <option value="MBO">MBO</option>
+                <option value="HBO">HBO</option>
+                <option value="WO">WO</option>
+            </select>
+            <input type="text" class="form-control col-xs-2 compType1Input">
+            <select class="col-xs-2 compType1Select">
+                <option value="In afwachting">In afwachting</option>
+                <option value="Afgewezen">Afgewezen</option>
+                <option value="Proefperiode">Proefperiode</option>
+                <option value="Aangenomen">Aangenomen</option>
+            </select>
+        </div>
+    </div>
+    @*<input class="compType1Input" placeholder="type1date" type="date" name="@String.Format("p{0}q{1}t1a0", Model.PageId, Model.Id)"/>
     <select class="compType1Select" placeholder="Ontstaan" name="@String.Format("p{0}q{1}t1a1", Model.PageId, Model.Id)">
         <option value="Ongeschoold">Ongeschoold</option>
         <option value="Basisschool">Basisschool</option>
@@ -20,6 +45,6 @@
         <option value="Afgewezen">Afgewezen</option>
         <option value="Proefperiode">Proefperiode</option>
         <option value="Aangenomen">Aangenomen</option>
-    </select>
+    </select>*@
 </div>
 

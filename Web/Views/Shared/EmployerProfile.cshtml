@@ -1,7 +1,7 @@
 ﻿@model Web.ViewModels.EmployerViewModel
 
 @{
-    ViewBag.Title = "EmployerProfile";
+    ViewBag.Title = "Employer Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -89,7 +89,7 @@
                         </a>
                     </div>
                 </div>
-                <a href="#" class="tlr-usr-inner-info">
+                <a href="@Url.Action("EmployeeInfo", "Admin", new {id = employee.EmployeeId})" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="@employee.FirstName">
                     <span data-userName>@employee.FirstName @employee.Prefix @employee.LastName</span>
                 </a>
