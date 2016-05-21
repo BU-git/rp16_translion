@@ -45,11 +45,17 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> GetAllPages()
+        public async Task<ActionResult> GetAllPages(Guid? id)
         {
+            if (id == null || id.Value == Guid.Empty)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var pages = await _testService.GetAllPages() 
                 ?? new List<Page>();
 
+            ViewBag.EmployeeId = id;
             return View(pages.OrderBy(p => p.Order).ToList());
         }
 
@@ -61,8 +67,16 @@ namespace Web.Controllers
             int pageId, questionId;
             int? questionType, answerId; // for complicated question
 
+            string employeeId = null;
+
             foreach (var key in formCollection.AllKeys)
             {
+                if(key == "EmployeeId")
+                {
+                    employeeId = formCollection[key];
+                    continue;
+                }
+
                 _testService.ParseAnswerName(key, out pageId, out questionId, out questionType, out answerId);
 
                 var page = pages.FirstOrDefault(p => p.Id == pageId);
@@ -117,7 +131,8 @@ namespace Web.Controllers
                 pages.Add(page);
             }
 
-            string json = JsonConvert.SerializeObject(pages);
+            var objectToJson = new { EmployeeId = employeeId, Pages = pages };
+            string json = JsonConvert.SerializeObject(objectToJson);
 
             return View();
         }
