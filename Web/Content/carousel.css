@@ -17,10 +17,6 @@
     padding: 10px 40px;
 }
 
-.pageTitle {
-    font-size: 1.5em;
-}
-
 /* override arrows size */
 .slick-prev:before, .slick-next:before {
 	font-size: 40px; 
@@ -33,12 +29,7 @@
     padding-bottom: 20px;
 }
 
-.submitTextBlock {
-    font-size: 1.2em;
-    padding: 20px 0;
-}
-
 .customBtn {
     width: 200px;
-    font-size: 1.5em;
+    font: 1.75em sans-serif;
 }

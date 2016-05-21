@@ -1,10 +1,12 @@
 ﻿@using Web.Infrastructure.HtmlHelpers
-@model List<IDAL.Models.Page>
+@model Web.ViewModels.ReportViewModel
 @{
     ViewBag.Title = "GetAllPages";
 }
 
 @section styles {
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <!-- progressbar -->	
     <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -17,26 +19,28 @@
     <link href="../../Content/carousel.css" rel="stylesheet" type="text/css">
 }
 
-@Html.Hidden("PageCounterId", Model.Count)
+@Html.Hidden("PageCounterId", Model.Pages.Count)
 
 <div class="pageViewer">
     <div id="progressbar">
     </div>
     @using (Html.BeginForm("SaveReport", "Report", FormMethod.Post))
     {
-        @Html.Hidden("EmployeeId", ViewBag.EmployeeId as string)
+        @Html.Hidden("EmployeeId", Model.Employee.EmployeeId.ToString())
         <div class="carousel">
-            @foreach (var page in Model)
+            @foreach (var page in Model.Pages)
             {
                 <div class="page">
                     <div class="pageTitle">
                         @page.Order. @page.Name
                     </div>
                     <div class="row">
-                        @foreach (var question in page.Questions)
-                        {
-                            @Html.CreateQuestion(question)
-                        }
+                        <div class="col-md-12">
+                            @foreach (var question in page.Questions)
+                            {
+                                @Html.CreateQuestion(question)
+                            }
+                        </div>
                     </div>
                 </div>
             }
@@ -46,15 +50,27 @@
                 </div>
             </div>
             <div class="page">
-                @foreach (var page in Model)
+                <div class="previewHeader col-centered">
+                    <div class="title1">
+                        <p>Trans Lion medewerker rapport</p>
+                    </div>
+                    <div class="title2">
+                        <p>Dit rapport is opgesteld en ingevuld naaraanleiding van het ziekteverzuim van de heer/mevrouw: <span class="italic">@Model.Employee.FirstName
+                        @Model.Employee.Prefix @Model.Employee.LastName</span> werkzaam bij <span class="italic">@Model.Employee.Employer.CompanyName</span></p>
+                    </div>
+                </div>
+                
+                @foreach (var page in Model.Pages)
                 {
-                    <div class="pageTitle">
-                        @page.Order. @page.Name
+                    <div class="pageTitle col-centered">
+                        <span>@page.Name</span>
                     </div>
                     <div class="row">
                         @foreach (var question in page.Questions)
                         {
-                            @Html.CreatePreview(question)
+                            <div class="row">
+                                @Html.CreatePreview(question)
+                            </div>
                         }
                     </div>
                 }
@@ -62,7 +78,7 @@
                     <p>Ensure that you've filled all fields and press Submit to save the report</p>
                 </div>
                 <div class="submitBtnBlock">
-                    <input type="submit" class="btn btn-primary customBtn"/>
+                    <input type="submit" class="btn btn-primary customBtn" />
                 </div>
             </div>
         </div>
@@ -73,6 +89,8 @@
 
 @section scripts {
     <script src="http://cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.stepProgressBar.js"></script>
     <script src="~/Scripts/report/passReport.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 }

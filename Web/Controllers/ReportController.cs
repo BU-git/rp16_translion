@@ -6,20 +6,27 @@ using System.Threading.Tasks;
 using System.Web.ModelBinding;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using BLL.Identity.Models;
+using BLL.Services.AlertService;
+using BLL.Services.MailingService.Interfaces;
+using BLL.Services.PersonageService;
 using BLL.Services.TestService;
 using BLL.Services.TestService.Interfaces;
 using IDAL.Interfaces;
 using IDAL.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
+using Web.ViewModels;
 
 namespace Web.Controllers
 {
-    public class ReportController : Controller
+    public class ReportController : BaseController
     {
         private readonly ITestService _testService;
 
-        public ReportController(IUnitOfWork uow)
+        public ReportController(IUnitOfWork uow, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, IMailingService mailingService) 
+            : base(userManager, adminManager, advisorManager, employerManager, alertManager, mailingService)
         {
             _testService = new TestManager(uow);    
         }
@@ -55,8 +62,12 @@ namespace Web.Controllers
             var pages = await _testService.GetAllPages() 
                 ?? new List<Page>();
 
-            ViewBag.EmployeeId = id;
-            return View(pages.OrderBy(p => p.Order).ToList());
+            var model = new ReportViewModel
+            {
+                Employee =  await adminManager.GetEmployee(id.Value),
+                Pages = pages.OrderBy(p => p.Order).ToList()
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -117,6 +128,7 @@ namespace Web.Controllers
                     page.Questions.Remove(oldQuestion);
                 }
 
+                //TODO: text in comment type splits by commas 
                 foreach (var value in formCollection[key].Split(','))
                 {
                     var answer = new Answer

@@ -463,7 +463,47 @@ section.borderedSection {
 }
 
 /* Passing test: question styles */
+.previewHeader {
+    padding: 15px 0;
+}
+
+.title1 {
+    font: bold italic 2em sans-serif;
+    text-decoration: underline;
+}
+
+.title2, .questionPreview {
+    font: 1.2em sans-serif;
+}
+
+.pageTitle {
+    font: bold 1.5em sans-serif;
+    padding: 10px 0;
+}
+
+.questionTitle {
+    padding-bottom: 5px;
+    font-weight: lighter;
+    font: italic 0.85em sans-serif;
+}
 
 .questionComplicated {
     padding: 15px 0;
+}
+
+.myTable thead{
+    font: bold italic 0.85em sans-serif;
+}
+
+.myTable tbody{
+    font: 0.85em sans-serif;
+}
+
+.submitTextBlock {
+    font: 1.3em sans-serif;
+    padding: 20px 0;
+}
+
+.italic {
+    font-style: italic;
 }

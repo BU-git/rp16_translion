@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
     <Compile Include="ViewModels\EmployerViewModel.cs" />
     <Compile Include="ViewModels\RegistrationEmployerViewModel.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

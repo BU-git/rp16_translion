@@ -1,12 +1,13 @@
 ﻿@model IDAL.Models.Question
-
+@{
+    string labelId = String.Format("viewp{0}q{1}", Model.PageId, Model.Id);
+}
 <div class="questionPreview">
     <!--Question-->
-    <span>@Model.QuestionName :</span>
-    @{
-        string labelId = String.Format("viewp{0}q{1}", Model.PageId, Model.Id);
-    }
-    <label id=@labelId>
-        
-    </label>
+    <div class="questionTitle col-md-2">
+        <span>@Model.QuestionName</span>
+    </div>
+    <div class="questionAnswer col-md-10">
+        <label id=@labelId></label>
+    </div>
 </div>
