@@ -24,47 +24,48 @@
     </div>
     @using (Html.BeginForm("SaveReport", "Report", FormMethod.Post))
     {
-    <div class="carousel">
-        @foreach (var page in Model)
-        {
-            <div class="page">
-                <div class="pageTitle">
-                    @page.Order. @page.Name
-                </div>
-                <div class="row">
-                    @foreach (var question in page.Questions)
-                    {
-                        @Html.CreateQuestion(question)
-                    }
-                </div>
-            </div>
-        }
-        <div class="page">
-            <div class="submitTextBlock col-centered">
-                <p>Ensure that you've filled all fields and press Right Arrow to preview the whole report</p>
-            </div>
-        </div>
-        <div class="page">
+        @Html.Hidden("EmployeeId", ViewBag.EmployeeId as string)
+        <div class="carousel">
             @foreach (var page in Model)
             {
-                <div class="pageTitle">
-                    @page.Order. @page.Name
-                </div>
-                <div class="row">
-                    @foreach (var question in page.Questions)
-                    {
-                        @Html.CreatePreview(question)
-                    }
+                <div class="page">
+                    <div class="pageTitle">
+                        @page.Order. @page.Name
+                    </div>
+                    <div class="row">
+                        @foreach (var question in page.Questions)
+                        {
+                            @Html.CreateQuestion(question)
+                        }
+                    </div>
                 </div>
             }
-            <div class="submitTextBlock col-centered">
-                <p>Ensure that you've filled all fields and press Submit to save the report</p>
+            <div class="page">
+                <div class="submitTextBlock col-centered">
+                    <p>Ensure that you've filled all fields and press Right Arrow to preview the whole report</p>
+                </div>
             </div>
-            <div class="submitBtnBlock">
-                <input type="submit" class="btn btn-primary customBtn"/>
+            <div class="page">
+                @foreach (var page in Model)
+                {
+                    <div class="pageTitle">
+                        @page.Order. @page.Name
+                    </div>
+                    <div class="row">
+                        @foreach (var question in page.Questions)
+                        {
+                            @Html.CreatePreview(question)
+                        }
+                    </div>
+                }
+                <div class="submitTextBlock col-centered">
+                    <p>Ensure that you've filled all fields and press Submit to save the report</p>
+                </div>
+                <div class="submitBtnBlock">
+                    <input type="submit" class="btn btn-primary customBtn"/>
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
 
