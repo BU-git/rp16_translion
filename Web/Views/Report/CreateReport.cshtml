@@ -95,8 +95,9 @@
                     <div class="row">
                         <span>Name of question:</span>
                     </div>
-                    <div class="row">
+                    <div id="questionNameWrapper" class="row">
                         <input id="questionName" type="text" class="form-control nameOfQuestion">
+                        <span class="nameQuestionError">Field "Name of question" is required</span>
                     </div>
                     <div class="row">
                         <span>Type of answer:</span>
@@ -124,7 +125,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="btnMyModalCancel">Cancel</button>
                 <button id="btnMyModalOK" type="button" class="btn btn-primary">OK</button>
             </div>
         </div>

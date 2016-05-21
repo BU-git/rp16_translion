@@ -391,7 +391,7 @@ function UpdateNumericForPages() {
         var indexPage = IndexOfObjectArray(pages, "Id", $(btnChild).attr('id').substring(4));
         pages[indexPage].Order = i + 1;
 
-        $(btnChild).html('Page ' + (i + 1).toString());
+        //$(btnChild).html('Page ' + (i + 1).toString());
     }
 
 }
@@ -428,6 +428,7 @@ var pages = [];
 var currentPageId = 0;
 var currentQuestionId = 0;
 var currentSelectedPage;
+var nameQuestionStateError = false;
 
 function SetPageToPreview(pageIndex) {
     $('#namePageGrid').empty().append(pages[pageIndex].Name);
@@ -463,7 +464,21 @@ function CheckTypeAnswer() {
 
 $(document).ready(function () {
 
+    function nameQuestionErrorRaise() {
+        var questionName = $("#questionName");
+        if (questionName && questionName.val().trim() != '')
+            return true;
+        $("#questionName").addClass('input-validation-error');
+        $('.nameQuestionError').css({visibility: "visible", display: "block"});
+        
+        return false;
+    }
 
+    function clearQuestionError() {
+        $("#questionName").removeClass('input-validation-error');
+        $('.nameQuestionError').css({ visibility: "hidden", display: "inline" });
+        nameQuestionStateError = false;
+    }
 
     $(".sortablePages").sortable({
         handle: 'button',
@@ -478,6 +493,15 @@ $(document).ready(function () {
         $('#myModalPage').modal();
     });
 
+    //$("#questionName").change(function () {
+    //    if (nameQuestionStateError)
+    //        clearQuestionError();
+    //});
+
+    $('#questionName').on('input', function () {
+        if (nameQuestionStateError)
+            clearQuestionError();
+    });
 
 
     $("#btnSaveTest").click(function () {
@@ -575,7 +599,18 @@ $(document).ready(function () {
 
     });
 
+    $('#btnMyModalCancel').click(function (e) {
+        clearQuestionError();
+        $('#myModal').modal('hide');
+    });
+
     $('#btnMyModalOK').click(function (e) {
+        var result = nameQuestionErrorRaise();
+        if (!result) {
+            nameQuestionStateError = true;
+            return;
+        }
+            
         var editable = $('#myModal').attr('editQuestion');
         var question, pageId, pageIndex, page, questionIndex;
 
@@ -624,6 +659,7 @@ $(document).ready(function () {
         $('.containerAnswersModal').empty();
         $('#questionName').val('');
         $('#myModal').removeAttr('editQuestion');
+        clearQuestionError();
         $('#myModal').modal('hide');
     });
 

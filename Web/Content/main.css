@@ -176,5 +176,13 @@
 	width: 750px;
 }
 
+.nameQuestionError {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline;
+    visibility: hidden;
+    color: #CD0A0A;
+}
+
 
 
