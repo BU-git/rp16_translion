@@ -45,7 +45,7 @@ $(document).ready(function () {
                         if (element != null) {
                             if (type === 'checkbox' || type === 'radio') {
                                 if ($(id).is(":checked")) {
-                                    element.innerHTML += value + ', ';
+                                    element.innerHTML += value + ' ';
                                 }
                             } else {
                                 element.innerHTML = value;

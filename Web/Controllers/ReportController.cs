@@ -127,9 +127,8 @@ namespace Web.Controllers
                     var oldQuestion = question;
                     page.Questions.Remove(oldQuestion);
                 }
-
-                //TODO: text in comment type splits by commas 
-                foreach (var value in formCollection[key].Split(','))
+                
+                foreach (var value in formCollection.GetValues(key))
                 {
                     var answer = new Answer
                     {
