@@ -29,10 +29,11 @@ namespace Web.ViewModels
         [Display(Name = "Achternaam")]
         public string LastName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20")]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Telefoon")]
-        [StringLength(11)]
+        [StringLength(20, MinimumLength = 10,
+            ErrorMessage = "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20")]
         public string TelephoneNumber { get; set; }
 
         [Required]
@@ -41,9 +42,9 @@ namespace Web.ViewModels
         [EmailAddress]
         public string EmailAdress { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Uw postcode is niet correct. Uw postcode mag niet meer als 6 karakters bevatten.")]
         [Display(Name = "Postcode")]
-        [StringLength(6)]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Uw postcode voldoet niet aan de eisen, deze moet uit 6 karakters bestaan")]
         public string PostalCode { get; set; }
 
         [Required]

@@ -1,0 +1,26 @@
+﻿@model Web.ViewModels.ReportPassedViewModel
+@{
+    ViewBag.Title = "Report result";
+}
+
+<div class="col-md-5 col-centered addEmployeeSuccessBorderWrapper">
+    <span class="addEmployeeSuccessHeader">
+    </span>
+    <br />
+    <br />
+    @if (Model.Passed)
+    {
+        <span>
+            Successfully sent a report!
+        </span>
+    }
+    else
+    {
+        <p>Error occured. Please, try one more time</p>
+        @Html.ActionLink("Another try", "GetAllPages", "Report", new { id = Model.EmployeeId }, new { @class = "btn btn-default" })
+    }
+    <br />
+    <br />
+    @Html.ActionLink("Werkenemer profile", "EmployeeInfo", new { id = Model.EmployeeId }, new { @class = "btn btn-default" })
+</div>
+

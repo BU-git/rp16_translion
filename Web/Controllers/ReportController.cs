@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.ModelBinding;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using BLL.Identity.Models;
@@ -15,20 +14,18 @@ using BLL.Services.TestService.Interfaces;
 using IDAL.Interfaces;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Newtonsoft.Json;
 using Web.ViewModels;
+using BLL.Services.ReportService;
 
 namespace Web.Controllers
 {
     public class ReportController : BaseController
     {
         private readonly ITestService _testService;
-
         public ReportController(IUnitOfWork uow, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, IMailingService mailingService) 
             : base(userManager, adminManager, advisorManager, employerManager, alertManager, mailingService)
         {
-            _testService = new TestManager(uow);    
+            _testService = new TestManager(uow); 
         }
 
         [HttpGet]
@@ -142,10 +139,21 @@ namespace Web.Controllers
                 pages.Add(page);
             }
 
-            var objectToJson = new { EmployeeId = employeeId, Pages = pages };
-            string json = JsonConvert.SerializeObject(objectToJson);
+            Guid emplId;
+            Employee employee;
+            if (!Guid.TryParse(employeeId, out emplId) 
+                || (employee = await adminManager.GetEmployee(emplId)) == null)
+                return View("ReportResult", false);
 
-            return View();
+            var sender = new ReportSender(mailingService, employee, pages);
+
+            var result = await sender.SendMailsToRecieversAsync();
+
+            return View("ReportResult", new ReportPassedViewModel
+            {
+                Passed = result.Succeeded,
+                EmployeeId = emplId.ToString()
+            });
         }
     }
 }

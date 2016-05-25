@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.9.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.9\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -47,6 +55,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -100,6 +109,8 @@
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\MailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\RegistrationMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdAdminMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdEmplMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailQueue.cs" />
     <Compile Include="Services\MailingService\QueueListener.cs" />
     <Compile Include="Services\MailingService\Types\QueuedMessage.cs" />
@@ -108,6 +119,39 @@
     <Compile Include="Services\PersonageService\AdvisorManager.cs" />
     <Compile Include="Services\PersonageService\PersonManager.cs" />
     <Compile Include="Services\PersonageService\EmployerManager.cs" />
+    <Compile Include="Services\ReportService\Abstract\Designer.cs" />
+    <Compile Include="Services\ReportService\Abstract\Document.cs" />
+    <Compile Include="Services\ReportService\Abstract\ElementTemplate.cs" />
+    <Compile Include="Services\ReportService\Abstract\QuestionBaseTemplate.cs" />
+    <Compile Include="Services\ReportService\Factories\DesignerFactory.cs" />
+    <Compile Include="Services\ReportService\Factories\PdfDesignerFactory.cs" />
+    <Compile Include="Services\ReportService\Factories\WordDesignerFactory.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\CommentDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\ComplicatedDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\EmployeeInfoDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\PageDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\PdfDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\QuestionTitleDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\SelectableDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\Designers\TitleDesigner.cs" />
+    <Compile Include="Services\ReportService\Pdf\PdfDocument.cs" />
+    <Compile Include="Services\ReportService\ReportSender.cs" />
+    <Compile Include="Services\ReportService\Templates\CommentTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\ComplicatedTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\EmployeeInfoTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\PageTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\QuestionTitleTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\SelectableTemplate.cs" />
+    <Compile Include="Services\ReportService\Templates\TitleTemplate.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\CommentDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\ComplicatedDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\EmployeeInfoDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\PageDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\QuestionTitleDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\SelectableDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\TitleDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\Designers\WordDesigner.cs" />
+    <Compile Include="Services\ReportService\Word\WordDocument.cs" />
     <Compile Include="Services\TestService\Interfaces\ITestService.cs" />
     <Compile Include="Services\TestService\TestManager.cs" />
   </ItemGroup>

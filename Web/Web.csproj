@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
     <Compile Include="ViewModels\EmployerViewModel.cs" />
     <Compile Include="ViewModels\RegistrationEmployerViewModel.cs" />
+    <Compile Include="ViewModels\ReportPassedViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +283,7 @@
     <Content Include="Views\Report\QuestionsPartial\_CompType2.cshtml" />
     <Content Include="Views\Report\QuestionsPartial\_CompType3.cshtml" />
     <Content Include="Views\Shared\EmployeeInfo.cshtml" />
+    <Content Include="Views\Report\ReportResult.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
