@@ -16,8 +16,8 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
+    font-family: 'Exo 2', Tahoma, Geneva, Verdana, sans-serif;
     border: 0;
-    font: inherit;
     font-size: 100%;
     margin: 0;
     padding: 0;
@@ -55,7 +55,6 @@ header { margin-bottom: 10px; }
 .loginForm { padding-top: 75px; }
 
 .loginForm p {
-    font-family: "Verdana";
     font-size: 12px;
     padding-bottom: 10px;
 }
@@ -104,9 +103,9 @@ header { margin-bottom: 10px; }
 }
 
 footer {
-    background-color: #2d2d2d;
+    background-color: #3e4349;
     bottom: 0;
-    color: #999;
+    color: #fff;
     height: 60px;
     position: absolute;
     width: 100%;
@@ -139,7 +138,6 @@ footer p {
 /*users(employees or employers) list style*/
 
 #tlr-usr-section {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin-top: 30px;
     padding-bottom: 10%;
     text-align: center;
@@ -271,7 +269,6 @@ p.tlr-user-inner-info-trash > span {
 /*user's info main style*/
 
 div.tlr-us-info-block {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
     text-align: center;
 }
@@ -291,7 +288,6 @@ a.tlr-us-info-link:visited {
 /*Employer settings styles*/
 section#emplSettings {
     margin-top: 50px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
     vertical-align: central;
     padding: 20px 10px;
@@ -375,7 +371,6 @@ div.emplSettingsBottom a {
     -ms-border-radius: 20px;
     border: 1px solid black;
     border-radius: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 10px 15px;
     text-align: center;
     word-wrap: break-word;
@@ -385,7 +380,6 @@ div.emplSettingsBottom a {
 
 .addEmployeeHeader {
     display: block;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 30px;
     margin-bottom: 50px;
 }
