@@ -13,7 +13,7 @@ using Web.ViewModels;
 namespace Web.Controllers
 {
     [Authorize(Roles = "Advisor")]
-    public class AdvisorController : AdminController
+    public class AdvisorController : BaseController
     {
         public AdvisorController(
             UserManager<IdentityUser, Guid> userManager,
@@ -31,7 +31,7 @@ namespace Web.Controllers
         {
             
         }
-        public new async Task<ActionResult> ViewAlerts()
+        public async Task<ActionResult> ViewAlerts()
         {
             var user = await adminManager.GetBaseUserByName(User.Identity.Name);
             var alerts = await alertManager.GetAdvisorAlerts(user.UserId);
@@ -45,6 +45,31 @@ namespace Web.Controllers
             return View("AdvisorAlertPanel", alertList);
         }
 
+        protected async Task<AdminAlertPanelViewModel> MapAlertToTableView(Alert alert)
+        {
+            var EmployeeName = "n.v.t";
+            var alertToShow = alertManager.GetAlert(alert.AlertId);
+
+            if (alertToShow.EmployeeId != null)
+            {
+                var emp = await alertManager.FindEmployeeAsync(alert);
+                EmployeeName = emp.LastName + " " + emp.FirstName;
+            }
+
+            Employer employer = await alertManager.FindEmployerAsync(alert);
+
+            var AlertData = new AdminAlertPanelViewModel
+            {
+                alert = alert,
+                EmployerName = employer.LastName + " " + employer.FirstName,
+                Company = employer.CompanyName,
+                EmployeeName = EmployeeName,
+                AlertType = alert.AlertType.ToString(),
+                Comment = alert.AlertComment
+            };
+
+            return AlertData;
+        }
 
     }
 }

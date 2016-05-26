@@ -284,6 +284,7 @@
     <Content Include="Views\Report\QuestionsPartial\_CompType3.cshtml" />
     <Content Include="Views\Shared\EmployeeInfo.cshtml" />
     <Content Include="Views\Report\ReportResult.cshtml" />
+    <Content Include="Views\Advisor\AdvisorAlertPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

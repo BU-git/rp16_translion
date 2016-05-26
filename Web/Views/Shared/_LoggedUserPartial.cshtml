@@ -19,9 +19,9 @@
     <div class=""></div>
     <div class="col-sm-9 col-md-offset-2 col-lg-offset-4 col-md-7 col-lg-5 tlr-us-info-block">
         <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
-            @if (User.IsInRole("Admin"))
+            @if (!User.IsInRole("Employer"))
             {
-                <a href=@Url.Action("ViewAlerts","Admin")>
+                <a href=@Url.Action("ViewAlerts")>
                     <img src="~/Content/Images/AdminMessages.png" class="tlr-logged-img"/>
                 </a>
             }
