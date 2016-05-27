@@ -138,6 +138,7 @@
 	display: inline-block;
 	margin-top: 5px;
 	width: 25px;
+    float: left;
 }
 
 .ui-datepicker-trigger:hover

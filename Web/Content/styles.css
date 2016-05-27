@@ -75,7 +75,7 @@ header { margin-bottom: 10px; }
 .col-centered {
     float: none;
     margin: 0 auto;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 .row-centered { padding-bottom: 30px; }
@@ -506,4 +506,8 @@ section.borderedSection {
 
 .italic {
     font-style: italic;
+}
+
+.hasDatepicker {
+    float: left;
 }

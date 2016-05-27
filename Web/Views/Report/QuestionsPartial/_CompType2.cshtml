@@ -2,20 +2,28 @@
 <div class="questionComplicated" id="@String.Format("p{0}q{1}", Model.PageId, Model.Id)">
     <h3>@Model.QuestionName</h3>
 
-    <input type="text" placeholder="Datum" class="datepicker form-control col-md-4" name="@String.Format("p{0}q{1}t2a0", Model.PageId, Model.Id)"/>
-    <input type="text" placeholder="Bedrijfsnaam" class="form-control col-md-4" name="@String.Format("p{0}q{1}t2a1", Model.PageId, Model.Id)"/>
-    <input type="text" placeholder="Waar" class="form-control col-md-4" name="@String.Format("p{0}q{1}t2a2", Model.PageId, Model.Id)"/>
-    <select class="compType1Select form-control" placeholder="Opleidingsniveau" name="@String.Format("p{0}q{1}t2a3", Model.PageId, Model.Id)">
-        <option value="Ongeschoold">Ongeschoold</option>
-        <option value="Basisschool">Basisschool</option>
-        <option value="Praktijkonderwijs">Praktijkonderwijs</option>
-        <option value="Mavo">Mavo</option>
-        <option value="Havo">Havo</option>
-        <option value="Vwo">Vwo</option>
-        <option value="MBO">MBO</option>
-        <option value="HBO">HBO</option>
-        <option value="WO">WO</option>
-    </select>
+    <div class="col-md-3">
+        <input type="text" placeholder="Datum" class="datepicker form-control" name="@String.Format("p{0}q{1}t2a0", Model.PageId, Model.Id)" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" placeholder="Bedrijfsnaam" class="form-control" name="@String.Format("p{0}q{1}t2a1", Model.PageId, Model.Id)" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" placeholder="Waar" class="form-control" name="@String.Format("p{0}q{1}t2a2", Model.PageId, Model.Id)" />
+    </div>
+    <div class="col-md-3">
+        <select class="compType1Select form-control" placeholder="Opleidingsniveau" name="@String.Format("p{0}q{1}t2a3", Model.PageId, Model.Id)">
+            <option value="Ongeschoold">Ongeschoold</option>
+            <option value="Basisschool">Basisschool</option>
+            <option value="Praktijkonderwijs">Praktijkonderwijs</option>
+            <option value="Mavo">Mavo</option>
+            <option value="Havo">Havo</option>
+            <option value="Vwo">Vwo</option>
+            <option value="MBO">MBO</option>
+            <option value="HBO">HBO</option>
+            <option value="WO">WO</option>
+        </select>
+    </div>
 </div>
 
 
