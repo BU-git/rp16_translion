@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -56,6 +57,7 @@ namespace Web.Controllers
         public async Task<ActionResult> Index()
         {
             List<Employer> employers = await employerManager.GetAll();
+            Debug.WriteLine(adminManager.UnitOfWork.GetHashCode());
             return View(employers);
         }
 
