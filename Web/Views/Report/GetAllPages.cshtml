@@ -21,7 +21,7 @@
 
 @Html.Hidden("PageCounterId", Model.Pages.Count)
 
-<div class="pageViewer">
+<div class="col-md-10 col-centered">
     <div id="progressbar">
     </div>
     @using (Html.BeginForm("SaveReport", "Report", FormMethod.Post))
@@ -35,12 +35,10 @@
                         @page.Order. @page.Name
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            @foreach (var question in page.Questions)
-                            {
-                                @Html.CreateQuestion(question)
-                            }
-                        </div>
+                        @foreach (var question in page.Questions)
+                        {
+                            @Html.CreateQuestion(question)
+                        }
                     </div>
                 </div>
             }

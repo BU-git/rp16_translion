@@ -1,8 +1,13 @@
 ﻿@model IDAL.Models.Question
 
 <div class="questionComplicated" id="@String.Format("p{0}q{1}", Model.PageId, Model.Id)">
-    <h3>@Model.QuestionName</h3>
-
-    <input type="text" placeholder="Hoeveel uur?" class="form-control col-md-4" name="@String.Format("p{0}q{1}t3a1", Model.PageId, Model.Id)"/>
-    <input type="text" placeholder="Sinds wanneer" class="datepicker form-control" name="@String.Format("p{0}q{1}t3a2", Model.PageId, Model.Id)"/>
+    <div class="questionHeader">
+        <h3>@Model.QuestionName</h3>
+    </div>
+    <div class="col-md-4">
+        <input type="text" placeholder="Hoeveel uur?" class="form-control" name="@String.Format("p{0}q{1}t3a1", Model.PageId, Model.Id)" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" placeholder="Sinds wanneer" class="datepicker form-control" name="@String.Format("p{0}q{1}t3a2", Model.PageId, Model.Id)" />
+    </div>
 </div>

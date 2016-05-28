@@ -74,7 +74,7 @@ header { margin-bottom: 10px; }
 .col-centered {
     float: none;
     margin: 0 auto;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 .row-centered { padding-bottom: 30px; }
@@ -482,6 +482,7 @@ section.borderedSection {
 }
 
 .questionComplicated {
+    height: 100px;
     padding: 15px 0;
 }
 
@@ -500,4 +501,20 @@ section.borderedSection {
 
 .italic {
     font-style: italic;
+}
+
+/* Passing test: complicated question styles */
+
+.datepicker {
+    width: 80%;
+    float: left;
+}
+
+.ui-datepicker-trigger {
+    width: 20%;
+    float: left;
+}
+
+.questionHeader {
+    padding: 15px 0;
 }
