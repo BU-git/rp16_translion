@@ -54,7 +54,7 @@ function CommentToHTML(questionId, pageId) {
 
 function CreateAnswWrapperForCbRb() {
     var container = $('.containerAnswersModal');
-    var newWrapper = $("<div>", { class: "input-group wrapperAnswer" });
+    var newWrapper = $("<div>", { class: "wrapperAnswer" });
     var newInput = $("<input>", { type: "text", class: "form-control" });
     var btnDel = $('<button>',
 	{
@@ -67,7 +67,7 @@ function CreateAnswWrapperForCbRb() {
 
     btnDel.append('X');
 
-    var newSpan = $('<span>', { class: "input-group-btn" }).append(btnDel);
+    var newSpan = $('<span>', { class: "" }).append(btnDel);
     newWrapper.append(newInput).append(newSpan);
     container.append(newWrapper);
 }
@@ -333,7 +333,8 @@ function Question() {
 		        if (question.TypeAnswer == "Radiobuttons" || question.TypeAnswer == "Checkboxes") {
 		            for (var i = 0; i < question.Answers.length; i++) {
 		                var container = $('.containerAnswersModal');
-		                var newWrapper = $("<div>", { class: "input-group wrapperAnswer" });
+		                //var newWrapper = $("<div>", { class: "input-group wrapperAnswer" });
+		                var newWrapper = $("<div>", { class: "wrapperAnswer" });
 		                var newInput = $("<input>", { type: "text", class: "form-control", value: question.Answers[i].Name });
 		                var btnDel = $('<button>',
 						{
@@ -346,7 +347,7 @@ function Question() {
 
 		                btnDel.append('X');
 
-		                var newSpan = $('<span>', { class: "input-group-btn" }).append(btnDel);
+		                var newSpan = $('<span>', { class: "" }).append(btnDel);
 		                newWrapper.append(newInput).append(newSpan);
 		                container.append(newWrapper);
 		            }
