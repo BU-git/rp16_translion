@@ -354,23 +354,23 @@ function Question() {
 
 		        }
 
-		        if (question.TypeAnswer == "CompType1") {
-		            for (var i = 0; i < question.AnswersCount; i++) {
-		                CreateAnswWrapperForCompType1();
-		            }
-		        }
+		        //if (question.TypeAnswer == "CompType1") {
+		        //    for (var i = 0; i < question.AnswersCount; i++) {
+		        //        CreateAnswWrapperForCompType1();
+		        //    }
+		        //}
 
-		        if (question.TypeAnswer == "CompType2") {
-		            for (var i = 0; i < question.AnswersCount; i++) {
-		                CreateAnswWrapperForCompType2();
-		            }
-		        }
+		        //if (question.TypeAnswer == "CompType2") {
+		        //    for (var i = 0; i < question.AnswersCount; i++) {
+		        //        CreateAnswWrapperForCompType2();
+		        //    }
+		        //}
 
-		        if (question.TypeAnswer == "CompType3") {
-		            for (var i = 0; i < question.AnswersCount; i++) {
-		                CreateAnswWrapperForCompType3();
-		            }
-		        }
+		        //if (question.TypeAnswer == "CompType3") {
+		        //    for (var i = 0; i < question.AnswersCount; i++) {
+		        //        CreateAnswWrapperForCompType3();
+		        //    }
+		        //}
 
 		        $('#myModal').modal();
 		    }
@@ -455,7 +455,7 @@ function CheckTypeAnswer() {
     var btnAddAnswer = $('.addAnswer');
     $('.containerAnswersModal').empty();
     if (typeAnswer != "Radiobuttons" && typeAnswer != "Checkboxes") {
-        if (!$('#myModal').attr('editQuestion'))
+        //if (!$('#myModal').attr('editQuestion'))
             AddAnswerToContainer();
         btnAddAnswer.css('visibility', 'hidden');
     }
