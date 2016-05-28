@@ -1,7 +1,6 @@
 using System;
 using System.Configuration;
 using System.Web.Mvc;
-using BLL;
 using BLL.Identity.Models;
 using BLL.Identity.Stores;
 using BLL.Services.AlertService;
@@ -18,12 +17,12 @@ using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using Unity.Mvc5;
 
-
 namespace Web
 {
     public static class UnityConfig
     {
         private static UnityContainer container;
+
         public static void RegisterComponents()
         {
             container = new UnityContainer();
@@ -34,7 +33,10 @@ namespace Web
                 x => GetUserManager()
                 ));
 
-            container.RegisterType<IAlertManager, AlertManager>(new PerHttpRequestLifetimeManager());
+            container.RegisterType<IAlertManager, AlertManager>(new PerHttpRequestLifetimeManager(),
+                new InjectionConstructor(
+                    container.Resolve<IUnitOfWork>()
+                    ));
 
             container.RegisterType<RoleStore>(new PerHttpRequestLifetimeManager());
             container.RegisterType<IMailingService, MailingService>(new PerHttpRequestLifetimeManager(),
@@ -55,13 +57,12 @@ namespace Web
                     ));
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
-
         }
 
         private static UserManager<IdentityUser, Guid> GetUserManager()
         {
             IUnitOfWork unitOfWork = container.Resolve<IUnitOfWork>();
-            IUserStore <IdentityUser, Guid> userStore = new UserStore(unitOfWork);
+            IUserStore<IdentityUser, Guid> userStore = new UserStore(unitOfWork);
             UserManager<IdentityUser, Guid> userManager = new UserManager<IdentityUser, Guid>(userStore);
             userManager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser, Guid>(
                 new DpapiDataProtectionProvider("Sample").Create("EmailConfirmation"));
@@ -73,8 +74,8 @@ namespace Web
             string from = ConfigurationManager.AppSettings["mailFrom"];
             string password = ConfigurationManager.AppSettings["mailPass"];
             string host = ConfigurationManager.AppSettings["mailHost"];
-            
-            IMailingService mailingService = new MailingService(from,password,host);
+
+            IMailingService mailingService = new MailingService(from, password, host);
             mailingService.IgnoreQueue();
             return mailingService;
         }
