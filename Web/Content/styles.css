@@ -482,6 +482,7 @@ section.borderedSection {
 }
 
 .questionComplicated {
+    height: 100px;
     padding: 15px 0;
 }
 
@@ -502,6 +503,18 @@ section.borderedSection {
     font-style: italic;
 }
 
-.hasDatepicker {
+/* Passing test: complicated question styles */
+
+.datepicker {
+    width: 80%;
     float: left;
+}
+
+.ui-datepicker-trigger {
+    width: 20%;
+    float: left;
+}
+
+.questionHeader {
+    padding: 15px 0;
 }

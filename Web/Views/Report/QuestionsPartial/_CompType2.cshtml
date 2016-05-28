@@ -1,7 +1,8 @@
 ﻿@model IDAL.Models.Question
 <div class="questionComplicated" id="@String.Format("p{0}q{1}", Model.PageId, Model.Id)">
-    <h3>@Model.QuestionName</h3>
-
+    <div class="questionHeader">
+        <h3>@Model.QuestionName</h3>
+    </div>
     <div class="col-md-3">
         <input type="text" placeholder="Datum" class="datepicker form-control" name="@String.Format("p{0}q{1}t2a0", Model.PageId, Model.Id)" />
     </div>
