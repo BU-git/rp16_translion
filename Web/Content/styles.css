@@ -481,11 +481,6 @@ section.borderedSection {
     font: italic 0.85em sans-serif;
 }
 
-.questionComplicated {
-    height: 100px;
-    padding: 15px 0;
-}
-
 .myTable thead{
     font: bold italic 0.85em sans-serif;
 }
@@ -516,5 +511,15 @@ section.borderedSection {
 }
 
 .questionHeader {
-    padding: 15px 0;
+    height: 20px;
+    margin: 15px 0;
+}
+
+.answerLine, .addAnswerLine {
+    height: 40px;
+    margin: 15px 0;
+}
+
+.addAnswerLineBtn {
+    margin-left: 0;
 }

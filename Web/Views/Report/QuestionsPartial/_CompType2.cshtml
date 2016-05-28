@@ -3,27 +3,37 @@
     <div class="questionHeader">
         <h3>@Model.QuestionName</h3>
     </div>
-    <div class="col-md-3">
-        <input type="text" placeholder="Datum" class="datepicker form-control" name="@String.Format("p{0}q{1}t2a0", Model.PageId, Model.Id)" />
+    <div id="answersContainer">
+        <div class="answerLine">
+            <div class="col-md-3">
+                <input type="text" placeholder="Datum" class="datepicker form-control" name="@String.Format("p{0}q{1}t2l0a0", Model.PageId, Model.Id)"/>
+            </div>
+            <div class="col-md-3">
+                <input type="text" placeholder="Bedrijfsnaam" class="form-control" name="@String.Format("p{0}q{1}t2l0a1", Model.PageId, Model.Id)"/>
+            </div>
+            <div class="col-md-3">
+                <input type="text" placeholder="Waar" class="form-control" name="@String.Format("p{0}q{1}t2l0a2", Model.PageId, Model.Id)"/>
+            </div>
+            <div class="col-md-3">
+                <select class="compType1Select form-control" placeholder="Opleidingsniveau" name="@String.Format("p{0}q{1}t2l0a3", Model.PageId, Model.Id)">
+                    <option value="Ongeschoold">Ongeschoold</option>
+                    <option value="Basisschool">Basisschool</option>
+                    <option value="Praktijkonderwijs">Praktijkonderwijs</option>
+                    <option value="Mavo">Mavo</option>
+                    <option value="Havo">Havo</option>
+                    <option value="Vwo">Vwo</option>
+                    <option value="MBO">MBO</option>
+                    <option value="HBO">HBO</option>
+                    <option value="WO">WO</option>
+                </select>
+            </div>
+        </div>
     </div>
-    <div class="col-md-3">
-        <input type="text" placeholder="Bedrijfsnaam" class="form-control" name="@String.Format("p{0}q{1}t2a1", Model.PageId, Model.Id)" />
-    </div>
-    <div class="col-md-3">
-        <input type="text" placeholder="Waar" class="form-control" name="@String.Format("p{0}q{1}t2a2", Model.PageId, Model.Id)" />
-    </div>
-    <div class="col-md-3">
-        <select class="compType1Select form-control" placeholder="Opleidingsniveau" name="@String.Format("p{0}q{1}t2a3", Model.PageId, Model.Id)">
-            <option value="Ongeschoold">Ongeschoold</option>
-            <option value="Basisschool">Basisschool</option>
-            <option value="Praktijkonderwijs">Praktijkonderwijs</option>
-            <option value="Mavo">Mavo</option>
-            <option value="Havo">Havo</option>
-            <option value="Vwo">Vwo</option>
-            <option value="MBO">MBO</option>
-            <option value="HBO">HBO</option>
-            <option value="WO">WO</option>
-        </select>
+    <div class="addAnswerLine">
+        <div class="col-md-4 btn-group">
+            <div class="btn btn-primary addAnswerLineBtn">Add answer</div>
+            <div class="btn btn-default delAnswerLineBtn">Delete answer</div>
+        </div>
     </div>
 </div>
 
