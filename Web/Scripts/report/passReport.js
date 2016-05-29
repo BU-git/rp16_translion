@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {
+﻿jQuery.fn.outerHTML = function () {
+    return jQuery('<div />').append(this.eq(0).clone()).html();
+};
+
+$(document).ready(function () {
     $('.carousel').slick({
         infinite: false,
         slidesToShow: 1,
@@ -7,6 +11,32 @@
 });
 
 $(document).ready(function () {
+    $('.addAnswerLineBtn').click(function () {
+        var regAnswerName = /p[0-9]+q[0-9]+t[0-9]l[0-9]+/g;
+        var html = $("<div />").append($(this).closest('.questionComplicated').find('.answerLine:last').clone()).html();
+
+        function nameReplacer(match) {
+            var reg = /l(.*)/;
+            var len = match.length;
+
+            var curLineId = reg.exec(match)[1];
+            var newLineId = (parseInt(curLineId) + 1).toString();
+
+            var name = match.slice(0, len - curLineId.length) + newLineId;
+            return name;
+        }
+
+        html = html.replace(regAnswerName, nameReplacer);
+
+        $(this).closest('.questionComplicated').find('#answersContainer').append(html);
+    });
+
+    $('.delAnswerLineBtn').click(function () {
+        var nChildren = $(this).closest('.questionComplicated').find('#answersContainer').children().length;
+        if (nChildren > 1)
+            $(this).closest('.questionComplicated').find('.answerLine:last').remove();
+    });
+
     $('.datepicker').datepicker({
         showOn: "both",
         buttonImage: "../../Content/Images/dateImg.png",
