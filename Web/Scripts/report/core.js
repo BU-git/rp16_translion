@@ -467,7 +467,7 @@ $(document).ready(function () {
 
     function nameQuestionErrorRaise() {
         var questionName = $("#questionName");
-        if (questionName && questionName.val().trim() != '')
+        if ($('#cbTypeAnswers').val() == "Comment"|| (questionName && questionName.val().trim() != ''))
             return true;
         $("#questionName").addClass('input-validation-error');
         $('.nameQuestionError').css({visibility: "visible", display: "block"});
