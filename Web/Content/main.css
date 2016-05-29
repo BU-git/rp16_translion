@@ -4,7 +4,7 @@
 	height: 600px;
 	min-width: 700px;
 	max-width: 1000px;
-	border: 1px solid #baafaa;
+	border: 3px solid #3e4349;
     border-radius: 10px;
     margin-bottom: 50px;
 }
@@ -12,9 +12,9 @@
 .leftPagePanel
 {
 	text-align: center;
-	border-right: 1px solid #baafaa;
+	border-right: 3px solid #3e4349; 
 	width: 100px;
-	height: 600px;
+	height: 595px;
 	padding-top: 10px;
 	float: left;
 }
@@ -81,6 +81,12 @@
 .editQuestion:hover, .deleteQuestion:hover
 {
 	cursor: pointer;
+}
+
+#btnAddPage {
+    border: 0;
+    min-width: 100px;
+    margin: 0px -2px;
 }
 
 .editQuestion
