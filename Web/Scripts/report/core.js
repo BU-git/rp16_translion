@@ -432,7 +432,20 @@ var currentSelectedPage;
 var nameQuestionStateError = false;
 
 function SetPageToPreview(pageIndex) {
-    $('#namePageGrid').empty().append(pages[pageIndex].Name);
+    var imgEdit = $('<img>',
+    {
+        src: "../../Content/Images/pen.png",
+        class: "editQuestion",
+        click: function () {
+            var modal = $("#myModalPageEditName");
+            var pageId = $(currentSelectedPage).attr('id').substring(4);
+            var pageIndex = IndexOfObjectArray(pages, "Id", pageId);
+            var page = pages[pageIndex];
+            $('#pageEditNameModal').empty().val(page.Name);
+            modal.modal();
+        }
+    });
+    $('#namePageGrid').empty().append(imgEdit).append(pages[pageIndex].Name);
     var container = $('.containerQuestions').empty();
     container.attr('id', "page" + pages[pageIndex].Id);
     $('.containerQuestions').append(pages[pageIndex].GetHTMLMarkup());
@@ -488,6 +501,8 @@ $(document).ready(function () {
             UpdateNumericForPages();
         }
     });
+
+
     //$(".pageContainer").disableSelection();
     $('#btnAddPage').click(function () {
 
@@ -585,6 +600,25 @@ $(document).ready(function () {
         $('#myModalPage').modal('hide');
 
         $('.sortablePages').append(newLi).sortable('refresh');
+
+    });
+
+
+    $('#btnMyModalPageEditNameOK').click(function () {
+
+        var namePage = $('#pageEditNameModal').val();
+
+        if (!namePage || namePage.trim().length == 0) {
+            alert('Please enter name of page');
+            return;
+        }
+        
+        var pageId = $(currentSelectedPage).attr('id').substring(4);
+        var pageIndex = IndexOfObjectArray(pages, "Id", pageId);
+        var page = pages[pageIndex];
+        page.Name = namePage;
+        SetPageToPreview(pageIndex);
+        $('#myModalPageEditName').modal('hide');
 
     });
 

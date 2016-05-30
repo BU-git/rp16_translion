@@ -28,7 +28,9 @@
             <button id="btnAddQuestion" class="btn btn-default pull-right" data-target="#myModal">Add Question</button>
 
         </div>
-        <div id="namePageGrid"></div>
+        <div id="namePageGrid">
+            
+        </div>
         <div class="containerQuestions">
 
             <!-- <div class="wrapperQuestion">
@@ -152,6 +154,32 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button id="btnMyModalPageOK" type="button" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModalPageEditName" tabindex="-1" role="dialog" aria-labelledby="myModalPageEditNameLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalPageEditNameLabel">Edit page name</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container form-group">
+                    <div class="row">
+                        <span>Name of page:</span>
+                    </div>
+                    <div class="row">
+                        <input id="pageEditNameModal" type="text" class="form-control nameOfQuestion">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnMyModalPageEditNameOK" type="button" class="btn btn-primary">OK</button>
             </div>
         </div>
     </div>
