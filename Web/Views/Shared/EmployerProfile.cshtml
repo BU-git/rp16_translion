@@ -76,7 +76,7 @@
     <div class="row" id="tlr-usr-section-main">
         @foreach (var employee in @Model.Employees)
         {
-            <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
+            <div class="col-sm-6 col-md-4 col-lg-3 tlr-usr-info">
                 <div class="row">
                     <div class="col-md-6">
                         <a href="@Url.Action("ChangeEmployeeName", "Admin", new {id = employee.EmployeeId})" class="tlr-usr-info-label-btn">
@@ -91,7 +91,7 @@
                 </div>
                 <a href="@Url.Action("EmployeeInfo", "Admin", new {id = employee.EmployeeId})" class="tlr-usr-inner-info">
                     <img src="~/Content/Images/UserImg.png" alt="@employee.FirstName">
-                    <span data-userName>@employee.FirstName @employee.Prefix @employee.LastName</span>
+                    <span data-userName class="tlr-usr-name">@employee.FirstName @employee.Prefix @employee.LastName</span>
                 </a>
             </div>
         }

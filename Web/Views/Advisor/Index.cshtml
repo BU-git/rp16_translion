@@ -1,4 +1,4 @@
-﻿@model List<IDAL.Models.Employer>
+﻿@model Web.ViewModels.UsersViewModel
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -28,9 +28,9 @@
     <div class="row" id="tlr-usr-section-main">
         <!--user's info(image and name)-->
         <!--Use this in foreach with your ViewModel-->
-        @foreach (var employer in Model)
+        @foreach (var employer in Model.Employers)
         {
-            <div class="col-sm-6 col-md-3 col-lg-2 tlr-usr-info">
+            <div class="col-sm-6 col-md-4 col-lg-3 tlr-usr-info">
                 <p class="tlr-usr-info-label" data-userName>@employer.FirstName @employer.LastName</p>
                 <p class="tlr-usr-info-label">@employer.CompanyName</p>
                 <a href="@Url.Action("EmployerProfile", "Advisor", new { id = employer.EmployerId })" class="tlr-usr-inner-info">

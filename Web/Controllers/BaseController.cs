@@ -16,6 +16,7 @@ using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Web.ViewModels;
+using System.Linq;
 
 namespace Web.Controllers
 {
@@ -56,9 +57,12 @@ namespace Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            List<Employer> employers = await employerManager.GetAll();
-            Debug.WriteLine(adminManager.UnitOfWork.GetHashCode());
-            return View(employers);
+            var vm = new UsersViewModel
+            {
+                Advisors = await advisorManager.GetAll(),
+                Employers = await employerManager.GetAll()
+            };
+            return View(vm);
         }
 
         public ActionResult Logout()
