@@ -29,6 +29,14 @@ $(document).ready(function () {
         html = html.replace(regAnswerName, nameReplacer);
 
         $(this).closest('.questionComplicated').find('#answersContainer').append(html);
+
+        $('.datepicker').each(function() {
+            $(this).datepicker({
+                showOn: "both",
+                buttonImage: "../../Content/Images/dateImg.png",
+                buttonImageOnly: true
+            });
+        });
     });
 
     $('.delAnswerLineBtn').click(function () {
