@@ -96,10 +96,13 @@ $(document).ready(function () {
                     var names = [];
                     var values = [];
 
-                    $(this).children('input, select').each(function() {
+                    $('input, select', $(this)).each(function() {
                         var question = $(this).attr('placeholder');
                         var value = $(this).val();
-                        names.push(question);
+
+                        if ($.inArray(question, names) == -1) {
+                            names.push(question);
+                        }
                         values.push(value);
                     });
 
@@ -112,8 +115,11 @@ $(document).ready(function () {
                     }
                     insertHtml += '</tr></thead><tbody><tr>';
 
-                    for (j = 0; j < names.length; j++) {
+                    for (j = 0; j < values.length; j++) {
                         insertHtml += '<td>' + values[j] + '</td>';
+                        if ((j + 1) % names.length == 0) {
+                            insertHtml += '</tr><tr>';
+                        }
                     }
                     insertHtml += '</tr></tbody><table>';
 
