@@ -501,12 +501,12 @@ section.borderedSection {
 /* Passing test: complicated question styles */
 
 .datepicker {
-    width: 80%;
+    max-width: 80%; 
     float: left;
 }
 
 .ui-datepicker-trigger {
-    width: 20%;
+    width: 16%;
     float: left;
 }
 
