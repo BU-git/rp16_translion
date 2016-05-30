@@ -37,6 +37,7 @@ $(document).ready(function () {
 
         $('.datepicker').each(function () {
             $(this).removeClass('hasDatepicker');
+            $(this).removeAttr('id');
             $(this).datepicker({
                 showOn: "both",
                 buttonImage: "../../Content/Images/dateImg.png",
