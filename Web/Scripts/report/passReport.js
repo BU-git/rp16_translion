@@ -30,7 +30,13 @@ $(document).ready(function () {
 
         $(this).closest('.questionComplicated').find('#answersContainer').append(html);
 
-        $('.datepicker').each(function() {
+        $('.ui-datepicker-trigger').each(function() {
+                $(this).remove();
+            }
+        );
+
+        $('.datepicker').each(function () {
+            $(this).removeClass('hasDatepicker');
             $(this).datepicker({
                 showOn: "both",
                 buttonImage: "../../Content/Images/dateImg.png",
