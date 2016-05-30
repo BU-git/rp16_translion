@@ -503,6 +503,7 @@ section.borderedSection {
 .datepicker {
     max-width: 80%; 
     float: left;
+    padding-right: 3%;
 }
 
 .ui-datepicker-trigger {

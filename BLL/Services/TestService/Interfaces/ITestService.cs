@@ -118,7 +118,7 @@ namespace BLL.Services.TestService.Interfaces
 
         #region Parse Answer Name
 
-        void ParseAnswerName(string questionName, out int pageId, out int questionId, out int? questionType, out int? answerId);
+        void ParseAnswerName(string questionName, out int pageId, out int questionId, out int? questionType, out int? lineId, out int? answerId);
 
         #endregion
     }

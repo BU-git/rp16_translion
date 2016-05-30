@@ -73,7 +73,7 @@ namespace Web.Controllers
             var pages = new List<Page>();
 
             int pageId, questionId;
-            int? questionType, answerId; // for complicated question
+            int? questionType, lineId, answerId; // for complicated question
 
             string employeeId = null;
 
@@ -85,7 +85,7 @@ namespace Web.Controllers
                     continue;
                 }
 
-                _testService.ParseAnswerName(key, out pageId, out questionId, out questionType, out answerId);
+                _testService.ParseAnswerName(key, out pageId, out questionId, out questionType, out lineId, out answerId);
 
                 var page = pages.FirstOrDefault(p => p.Id == pageId);
                 if (page == null)

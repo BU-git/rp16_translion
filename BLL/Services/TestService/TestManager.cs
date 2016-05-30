@@ -653,7 +653,7 @@ namespace BLL.Services.TestService
 
         #region Parse answer name
 
-        public void ParseAnswerName(string questionName, out int pageId, out int questionId, out int? questionType, out int? answerId)
+        public void ParseAnswerName(string questionName, out int pageId, out int questionId, out int? questionType, out int? lineId, out int? answerId)
         {
             string pattern = @"\d+";
 
@@ -666,12 +666,15 @@ namespace BLL.Services.TestService
             {
                 var qTypeMatch = Regex.Matches(questionName, pattern)[2].Value;
                 questionType = Convert.ToInt32(qTypeMatch);
-                var aIdMatch = Regex.Matches(questionName, pattern)[3].Value;
+                var lineIdMatch = Regex.Matches(questionName, pattern)[3].Value;
+                lineId = Convert.ToInt32(lineIdMatch);
+                var aIdMatch = Regex.Matches(questionName, pattern)[4].Value;
                 answerId = Convert.ToInt32(aIdMatch);
             }
             catch (Exception)
             {
                 questionType = null;
+                lineId = null;
                 answerId = null;
             }
         }
