@@ -6,7 +6,7 @@
 }
 
 <section id="emplSettings">
-    <h3>Werkgever gegevens</h3>
+    <h3 id="tlr-border-hrd">Werkgever gegevens</h3>
     <div class="row emplSettingsMain">
         <!--Image and username-->
         <div class="hidden-xs col-sm-3 col-md-2" id="emplSettingsMainImage">
@@ -84,14 +84,14 @@
         </div>  
         <!--Left button-->
         <div class="col-sm-4 col-md-3">
-            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new { @class= "btn btn-nav" })
+            @Html.ActionLink("Verander wachtwoord", "PasswordChange", null, new { @class= "btn btn-lg btn-primary" })
         </div>
     </div>
 
     <!--Back-->
     <div class="row">
         <div class="col-sm-6 col-md-3">
-            @Html.ActionLink("Terug", "Index", null, new { @class = "btn btn-nav pull-left" })
+            @Html.ActionLink("Terug", "Index", null, new { @class = "btn btn-lg btn-primary pull-left" })
         </div>  
     </div>
 </section>
