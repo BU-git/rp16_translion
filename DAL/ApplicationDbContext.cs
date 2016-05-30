@@ -22,6 +22,7 @@ namespace DAL
         internal IDbSet<Role> Roles { get; set; }
         internal IDbSet<ExternalLogin> Logins { get; set; }
         internal IDbSet<Employer> Employers { get; set; }
+        internal IDbSet<Employee> Employees { get; set; }
         internal IDbSet<Admin> Admins { get; set; }
         internal IDbSet<Advisor> Advisors { get; set; }
         internal IDbSet<Alert> Alerts { get; set; }

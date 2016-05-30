@@ -74,7 +74,7 @@ header { margin-bottom: 10px; }
 .col-centered {
     float: none;
     margin: 0 auto;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 .row-centered { padding-bottom: 30px; }
@@ -511,10 +511,6 @@ section.borderedSection {
     font: italic 0.85em sans-serif;
 }
 
-.questionComplicated {
-    padding: 15px 0;
-}
-
 .myTable thead{
     font: bold italic 0.85em sans-serif;
 }
@@ -530,4 +526,30 @@ section.borderedSection {
 
 .italic {
     font-style: italic;
+}
+
+/* Passing test: complicated question styles */
+
+.datepicker {
+    width: 80%;
+    float: left;
+}
+
+.ui-datepicker-trigger {
+    width: 20%;
+    float: left;
+}
+
+.questionHeader {
+    height: 20px;
+    margin: 15px 0;
+}
+
+.answerLine, .addAnswerLine {
+    height: 40px;
+    margin: 15px 0;
+}
+
+.addAnswerLineBtn {
+    margin-left: 0;
 }
