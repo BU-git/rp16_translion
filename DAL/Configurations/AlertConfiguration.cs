@@ -22,15 +22,9 @@ namespace DAL.Configurations
                 .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
-            Property(x => x.AlertComment)
+            Property(x => x.EmployeeId)
                 .HasColumnName("EmployeeId")
                 .HasColumnType("uniqueidentifier")
-                .IsOptional();
-
-            Property(x => x.AlertComment)
-                .HasColumnName("AlertComment")
-                .HasColumnType("nvarchar")
-                .IsMaxLength()
                 .IsOptional();
 
             Property(x => x.AlertIsDeleted)

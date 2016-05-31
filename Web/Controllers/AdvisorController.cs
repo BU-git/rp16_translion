@@ -65,7 +65,6 @@ namespace Web.Controllers
                 Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
                 AlertType = alert.AlertType.ToString(),
-                Comment = alert.AlertComment
             };
 
             return AlertData;
