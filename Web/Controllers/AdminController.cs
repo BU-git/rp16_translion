@@ -32,8 +32,19 @@ namespace Web.Controllers
         {
         }
 
+        [HttpGet]
+        public new async Task<ActionResult> Index()
+        {
+            var vm = new UsersViewModel
+            {
+                Advisors = await advisorManager.GetAll(),
+                Employers = await employerManager.GetAll()
+            };
+            return View(vm);
+        }
+
         #region Advisors section
-        
+
         [HttpGet]
         public async Task<ActionResult> AdvisorInfo(Guid? id)
         {

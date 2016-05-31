@@ -169,6 +169,7 @@ input#emplSearch {
     font-size: 14px;
     margin-left: -25px; /*for search glyphicon  ?????*/
     max-width: 150px;
+    margin-top: 30px;
     padding-left: 25px;
 }
 
@@ -193,33 +194,42 @@ input#addWorker:hover, input#addWorker:focus {
 /*Section with images and user's names styles*/
 
 #tlr-usr-section-main {
-    border: 1px dashed #ddd;
-    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd;
+    border-top: 1px solid #ddd;
     height: 375px; /*change this value if image will change*/
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-left: 0;
     overflow-y: auto;
     padding: 10px;
 }
 
 .tlr-usr-section-category {
     border: none;
+    color: white;
     text-align: center;
-    background-color: inherit;
-    padding: 20px 10px 10px 10px;
+    margin-right: 1px;
+    background-color: rgb(62,67,73);
+    padding: 15px 10px 15px 10px;
+    vertical-align: central;
     min-width: 100px;
     cursor: pointer;
 }
 
 .tlr-usr-category-active {
-    color: black;
-    border: none;
+    color: white;
     text-align: center;
-    background-color: inherit;
-    padding: 20px 10px 10px 10px;
+    margin-right: 1px;
+    border: none;
+    background-color: #F57B00;
+    padding: 15px 10px 15px 10px;
     min-width: 100px;
     cursor: pointer;
 }
-
+.tlr-usr-section-category:hover,
+.tlr-usr-category-active:hover {
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+}
 
 /*user's info*/
 
@@ -313,6 +323,11 @@ a.tlr-us-info-link,
 a.tlr-us-info-link:visited {
     color: cornflowerblue;
     text-decoration: underline;
+}
+
+.tlr-tabs {
+    margin-top: 20px;
+    margin-bottom: -10px;
 }
 
 /*Employer settings styles*/
