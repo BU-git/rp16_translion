@@ -51,8 +51,8 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        @Html.ActionLink("Gegevens bewerken", "EditEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-primary pull-right" })
+    <div class="col-md-2 col-md-offset-4">
+        @Html.ActionLink("Gegevens bewerken", "EditEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
     </div>
     <div class="col-md-6">
         @Html.ActionLink("Profiel verwijderen", "DeleteEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
@@ -65,7 +65,7 @@
             <h3>Werknemers</h3>
         </div>
         <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
-            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", null, new {id = @Model.EmployerId}, null)
+            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", null, new {id = @Model.EmployerId}, new {@class = "btn btn-default" })
         </div>
         <div class="col-sm-4 col-md-3 col-lg-3">
             <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
