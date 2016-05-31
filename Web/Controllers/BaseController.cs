@@ -57,12 +57,7 @@ namespace Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var vm = new UsersViewModel
-            {
-                Advisors = await advisorManager.GetAll(),
-                Employers = await employerManager.GetAll()
-            };
-            return View(vm);
+            return View(await employerManager.GetAll());
         }
 
         public ActionResult Logout()
@@ -125,10 +120,9 @@ namespace Web.Controllers
                                 alert.AlertUpdateTS = DateTime.Now;
                                 alert.UserId = baseUser.UserId;
                             }
-                            ;
                             await alertManager.CreateAsync(alert);
                         }
-                        return RedirectToAction("Index");
+                        return View("PasswordChanged");
                     }
                 }
                 else if (!oldPassValid)

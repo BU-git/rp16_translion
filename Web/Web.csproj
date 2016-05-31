@@ -287,6 +287,7 @@
     <Content Include="Views\Shared\EmployeeInfo.cshtml" />
     <Content Include="Views\Report\ReportResult.cshtml" />
     <Content Include="Views\Advisor\AdvisorAlertPanel.cshtml" />
+    <Content Include="Views\Shared\PasswordChanged.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

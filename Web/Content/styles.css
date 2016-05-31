@@ -202,23 +202,31 @@ input#addWorker:hover, input#addWorker:focus {
 
 .tlr-usr-section-category {
     border: none;
+    color: white;
     text-align: center;
-    background-color: inherit;
+    margin-right: 1px;
+    background-color: rgb(62,67,73);
     padding: 20px 10px 10px 10px;
     min-width: 100px;
     cursor: pointer;
 }
 
 .tlr-usr-category-active {
-    color: black;
-    border: none;
+    color: white;
     text-align: center;
-    background-color: inherit;
+    margin-right: 1px;
+    border: none;
+    background-color: #F57B00;
     padding: 20px 10px 10px 10px;
     min-width: 100px;
     cursor: pointer;
 }
-
+.tlr-usr-section-category:hover,
+.tlr-usr-category-active:hover {
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+}
 
 /*user's info*/
 
@@ -312,6 +320,11 @@ a.tlr-us-info-link,
 a.tlr-us-info-link:visited {
     color: cornflowerblue;
     text-decoration: underline;
+}
+
+.tlr-tabs {
+    margin-top: 20px;
+    margin-bottom: -10px;
 }
 
 /*Employer settings styles*/

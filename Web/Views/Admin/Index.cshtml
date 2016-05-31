@@ -9,12 +9,6 @@
 }
 <section id="tlr-usr-section">
     <!--Header-->
-    <div class="row">
-        <div class="col-sm-3 col-md-2 col-lg-2">
-            <h3>Werkgevers</h3>
-        </div>
-    </div>
-
     <div class="row" id="tlr-usr-section-hdr">
         <div class="col-sm-5 col-md-4 col-lg-3">
             <a href='@Url.Action("RegisterEmployer", "Admin")' id="tlr-usr-section-hdr-adm-btn">
@@ -22,17 +16,20 @@
                 <span>Werkgever toevoegen</span>
             </a>
         </div>
-        <div class="col-sm-3 col-md-5 col-lg-6">
+        
+        <div class="col-sm-offset-3 col-sm-4 col-md-offset-5 col-md-3 col-lg-offset-6 col-lg-3">
+            <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
+            <input type="search" id="emplSearch" placeholder="search" autofocus/>
+        </div>
+    </div>
+    <div class="row tlr-tabs">
+        <div class="col-xs-10 col-sm-6">
             <a class="tlr-usr-section-category pull-left" id="emplBtn">
                 Werkgevers
             </a>
             <a class="tlr-usr-section-category pull-left" id="advBtn">
                 Adviseurs
             </a>
-        </div>
-        <div class="col-sm-4 col-md-3 col-lg-3">
-            <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
-            <input type="search" id="emplSearch" placeholder="search" autofocus/>
         </div>
     </div>
     <!--Main panel with users-->
@@ -54,7 +51,7 @@
         <div id="advisors">
             @foreach (var advisor in Model.Advisors)
             {
-                <div class="col-sm-3 col-md-3 col-lg-2 tlr-usr-info">
+                <div class="col-sm-6 col-md-4 col-lg-3 tlr-usr-info">
                     <p data-userName>@advisor.Name</p>
                     <a href="@Url.Action("AdvisorInfo", new {id = advisor.AdvisorId})" class="tlr-usr-inner-info">
                         <img src="~/Content/Images/UserImg.png" alt="@advisor.Name">

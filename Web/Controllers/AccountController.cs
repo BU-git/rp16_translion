@@ -109,6 +109,7 @@ namespace Web.Controllers
                     }
                 }
             }
+            ModelState.AddModelError("", "Wachtwoord en gebruikersnaam komen niet overeen");
             return View(model);
         }
 
