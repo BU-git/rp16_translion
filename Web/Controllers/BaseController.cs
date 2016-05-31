@@ -462,43 +462,53 @@ namespace Web.Controllers
         public async Task<ActionResult> DeleteEmployee(Guid? id)
         {
             if (id == null)
+            {
                 return RedirectToAction("Index");
+            }
 
             var employee = await advisorManager.GetEmployee(id.Value);
 
             if (employee == null)
+            {
                 return RedirectToAction("Index");
+            }
 
-            var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
+            if (User.IsInRole("Employer"))
+            {
+                var employer = await employerManager.GetBaseUserByGuid(employee.Employer.EmployerId);
 
+                if (employer != null)
+                {
+                    await employerManager.DeleteEmployee(employee);
 
-            if (employer != null)
+                    var user = await adminManager.GetBaseUserByName(User.Identity.Name);
+                    string userName = await adminManager.GetModUserName(user.UserId);
+                    var alert = new Alert();
+                    {
+                        alert.AlertId = Guid.NewGuid();
+                        alert.EmployerId = employer.UserId;
+                        alert.EmployeeId = employee.EmployeeId;
+                        alert.AlertType = AlertType.Employee_Delete;
+                        alert.AlertIsDeleted = false;
+                        alert.AlertComment = userName ?? "";
+                        alert.AlertCreateTS = DateTime.Now;
+                        alert.AlertUpdateTS = DateTime.Now;
+                        alert.UserId = user.UserId;
+                    };
+
+                    await alertManager.CreateAsync(alert);
+
+                    // TODO: send mails to admins also
+                    var mailInfo =
+                        new DeleteEmployeeMailMessageBuilder(
+                            $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
+
+                    await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
+                }
+            }
+            else
             {
                 await advisorManager.DeleteEmployee(employee);
-
-                var user = await adminManager.GetBaseUserByName(User.Identity.Name);
-                string userName = await adminManager.GetModUserName(user.UserId);
-                var alert = new Alert();
-                {
-                    alert.AlertId = Guid.NewGuid();
-                    alert.EmployerId = employer.UserId;
-                    alert.EmployeeId = employee.EmployeeId;
-                    alert.AlertType = AlertType.Employee_Delete;
-                    alert.AlertIsDeleted = false;
-                    alert.AlertComment = userName == null ? "" : userName;
-                    alert.AlertCreateTS = DateTime.Now;
-                    alert.AlertUpdateTS = DateTime.Now;
-                    alert.UserId = user.UserId;
-                }
-                ;
-                await alertManager.CreateAsync(alert);
-
-                // TODO: send mails to admins also
-                var mailInfo =
-                    new DeleteEmployeeMailMessageBuilder(
-                        $"{employee.FirstName} {employee.Prefix} {employee.LastName}");
-
-                await mailingService.SendMailAsync(mailInfo.Body, mailInfo.Subject, employer.Email);
             }
 
             return RedirectToAction("Index");

@@ -22,8 +22,7 @@ namespace BLL.Services.PersonageService
             }
             try
             {
-                employee.IsDeleted = true;
-                UnitOfWork.EmployeeRepository.Update(employee);
+                UnitOfWork.EmployeeRepository.Remove(employee);
                 int result = await UnitOfWork.SaveChanges();
                 if (result > 0)
                 {

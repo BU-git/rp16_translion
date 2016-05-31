@@ -52,7 +52,7 @@
 
 <div class="row">
     <div class="col-md-2 col-md-offset-4">
-        @Html.ActionLink("Gegevens bewerken", "EditEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
+        @Html.ActionLink("Gegevens bewerken", "EditEmployer", null, new { id = @Model.EmployerId }, new { @class = "btn btn-warning" })
     </div>
     <div class="col-md-6">
         @Html.ActionLink("Profiel verwijderen", "DeleteEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
@@ -110,8 +110,8 @@
                 <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success" id="delEmpl">Ja</a>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Nee</button>
+                <a class="btn btn-default" id="delEmpl">Ja</a>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Nee</button>
             </div>
         </div>
     </div>
