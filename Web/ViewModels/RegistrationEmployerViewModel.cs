@@ -11,8 +11,7 @@ namespace Web.ViewModels
         [Required(ErrorMessage = "Uw voornaam is niet correct ingevoerd, controleer dit aub.")]
         [Display(Name = "Voornaam")]
         public string FirstName { get; set; }
-
-        //[Required(ErrorMessage = "Uw tussenvoegsel mag niet langer zijn dan 6 letters, geen cijfers bevatten en geen spaties")]
+        
         [Display(Name = "Tussenvoegsel")]
         public string Prefix { get; set; }
 
