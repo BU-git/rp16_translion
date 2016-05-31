@@ -11,11 +11,11 @@
             <h3>Werknemers</h3>
         </div>
         <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
-            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", "Employer", null, new { id = "addWorker"})
+            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", "Employer", null, new {@class = "btn btn-default", id = "addWorker"})
         </div>
         <div class="col-sm-4 col-md-3 col-lg-3">
             <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
-            <input type="search" id="emplSearch" placeholder="search" autofocus/>
+            <input type="search" id="emplSearch" placeholder="Zoeken" autofocus/>
         </div>
     </div>
     <!--Main panel with users-->

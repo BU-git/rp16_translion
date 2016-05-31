@@ -11,8 +11,7 @@ namespace Web.ViewModels
         [Required(ErrorMessage = "Uw voornaam is niet correct ingevoerd, controleer dit aub.")]
         [Display(Name = "Voornaam")]
         public string FirstName { get; set; }
-
-        //[Required(ErrorMessage = "Uw tussenvoegsel mag niet langer zijn dan 6 letters, geen cijfers bevatten en geen spaties")]
+        
         [Display(Name = "Tussenvoegsel")]
         public string Prefix { get; set; }
 
@@ -22,9 +21,9 @@ namespace Web.ViewModels
 
         [Required(ErrorMessage = "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20")]
         [DataType(DataType.PhoneNumber)]
+
         [Display(Name = "Telefoon")]
-        [StringLength(20, MinimumLength = 10,
-            ErrorMessage = "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20")]
+        [RegularExpression("^(\\+0?1\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", ErrorMessage = "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20.")]
         public string TelephoneNumber { get; set; }
 
         [Required(ErrorMessage = "Uw emailadres is niet correct, controleer dit aub.")]
