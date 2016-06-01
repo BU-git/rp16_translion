@@ -43,6 +43,7 @@ function CheckboxesAnswersToHTML(answers, questionId, pageId) {
     return htmlAnswers;
 }
 
+
 function CommentToHTML(questionId, pageId) {
     var htmlAnswers = [];
     //var newContainer = $("<div>", {class: "containerAnswers"});
@@ -50,6 +51,17 @@ function CommentToHTML(questionId, pageId) {
     //newContainer.append(newTextarea);
     htmlAnswers.push(newTextarea);
     return htmlAnswers;
+}
+
+
+function CreateAnswWrapperForSingleLine() {
+    var container = $('.containerAnswersModal');
+    var newWrapper = $("<div>", { class: "wrapperAnswer" });
+    var newInput = $("<input>", { type: "text", class: "form-control" });
+
+    var newSpan = $('<span>', { class: "" });
+    newWrapper.append(newInput).append(newSpan);
+    container.append(newWrapper);
 }
 
 function CreateAnswWrapperForCbRb() {
@@ -199,6 +211,19 @@ function UpdDatePickers(inpDatePick) {
     });
 }
 
+function SingleLineToHTML(asnwerCount) {
+    var htmlAnswers = [];
+    for (var i = 0; i < asnwerCount; i++) {
+        var wrapper = $('<div>', { class: "container-fluid wrapperAnswer row" });
+        var inpSingl = $('<input>', { type: "text", class: "form-control col-xs-6" });
+
+        wrapper.append(inpSingl);
+        htmlAnswers.push(wrapper);
+    }
+
+    return htmlAnswers;
+}
+
 function DatepickerToHTML(asnwerCount) {
     var htmlAnswers = [];
     for (var i = 0; i < asnwerCount; i++) {
@@ -213,10 +238,6 @@ function DatepickerToHTML(asnwerCount) {
     }
 
     return htmlAnswers;
-
-
-
-
 }
 
 function CompType1ToHTML(asnwerCount) {
@@ -318,6 +339,8 @@ function Question() {
             htmlAnswers = CompType3ToHTML(this.AnswersCount);
         if (this.TypeAnswer == "DatepickerSimple")
             htmlAnswers = DatepickerToHTML(this.AnswersCount);
+        if (this.TypeAnswer == "SingleLine")
+            htmlAnswers = SingleLineToHTML(this.AnswersCount);
 
         var newDeleteIcon = $("<img>",
 		{
@@ -459,6 +482,8 @@ function AddAnswerToContainer() {
         CreateAnswWrapperForCompType3();
     if (typeAnswer == 'DatepickerSimple')
         CreateAnswWrapperForDatepicker();
+    if (typeAnswer == 'SingleLine')
+        CreateAnswWrapperForSingleLine();
 }
 
 
@@ -721,7 +746,7 @@ $(document).ready(function () {
             }
         }
 
-        if (question.TypeAnswer == 'CompType1' || question.TypeAnswer == 'CompType2' || question.TypeAnswer == 'CompType3' || question.TypeAnswer == 'DatepickerSimple') {
+        if (question.TypeAnswer == 'CompType1' || question.TypeAnswer == 'CompType2' || question.TypeAnswer == 'CompType3' || question.TypeAnswer == 'DatepickerSimple' || question.TypeAnswer == 'SingleLine') {
             var container = $('.containerAnswersModal').children('.wrapperAnswer');
             question.AnswersCount = container.length;
         }
