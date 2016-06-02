@@ -92,6 +92,10 @@ namespace BLL.Services.ReportService.Abstract
                 return new CommentTemplate(question);
             else if (question.TypeAnswer.Contains("Comp"))
                 return new ComplicatedTemplate(question);
+            else if (question.TypeAnswer.Contains("Date"))
+                return new DatePickerTemplate(question);
+            else if (question.TypeAnswer.Contains("Single"))
+                return new SingleLineTemplate(question);
             else
                 return new SelectableTemplate(question);
         }

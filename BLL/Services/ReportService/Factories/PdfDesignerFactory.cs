@@ -19,6 +19,8 @@ namespace BLL.Services.ReportService.Factories
             _designers.Add("Selectable", new SelectableDesigner(doc, writer));
             _designers.Add("Complicated", new ComplicatedDesigner(doc, writer));
             _designers.Add("QuestionTitle", new QuestionTitleDesigner(doc, writer));
+            _designers.Add("Datepicker", new DatePickerDesigner(doc, writer));
+            _designers.Add("SingleLine", new SingleLineDesigner(doc, writer));
         }
     }
 }

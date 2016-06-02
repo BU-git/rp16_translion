@@ -1,20 +1,17 @@
-﻿using System.Drawing;
-using Novacode;
+﻿using Novacode;
+using System.Drawing;
 
 namespace BLL.Services.ReportService.Word.Designers
 {
-    /// <summary>
-    /// Checked checkbox or radiobutton designer
-    /// </summary>
-    internal sealed class SelectableDesigner : WordDesigner
+    internal sealed class SingleLineDesigner : WordDesigner
     {
-        public SelectableDesigner(DocX document) : base(document)
+        public SingleLineDesigner(DocX document) : base(document)
         {
         }
 
         public override void Draw(string text)
         {
-            var format = new Formatting
+            Formatting format = new Formatting
             {
                 FontColor = Color.Black,
                 Size = 14,
