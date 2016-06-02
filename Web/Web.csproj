@@ -288,6 +288,7 @@
     <Content Include="Views\Report\ReportResult.cshtml" />
     <Content Include="Views\Advisor\AdvisorAlertPanel.cshtml" />
     <Content Include="Views\Shared\PasswordChanged.cshtml" />
+    <Content Include="Views\Report\QuestionsPartial\_SingleLine.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -324,7 +325,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3879</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

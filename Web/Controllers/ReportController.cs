@@ -16,6 +16,7 @@ using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Web.ViewModels;
 using BLL.Services.ReportService;
+using IDAL;
 
 namespace Web.Controllers
 {
@@ -152,8 +153,10 @@ namespace Web.Controllers
             var sender = new ReportSender(mailingService, employee, pages);
 
             var result = await sender.SendMailsToRecieversAsync();
-
-            await _reportManager.AddReport(emplId);
+            if (result == WorkResult.Success())
+            {
+                await _reportManager.AddReport(emplId);
+            }
 
             return View("ReportResult", new ReportPassedViewModel
             {
