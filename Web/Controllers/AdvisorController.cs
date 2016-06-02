@@ -29,8 +29,14 @@ namespace Web.Controllers
                 alertManager,
                 mailingService)
         {
-            
         }
+
+        public async Task<ActionResult> Index()
+        {
+            var employers = await employerManager.GetAll();
+            return View(employers);
+        }
+
         public async Task<ActionResult> ViewAlerts()
         {
             var user = await adminManager.GetBaseUserByName(User.Identity.Name);
@@ -64,11 +70,10 @@ namespace Web.Controllers
                 EmployerName = employer.LastName + " " + employer.FirstName,
                 Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
-                AlertType = alert.AlertType.ToString(),
+                AlertType = alert.AlertType.ToString()
             };
 
             return AlertData;
         }
-
     }
 }

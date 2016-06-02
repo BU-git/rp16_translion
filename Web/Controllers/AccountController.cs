@@ -124,61 +124,111 @@ namespace Web.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var identityUser = new IdentityUser
+        //        {
+        //            UserName = model.UserName,
+        //            Email = model.EmailAdress
+        //        };
+
+        //        var employer = new Employer
+        //        {
+        //            EmployerId = identityUser.Id,
+        //            Adress = model.Adress,
+        //            City = model.City,
+        //            CompanyName = model.CompanyName,
+        //            FirstName = model.FirstName,
+        //            LastName = model.LastName,
+        //            Prefix = model.Prefix,
+        //            PostalCode = model.PostalCode,
+        //            TelephoneNumber = model.TelephoneNumber
+        //        };
+
+        //        var result = await _userManager.CreateAsync(identityUser, model.Password);
+
+        //        if (result.Succeeded)
+        //        {
+        //            await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
+        //            var user = await _employerManager.GetBaseUserByGuid(identityUser.Id.ToString());
+
+        //            await _employerManager.Create(employer);
+
+        //            var alert = new Alert();
+        //            {
+        //                alert.AlertId = Guid.NewGuid();
+        //                alert.EmployerId = identityUser.Id;
+        //                alert.AlertType = AlertType.Employer_Create;
+        //                alert.AlertIsDeleted = false;
+        //                alert.AlertCreateTS = DateTime.Now;
+        //                alert.AlertUpdateTS = DateTime.Now;
+        //                alert.UserId = user.UserId;
+        //            };
+        //            await _alertManager.CreateAsync(alert);
+
+        //            await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+        //            await SignInAsync(identityUser, true);
+        //            return View("AccountConfirmation");
+        //        }
+        //    }
+        //    return View(model);
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterEmployer(EmployerViewModel model)
+        public async Task<ActionResult> RegisterEmployer(AnonymousRegistrationEmployerVM model)
         {
             if (ModelState.IsValid)
             {
                 var identityUser = new IdentityUser
                 {
-                    UserName = model.UserName,
+                    UserName = model.LoginName,
                     Email = model.EmailAdress
                 };
-
-                var employer = new Employer
-                {
-                    EmployerId = identityUser.Id,
-                    Adress = model.Adress,
-                    City = model.City,
-                    CompanyName = model.CompanyName,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Prefix = model.Prefix,
-                    PostalCode = model.PostalCode,
-                    TelephoneNumber = model.TelephoneNumber
-                };
-
-                var result = await _userManager.CreateAsync(identityUser, model.Password);
+                var result = await _userManager.CreateAsync(identityUser, model.UserPassword);
 
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(identityUser.Id, "Employer");
-                    var user = await _employerManager.GetBaseUserByGuid(identityUser.Id.ToString());
 
+                    var employer = new Employer
+                    {
+                        EmployerId = identityUser.Id,
+                        Adress = model.Adress,
+                        City = model.City,
+                        CompanyName = model.CompanyName,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Prefix = model.Prefix,
+                        PostalCode = model.PostalCode,
+                        TelephoneNumber = model.TelephoneNumber
+                    };
                     await _employerManager.Create(employer);
 
-                    var alert = new Alert();
+                    var alert = new Alert
                     {
-                        alert.AlertId = Guid.NewGuid();
-                        alert.EmployerId = identityUser.Id;
-                        alert.AlertType = AlertType.Employer_Create;
-                        alert.AlertIsDeleted = false;
-                        alert.AlertCreateTS = DateTime.Now;
-                        alert.AlertUpdateTS = DateTime.Now;
-                        alert.UserId = user.UserId;
+                        AlertId = Guid.NewGuid(),
+                        EmployerId = identityUser.Id,
+                        AlertType = AlertType.Employer_Create,
+                        AlertCreateTS = DateTime.Now,
+                        AlertUpdateTS = DateTime.Now,
+                        UserId = identityUser.Id
                     };
                     await _alertManager.CreateAsync(alert);
 
-                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.LoginName));
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");
                 }
             }
             return View(model);
         }
-
+        
         #endregion
 
         #region Add new admin by admin
@@ -388,23 +438,7 @@ namespace Web.Controllers
         {
             await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
         }
-
-        private Employer RegistrationEmployerViewModel(RegistrationEmployerViewModel model)
-        {
-            var employer = new Employer
-            {
-                Adress = model.Adress,
-                City = model.City,
-                CompanyName = model.CompanyName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Prefix = model.Prefix,
-                PostalCode = model.PostalCode,
-                TelephoneNumber = model.TelephoneNumber
-            };
-
-            return employer;
-        }
+        
 
         public ActionResult Logout()
         {

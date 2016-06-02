@@ -54,12 +54,7 @@ namespace Web.Controllers
         }
 
         internal IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
-
-        public async Task<ActionResult> Index()
-        {
-            return View(await employerManager.GetAll());
-        }
-
+        
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();

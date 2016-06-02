@@ -215,6 +215,8 @@
     <Compile Include="Infrastructure\HtmlHelpers\CreateQuestionHelpers.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AdminAlertPanelViewModel.cs" />
+    <Compile Include="ViewModels\AnonymousRegistrationEmployerVM.cs" />
+    <Compile Include="ViewModels\EmployerViewModel.cs" />
     <Compile Include="ViewModels\UsersViewModel.cs" />
     <Compile Include="ViewModels\AdminRegisterEmployerViewModel.cs" />
     <Compile Include="ViewModels\AdvisorChangeNameViewModel.cs" />
@@ -230,8 +232,6 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PasswordRecoveryViewModel.cs" />
-    <Compile Include="ViewModels\EmployerViewModel.cs" />
-    <Compile Include="ViewModels\RegistrationEmployerViewModel.cs" />
     <Compile Include="ViewModels\ReportPassedViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
   </ItemGroup>
