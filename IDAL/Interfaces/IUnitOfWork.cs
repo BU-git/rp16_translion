@@ -20,6 +20,7 @@ namespace IDAL.Interfaces
         IAlertRepository AlertRepository { get; }
         IPageRepository PageRepository { get; }
         IQuestionRepository QuestionRepository { get; }
+        IReportRepository ReportRepository { get; }
 
         #endregion
 

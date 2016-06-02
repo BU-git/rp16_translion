@@ -135,6 +135,7 @@
     <Compile Include="Services\ReportService\Pdf\Designers\SelectableDesigner.cs" />
     <Compile Include="Services\ReportService\Pdf\Designers\TitleDesigner.cs" />
     <Compile Include="Services\ReportService\Pdf\PdfDocument.cs" />
+    <Compile Include="Services\ReportService\ReportPassingManager.cs" />
     <Compile Include="Services\ReportService\ReportSender.cs" />
     <Compile Include="Services\ReportService\Templates\CommentTemplate.cs" />
     <Compile Include="Services\ReportService\Templates\ComplicatedTemplate.cs" />

@@ -23,6 +23,7 @@ namespace DAL
             _answerRepository = null;
             _pageRepository = null;
             _questionRepository = null;
+            _reportRepository = null;
             _context.Dispose();
         }
 
@@ -42,6 +43,7 @@ namespace DAL
         private IAnswerRepository _answerRepository;
         private IPageRepository _pageRepository;
         private IQuestionRepository _questionRepository;
+        private IReportRepository _reportRepository;
 
         #endregion
 
@@ -59,6 +61,14 @@ namespace DAL
         #endregion
 
         #region IUnitOfWork Members
+
+        public IReportRepository ReportRepository
+        {
+            get
+            {
+                return _reportRepository ?? (_reportRepository = new ReportRepository(_context));
+            }
+        }
 
         public IExternalLoginRepository ExternalLoginRepository
         {

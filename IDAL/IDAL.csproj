@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IRepositories\IReportRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Interfaces\IManagers\IAlertManager.cs" />
     <Compile Include="Interfaces\IManagers\IPersonageManager.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Models\ExternalLogin.cs" />
     <Compile Include="Models\Page.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\Report.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

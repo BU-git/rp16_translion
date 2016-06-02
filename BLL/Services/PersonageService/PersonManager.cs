@@ -12,7 +12,7 @@ namespace BLL.Services.PersonageService
 {
     public abstract class PersonManager<TEntity> : IPersonageManager<TEntity> where TEntity : class
     {
-        public PersonManager(IUnitOfWork unitOfWork)
+        protected PersonManager(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }

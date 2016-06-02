@@ -29,6 +29,7 @@ namespace DAL
         internal IDbSet<Page> Pages { get; set; }
         internal IDbSet<Question> Questions { get; set; }
         internal IDbSet<Answer> Answers { get; set; }
+        internal IDbSet<Report> Reports { get; set; } 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

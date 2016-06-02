@@ -22,10 +22,13 @@ namespace Web.Controllers
     public class ReportController : BaseController
     {
         private readonly ITestService _testService;
-        public ReportController(IUnitOfWork uow, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, IMailingService mailingService) 
+        private readonly ReportPassingManager _reportManager;
+
+        public ReportController(IUnitOfWork uow, ReportPassingManager reportManager, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, IMailingService mailingService) 
             : base(userManager, adminManager, advisorManager, employerManager, alertManager, mailingService)
         {
-            _testService = new TestManager(uow); 
+            _testService = new TestManager(uow);
+            _reportManager = reportManager;
         }
 
         [HttpGet]
@@ -141,13 +144,16 @@ namespace Web.Controllers
 
             Guid emplId;
             Employee employee;
-            if (!Guid.TryParse(employeeId, out emplId) 
-                || (employee = await adminManager.GetEmployee(emplId)) == null)
+            if (!Guid.TryParse(employeeId, out emplId) || (employee = await adminManager.GetEmployee(emplId)) == null)
+            {
                 return View("ReportResult", false);
+            }
 
             var sender = new ReportSender(mailingService, employee, pages);
 
             var result = await sender.SendMailsToRecieversAsync();
+
+            await _reportManager.AddReport(emplId);
 
             return View("ReportResult", new ReportPassedViewModel
             {

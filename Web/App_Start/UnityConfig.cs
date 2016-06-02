@@ -7,6 +7,7 @@ using BLL.Services.AlertService;
 using BLL.Services.MailingService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
+using BLL.Services.ReportService;
 using IDAL.Interfaces;
 using IDAL.Interfaces.IManagers;
 using IDAL.Models;
@@ -52,6 +53,10 @@ namespace Web
                     container.Resolve<IUnitOfWork>()
                     ));
             container.RegisterType<PersonManager<Advisor>, AdvisorManager>(new PerHttpRequestLifetimeManager(),
+                new InjectionConstructor(
+                    container.Resolve<IUnitOfWork>()
+                    ));
+            container.RegisterType<ReportPassingManager>(new PerHttpRequestLifetimeManager(),
                 new InjectionConstructor(
                     container.Resolve<IUnitOfWork>()
                     ));
