@@ -125,7 +125,6 @@ namespace Web.Controllers
                 alert.EmployeeId = employee.EmployeeId;
                 alert.AlertType = AlertType.Employee_Add;
                 alert.AlertIsDeleted = false;
-                alert.AlertComment = "";
                 alert.AlertCreateTS = DateTime.Now;
                 alert.AlertUpdateTS = DateTime.Now;
                 alert.UserId = user.UserId;

@@ -165,7 +165,6 @@ namespace Web.Controllers
                         alert.EmployerId = identityUser.Id;
                         alert.AlertType = AlertType.Employer_Create;
                         alert.AlertIsDeleted = false;
-                        alert.AlertComment = "";
                         alert.AlertCreateTS = DateTime.Now;
                         alert.AlertUpdateTS = DateTime.Now;
                         alert.UserId = user.UserId;

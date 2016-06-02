@@ -17,7 +17,6 @@ namespace IDAL.Models
         public Guid? EmployeeId { get; set; }
         public Guid UserId { get; set; } 
         public AlertType AlertType { get; set; }
-        public string AlertComment { get; set; }
         public virtual bool AlertIsDeleted { get; set; }
         public virtual DateTime AlertCreateTS { get; set; }
         public virtual DateTime AlertUpdateTS { get; set; }

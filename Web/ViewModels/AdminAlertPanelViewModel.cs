@@ -17,8 +17,7 @@ namespace Web.ViewModels
         public string EmployeeName { get; set; }
 
         public string AlertType { get; set; }
-
-        public string Comment { get; set; }
+        
         
     }
 }

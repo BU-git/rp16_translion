@@ -115,7 +115,6 @@ namespace Web.Controllers
                                 alert.EmployerId = baseUser.UserId;
                                 alert.AlertType = AlertType.Employer_ChangePassw;
                                 alert.AlertIsDeleted = false;
-                                alert.AlertComment = "";
                                 alert.AlertCreateTS = DateTime.Now;
                                 alert.AlertUpdateTS = DateTime.Now;
                                 alert.UserId = baseUser.UserId;
@@ -180,14 +179,12 @@ namespace Web.Controllers
                     await employerManager.Create(employer);
 
                     var user = await adminManager.GetBaseUserByName(User.Identity.Name);
-                    string userName = await adminManager.GetModUserName(user.UserId);
                     var alert = new Alert();
                     {
                         alert.AlertId = Guid.NewGuid();
                         alert.EmployerId = employer.EmployerId;
                         alert.AlertType = AlertType.Employer_Create;
                         alert.AlertIsDeleted = false;
-                        alert.AlertComment = userName == null ? "" : userName;
                         alert.AlertCreateTS = DateTime.Now;
                         alert.AlertUpdateTS = DateTime.Now;
                         alert.UserId = user.UserId;
@@ -300,14 +297,12 @@ namespace Web.Controllers
                 await employerManager.Update(employer);
 
                 var modUser = await adminManager.GetBaseUserByName(User.Identity.Name);
-                string userName = await adminManager.GetModUserName(modUser.UserId);
                 var alert = new Alert();
                 {
                     alert.AlertId = Guid.NewGuid();
                     alert.EmployerId = employer.EmployerId;
                     alert.AlertType = AlertType.Employer_Update;
                     alert.AlertIsDeleted = false;
-                    alert.AlertComment = userName == null ? "" : userName;
                     alert.AlertCreateTS = DateTime.Now;
                     alert.AlertUpdateTS = DateTime.Now;
                     alert.UserId = modUser.UserId;
@@ -342,14 +337,12 @@ namespace Web.Controllers
             await employerManager.Delete(user.UserId);
 
             var modUser = await adminManager.GetBaseUserByName(User.Identity.Name);
-            string userName = await adminManager.GetModUserName(modUser.UserId);
             var alert = new Alert();
             {
                 alert.AlertId = Guid.NewGuid();
                 alert.EmployerId = user.UserId;
                 alert.AlertType = AlertType.Employer_Delete;
                 alert.AlertIsDeleted = false;
-                alert.AlertComment = userName == null ? "" : userName;
                 alert.AlertCreateTS = DateTime.Now;
                 alert.AlertUpdateTS = DateTime.Now;
                 alert.UserId = modUser.UserId;
@@ -426,7 +419,6 @@ namespace Web.Controllers
             await employerManager.CreateEmployee(employee);
 
             var user = await adminManager.GetBaseUserByName(User.Identity.Name);
-            string userName = await adminManager.GetModUserName(user.UserId);
             var alert = new Alert();
             {
                 alert.AlertId = Guid.NewGuid();
@@ -434,7 +426,6 @@ namespace Web.Controllers
                 alert.EmployeeId = employee.EmployeeId;
                 alert.AlertType = AlertType.Employee_Add;
                 alert.AlertIsDeleted = false;
-                alert.AlertComment = userName==null?"":userName;
                 alert.AlertCreateTS = DateTime.Now;
                 alert.AlertUpdateTS = DateTime.Now;
                 alert.UserId = user.UserId;
@@ -476,7 +467,6 @@ namespace Web.Controllers
                     await employerManager.DeleteEmployee(employee);
 
                     var user = await adminManager.GetBaseUserByName(User.Identity.Name);
-                    string userName = await adminManager.GetModUserName(user.UserId);
                     var alert = new Alert();
                     {
                         alert.AlertId = Guid.NewGuid();
@@ -484,7 +474,6 @@ namespace Web.Controllers
                         alert.EmployeeId = employee.EmployeeId;
                         alert.AlertType = AlertType.Employee_Delete;
                         alert.AlertIsDeleted = false;
-                        alert.AlertComment = userName ?? "";
                         alert.AlertCreateTS = DateTime.Now;
                         alert.AlertUpdateTS = DateTime.Now;
                         alert.UserId = user.UserId;
@@ -556,7 +545,6 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     var user = await employerManager.GetBaseUserByName(User.Identity.Name);
-                    string userName = await adminManager.GetModUserName(user.UserId);
                     var alert = new Alert();
                     {
                         alert.AlertId = Guid.NewGuid();
@@ -564,7 +552,6 @@ namespace Web.Controllers
                         alert.EmployeeId = employee.EmployeeId;
                         alert.AlertType = AlertType.Employee_Rename;
                         alert.AlertIsDeleted = false;
-                        alert.AlertComment = userName == null ? "Werknemer: " + employeeOldName : "Werknemer: " + employeeOldName + "; Updated: " + userName;
                         alert.AlertCreateTS = DateTime.Now;
                         alert.AlertUpdateTS = DateTime.Now;
                         alert.UserId = user.UserId;
