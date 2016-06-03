@@ -153,7 +153,7 @@ namespace Web.Controllers
             var sender = new ReportSender(mailingService, employee, pages);
 
             var result = await sender.SendMailsToRecieversAsync();
-            if (result == WorkResult.Success())
+            if (result.Succeeded)
             {
                 await _reportManager.AddReport(emplId);
             }
