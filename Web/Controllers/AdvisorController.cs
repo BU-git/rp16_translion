@@ -6,6 +6,7 @@ using BLL.Identity.Models;
 using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
+using BLL.Services.ReportService;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Web.ViewModels;
@@ -21,16 +22,24 @@ namespace Web.Controllers
             PersonManager<Advisor> advisorManager,
             PersonManager<Employer> employerManager,
             AlertManager alertManager,
+            ReportPassingManager reportPassingManager,
             IMailingService mailingService) : base(
                 userManager,
                 adminManager,
                 advisorManager,
                 employerManager,
                 alertManager,
+                reportPassingManager,
                 mailingService)
         {
-            
         }
+
+        public async Task<ActionResult> Index()
+        {
+            var employers = await employerManager.GetAll();
+            return View(employers);
+        }
+
         public async Task<ActionResult> ViewAlerts()
         {
             var user = await adminManager.GetBaseUserByName(User.Identity.Name);
@@ -64,11 +73,10 @@ namespace Web.Controllers
                 EmployerName = employer.LastName + " " + employer.FirstName,
                 Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
-                AlertType = alert.AlertType.ToString(),
+                AlertType = alert.AlertType.ToString()
             };
 
             return AlertData;
         }
-
     }
 }

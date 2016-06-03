@@ -58,7 +58,7 @@ $(document).ready(function () {
         buttonImageOnly: true
     });
 
-    var pageNum = parseInt(document.getElementById("PageCounterId").getAttribute("value")) + 2;
+    var pageNum = parseInt(document.getElementById("PageCounterId").getAttribute("value")) + 3;
     var pageArray = [];
 
     for (var i = 0; i <= pageNum; ++i) {

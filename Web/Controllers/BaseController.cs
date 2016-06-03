@@ -17,6 +17,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Web.ViewModels;
 using System.Linq;
+using BLL.Services.ReportService;
 
 namespace Web.Controllers
 {
@@ -24,25 +25,31 @@ namespace Web.Controllers
     {
         #region common problems messages
 
-        internal const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
-        internal const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
-        internal const string ADVISOR_ROLE = "Advisor";
+        protected const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
+        protected const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
+        protected const string ADVISOR_ROLE = "Advisor";
+        protected const string EMAILADDRESS_IS_IN_USE_ERROR = "Email is used";
+
 
         #endregion
 
-        internal readonly PersonManager<Admin> adminManager;
-        internal readonly PersonManager<Advisor> advisorManager;
-        internal readonly IAlertManager alertManager;
-        internal readonly PersonManager<Employer> employerManager;
-        internal readonly IMailingService mailingService;
-        internal readonly UserManager<IdentityUser, Guid> userManager;
+        protected readonly PersonManager<Admin> adminManager;
+        protected readonly PersonManager<Advisor> advisorManager;
+        protected readonly IAlertManager alertManager;
+        protected readonly PersonManager<Employer> employerManager;
+        protected readonly IMailingService mailingService;
+        protected readonly UserManager<IdentityUser, Guid> userManager;
+        protected readonly ReportPassingManager reportPassingManager;
 
-        public BaseController(
+        protected IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
+
+        protected BaseController(
             UserManager<IdentityUser, Guid> userManager,
             PersonManager<Admin> adminManager,
             PersonManager<Advisor> advisorManager,
             PersonManager<Employer> employerManager,
             AlertManager alertManager,
+            ReportPassingManager reportPassingManager,
             IMailingService mailingService)
         {
             this.userManager = userManager;
@@ -51,15 +58,9 @@ namespace Web.Controllers
             this.employerManager = employerManager;
             this.alertManager = alertManager;
             this.mailingService = mailingService;
+            this.reportPassingManager = reportPassingManager;
         }
-
-        internal IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
-
-        public async Task<ActionResult> Index()
-        {
-            return View(await employerManager.GetAll());
-        }
-
+        
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();
@@ -168,6 +169,23 @@ namespace Web.Controllers
                     UserName = model.LoginName,
                     Email = model.EmailAdress
                 };
+
+                var usr = await userManager.FindByEmailAsync(model.EmailAdress);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", EMAILADDRESS_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
+                usr = await userManager.FindByNameAsync(model.LoginName);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", USERNAME_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
 
                 var result = await userManager.CreateAsync(identityUser, password);
 
@@ -365,19 +383,27 @@ namespace Web.Controllers
         public async Task<ActionResult> EmployeeInfo(Guid? id)
         {
             if (id == null || id.Value == Guid.Empty)
+            {
                 return RedirectToAction("Index");
+            }
 
             var employee = await adminManager.GetEmployee(id.Value);
 
             if (employee == null)
+            {
                 return RedirectToAction("Index");
+            }
 
-            return View(new EmployeeInfoViewModel
+            var reports = await reportPassingManager.GetReportByEmployeeId(id);
+
+            var employeeInfo = new EmployeeInfoViewModel
             {
                 Id = employee.EmployeeId,
-                Reports = new string[] { }, //TODO: change this in future
-                FullName = $"{employee.FirstName} {employee.Prefix} {employee.LastName}"
-            });
+                FullName = $"{employee.FirstName} {employee.Prefix} {employee.LastName}",
+                Reports = reports
+            };
+
+            return View(employeeInfo);
         }
 
         #endregion

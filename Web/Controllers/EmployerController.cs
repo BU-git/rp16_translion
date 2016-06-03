@@ -9,6 +9,7 @@ using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
 using BLL.Services.PersonageService;
+using BLL.Services.ReportService;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -25,18 +26,20 @@ namespace Web.Controllers
             PersonManager<Advisor> advisorManager,
             PersonManager<Employer> employerManager,
             AlertManager alertManager,
+            ReportPassingManager reportPassingManager,
             IMailingService mailingService) : base(
                 userManager,
                 adminManager,
                 advisorManager,
                 employerManager,
                 alertManager,
+                reportPassingManager,
                 mailingService)
         {
         }
 
         [HttpGet]
-        public new async Task<ActionResult> Index()
+        public async Task<ActionResult> Index()
         {
             var user = await employerManager.GetBaseUserByGuid(User.Identity.GetUserId());
 
