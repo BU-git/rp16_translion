@@ -570,3 +570,7 @@ section.borderedSection {
 .addAnswerLineBtn {
     margin-left: 0;
 }
+
+.logoImg {
+    width: 150px;
+}
