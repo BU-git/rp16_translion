@@ -20,7 +20,7 @@ namespace DAL.Repositories
         public async Task<List<Report>> GetReportsByEmployeeId(Guid? employeeId)
         {
             var query = from reports in Set
-                        where reports.Employee.EmployeeId.Equals(employeeId)
+                        where reports.Employee.EmployeeId == employeeId
                         orderby reports.CreatedDate descending 
                         select reports;
 

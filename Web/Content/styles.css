@@ -71,11 +71,19 @@ header { margin-bottom: 10px; }
 
 .form-forgot { margin-bottom: 0; }
 
+/* Bootstrap extensions */
+
 .col-centered {
     float: none;
     margin: 0 auto;
     /*text-align: center;*/
 }
+
+.btn-indent {
+    margin: 15px 0;
+}
+
+/* --------------------------- */
 
 .row-centered { padding-bottom: 30px; }
 
@@ -570,3 +578,4 @@ section.borderedSection {
 .addAnswerLineBtn {
     margin-left: 0;
 }
+

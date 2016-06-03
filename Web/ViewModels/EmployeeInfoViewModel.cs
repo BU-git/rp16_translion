@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using IDAL.Models;
 
 namespace Web.ViewModels
 {
     public class EmployeeInfoViewModel
     {
         [Required]
-        public IEnumerable<String> Reports { get; set; }
+        public IEnumerable<Report> Reports { get; set; }
 
         [Required]
         public String FullName { get; set; }
