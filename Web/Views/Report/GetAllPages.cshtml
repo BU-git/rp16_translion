@@ -27,6 +27,15 @@
     {
         @Html.Hidden("EmployeeId", Model.Employee.EmployeeId.ToString())
         <div class="carousel">
+            <div class="page text-centered">
+                <p>U staat op het punt om een rapport op te stellen voor een werknemer.</p><br/>
+                <p>U kunt op de pijl rechtsonderin klikken om te starten met het rapport. Wanneer u een pagina heeft ingevuld kunt u door naar
+                    de volgende pagina door nogmaals op het pijltje linksonderin kunt u navigeren naar de vorige pagina's. Onderin het scherm kunt
+                    u op de balk uw voortgang bekijken.</p><br/>
+                <p>Wanneer alle vragen zijn beantwoord, krijgt u een overzicht van alle beantwoorde vragen zodat u nogmaals uw vragen kunt controleren.
+                    Ten slotte kunt u de rapport opsturen naar Trans Lion.</p><br/>
+                <p><b>Succes met het invullen!</b></p><br/>
+            </div>
             @foreach (var page in Model.Pages)
             {
                 <div class="page">
@@ -42,24 +51,24 @@
                 </div>
             }
             <div class="page">
-                <div class="submitTextBlock col-centered">
+                <div class="submitTextBlock col-centered text-centered">
                     <p>Ensure that you've filled all fields and press Right Arrow to preview the whole report</p>
                 </div>
             </div>
             <div class="page">
                 <div class="previewHeader col-centered">
-                    <div class="title1">
-                        <p>Trans Lion medewerker rapport</p>
+                    <div class="title1 text-centered">
+                        <p>Trans Lion medewerker rapport</p><br/>
                     </div>
-                    <div class="title2">
+                    <div class="title2 text-centered">
                         <p>Dit rapport is opgesteld en ingevuld naaraanleiding van het ziekteverzuim van de heer/mevrouw: <span class="italic">@Model.Employee.FirstName
                         @Model.Employee.Prefix @Model.Employee.LastName</span> werkzaam bij <span class="italic">@Model.Employee.Employer.CompanyName</span></p>
                     </div>
                 </div>
-                
+
                 @foreach (var page in Model.Pages)
                 {
-                    <div class="pageTitle col-centered">
+                    <div class="pageTitle col-centered text-centered">
                         <span>@page.Name</span>
                     </div>
                     <div class="row">
@@ -71,11 +80,11 @@
                         }
                     </div>
                 }
-                <div class="submitTextBlock col-centered">
+                <div class="submitTextBlock col-centered text-centered">
                     <p>Ensure that you've filled all fields and press Submit to save the report</p>
                 </div>
-                <div class="submitBtnBlock">
-                    <input type="submit" class="btn btn-warning customBtn" />
+                <div class="col-md-3 col-centered">
+                    <input type="submit" class="btn btn-warning customBtn"/>
                 </div>
             </div>
         </div>

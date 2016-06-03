@@ -76,7 +76,10 @@ header { margin-bottom: 10px; }
 .col-centered {
     float: none;
     margin: 0 auto;
-    /*text-align: center;*/
+}
+
+.text-centered {
+    text-align: center;
 }
 
 .btn-indent {
