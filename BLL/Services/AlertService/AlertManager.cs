@@ -37,7 +37,14 @@ namespace BLL.Services.AlertService
 
         public async Task<List<Alert>> GetAdvisorAlerts(Guid userId)
         {
-            return await _unitOfWork.AlertRepository.GetAdvisorAlerts(userId);
+            ICollection<Admin> adminList = await _unitOfWork.AdminRepository.GetAll();
+            ICollection<Alert> newAlerts = await _unitOfWork.AlertRepository.GetNewAlerts();
+            
+            List<Alert> alertList = 
+                (from аlert in newAlerts from admin in adminList
+                 where аlert.UserId == admin.AdminId || аlert.UserId== userId
+                 select аlert).ToList();
+            return alertList;
         }
 
         public async Task<List<Alert>> GetAdvisorAlerts(CancellationToken cancellationToken, Guid userId)
@@ -88,7 +95,6 @@ namespace BLL.Services.AlertService
             {
                 throw new ArgumentException("alert is null. Wrong parameter");
             }
-            User user = await _unitOfWork.UserRepository.FindById(alert.UserId);
             _unitOfWork.AlertRepository.Add(alert);
             return await _unitOfWork.SaveChanges();
         }
@@ -181,7 +187,7 @@ namespace BLL.Services.AlertService
             return await _unitOfWork.AlertRepository.FindById(alertid);
         }
 
-        public async Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid alertid)
+        public async Task<Alert> GetAlertAsync(CancellationToken cancellationToken, Guid alertid)
         {
             if (alertid == null)
             {

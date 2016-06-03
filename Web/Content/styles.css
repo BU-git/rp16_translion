@@ -377,7 +377,7 @@ div.emplSettingsMain {
     height: auto;
     
 }
-#emplSettingsMainImage a>img {
+#emplSettingsMainImage img {
     border: 1px solid black;
     height: auto;
     width: auto;

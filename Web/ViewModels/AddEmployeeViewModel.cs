@@ -15,7 +15,7 @@ namespace Web.ViewModels
 
         [Display(Name = "Tussenvoegsel")]
         [StringLength(20, ErrorMessage = "Tussenvoegsel te lang")]
-        [RegularExpression("[a-zA-Z\\s]+",
+        [RegularExpression("[a-zA-Z\\s\"\']+",
             ErrorMessage = "Veld klopt niet, controleer dit aub. Nummers, symbolen en spaties zijn niet toegestaan")]
         public string Prefix { get; set; }
 
