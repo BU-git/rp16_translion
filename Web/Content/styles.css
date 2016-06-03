@@ -71,11 +71,19 @@ header { margin-bottom: 10px; }
 
 .form-forgot { margin-bottom: 0; }
 
+/* Bootstrap extensions */
+
 .col-centered {
     float: none;
     margin: 0 auto;
     /*text-align: center;*/
 }
+
+.btn-indent {
+    margin: 15px 0;
+}
+
+/* --------------------------- */
 
 .row-centered { padding-bottom: 30px; }
 
@@ -377,7 +385,7 @@ div.emplSettingsMain {
     height: auto;
     
 }
-#emplSettingsMainImage a>img {
+#emplSettingsMainImage img {
     border: 1px solid black;
     height: auto;
     width: auto;

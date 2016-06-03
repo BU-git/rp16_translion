@@ -20,8 +20,7 @@ namespace Web.ViewModels
         [Required]
         [Display(Name = "Voornaam")]
         public string FirstName { get; set; }
-
-        [Required]
+        
         [Display(Name = "Tussenvoegsel")]
         public string Prefix { get; set; }
 

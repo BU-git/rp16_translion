@@ -17,7 +17,7 @@ namespace Web.ViewModels
         public string FirstName { get; set; }
         
         [Display(Name = "Tussenvoegsel")]
-        [RegularExpression("/^[A-Za-z]+$/",
+        [RegularExpression("^[A-Za-z]{1,10}",
             ErrorMessage =
                 "Uw telefoonnummer voldoet niet aan de eisen, het moet minimaal bestaan uit 10 cijfers en maximaal 20.")
         ]

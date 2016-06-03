@@ -25,8 +25,8 @@ namespace Web.Controllers
         private readonly ITestService _testService;
         private readonly ReportPassingManager _reportManager;
 
-        public ReportController(IUnitOfWork uow, ReportPassingManager reportManager, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, IMailingService mailingService) 
-            : base(userManager, adminManager, advisorManager, employerManager, alertManager, mailingService)
+        public ReportController(IUnitOfWork uow, ReportPassingManager reportManager, UserManager<IdentityUser, Guid> userManager, PersonManager<Admin> adminManager, PersonManager<Advisor> advisorManager, PersonManager<Employer> employerManager, AlertManager alertManager, ReportPassingManager reportPassingManager, IMailingService mailingService) 
+            : base(userManager, adminManager, advisorManager, employerManager, alertManager, reportPassingManager, mailingService)
         {
             _testService = new TestManager(uow);
             _reportManager = reportManager;

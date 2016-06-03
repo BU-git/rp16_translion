@@ -13,8 +13,6 @@ namespace BLL.Services.ReportService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public IUnitOfWork UnitOfWork => _unitOfWork;
-
         public ReportPassingManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -29,7 +27,7 @@ namespace BLL.Services.ReportService
 
             try
             {
-                var employee = await UnitOfWork.EmployeeRepository.FindById(employeeId);
+                var employee = await _unitOfWork.EmployeeRepository.FindById(employeeId);
                 if (employee == null)
                 {
                     return WorkResult.Failed("Employee wasn't found. Possible uncorrect id");
@@ -42,8 +40,8 @@ namespace BLL.Services.ReportService
                     Employee = employee
                 };
 
-                UnitOfWork.ReportRepository.Add(report);
-                int result = await UnitOfWork.SaveChanges();
+                _unitOfWork.ReportRepository.Add(report);
+                int result = await _unitOfWork.SaveChanges();
                 if (result > 0)
                 {
                     return WorkResult.Success();
@@ -63,7 +61,7 @@ namespace BLL.Services.ReportService
                 return null;
             }
 
-            return await UnitOfWork.ReportRepository.GetReportsByEmployeeId(employeeId);
+            return await _unitOfWork.ReportRepository.GetReportsByEmployeeId(employeeId);
         }
     }
 }

@@ -6,6 +6,7 @@ using BLL.Identity.Models;
 using BLL.Services.AlertService;
 using BLL.Services.MailingService.Interfaces;
 using BLL.Services.PersonageService;
+using BLL.Services.ReportService;
 using IDAL.Models;
 using Microsoft.AspNet.Identity;
 using Web.ViewModels;
@@ -21,12 +22,14 @@ namespace Web.Controllers
             PersonManager<Advisor> advisorManager,
             PersonManager<Employer> employerManager,
             AlertManager alertManager,
+            ReportPassingManager reportPassingManager,
             IMailingService mailingService) : base(
                 userManager,
                 adminManager,
                 advisorManager,
                 employerManager,
                 alertManager,
+                reportPassingManager,
                 mailingService)
         {
         }
