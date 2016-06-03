@@ -240,11 +240,8 @@ namespace Web.Controllers
                     };
                     await _alertManager.CreateAsync(alert);
 
-<<<<<<< HEAD
-                    await SendEmail(identityUser, new RegistrationMailMessageBuilder(model.UserName));
-=======
-                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.LoginName));
->>>>>>> 92d4834459619277838294a1500fd39e32e795da
+                    await SendEmail(identityUser, new RegistrationMailMessageBuilder(model.LoginName));
+
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");
                 }
