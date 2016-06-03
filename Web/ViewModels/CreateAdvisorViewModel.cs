@@ -12,6 +12,12 @@ namespace Web.ViewModels
         [StringLength(20, MinimumLength = 4, ErrorMessage = "Naam voldoet niet aan de eisen. Minimaal 4 karakters(max - 20)")]
         public String Name { get; set; }
 
+        [Display(Name = "E-mailadres")]
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
+        public string EmailAdress { get; set; }
+
         [Display(Name= "Gebruikersnaam")]
         [Required(ErrorMessage = "Vul gebruikersnaam in")]
         [Remote("CheckAdvisorName", "Admin", ErrorMessage = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)")]
