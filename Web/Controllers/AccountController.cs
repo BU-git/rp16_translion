@@ -239,19 +239,13 @@ namespace Web.Controllers
         {
             return View();
         }
-
-        //TODO: set authorize attribute for AddAdmin Method
+        
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddAdmin(CreateAdminViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var admin = new Admin
-                {
-                    Name = model.Name
-                };
-
                 var user = new IdentityUser
                 {
                     UserName = model.Username,

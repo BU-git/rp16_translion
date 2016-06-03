@@ -196,7 +196,8 @@ namespace Web.Controllers
             IdentityUser identityUser = new IdentityUser
             {
                 Id = Guid.NewGuid(),
-                UserName = advisorInfo.Username
+                UserName = advisorInfo.Username,
+                Email = advisorInfo.EmailAdress
             };
             IdentityResult creationRes = await userManager.CreateAsync(
                 identityUser,

@@ -10,8 +10,8 @@
         <!--Image column-->
         <div class="col-md-4" id="emplSettingsMainImage">
             <p><b>@Model.FullName</b></p>
-            <a href="@Url.Action("EmployeeInfo", "Admin", new { id = Model.Id })">
-                <img src="~/Content/Images/UserImg.png" alt="@Model.FullName" />
+            <a href="@Url.Action("EmployeeInfo", "Admin", new {id = Model.Id})">
+                <img src="~/Content/Images/UserImg.png" alt="@Model.FullName"/>
             </a>
         </div>
         <!--Reports column-->
@@ -22,11 +22,11 @@
                 foreach (var report in Model.Reports)
                 {
                     <p class="leftAlignText">@report.CreatedDate</p>
-                }
+            }
             }
             else
             {
-                <p class="leftAlignText">Er zijn nog geen rapportages aangemaakt.</p>
+            <p class="leftAlignText">Er zijn nog geen rapportages aangemaakt.</p>
             }
         </div>
         <!--Button's column-->
@@ -38,7 +38,7 @@
                 Account verwijderen
             </button>
             <div>
-                @Html.ActionLink("Terug", "Index", null, new { @class = "btn btn-default btn-block btn-indent" })
+                @Html.ActionLink("Terug", "Index", null, new {@class = "btn btn-default btn-block btn-indent"})
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
                     <h4 class="modal-title text-center">Werknemer verwijderen!</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Weet u zeker dat u deze werknemer wilt verwijderen.</p>
+                    <p>Weet u zeker dat u deze werknemer wilt verwijderen?</p>
                 </div>
                 <div class="modal-footer">
                     @Html.ActionLink("Ja", "DeleteEmployee", new { id = Model.Id }, new { @class = "btn btn-default" })

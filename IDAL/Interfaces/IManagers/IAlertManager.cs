@@ -71,7 +71,7 @@ namespace IDAL.Interfaces.IManagers
 
         Alert GetAlert(Guid alertid);
         Task<Alert> GetAlertAsync(Guid alertid);
-        Task<Alert> GetAsyncAsync(CancellationToken cancellationToken, Guid alertid);
+        Task<Alert> GetAlertAsync(CancellationToken cancellationToken, Guid alertid);
         Task<List<Alert>> GetAdvisorAlerts(Guid userId);
         Task<List<Alert>> GetAdvisorAlerts(CancellationToken cancellationToken, Guid userId);
 
