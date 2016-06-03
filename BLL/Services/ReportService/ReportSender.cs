@@ -1,5 +1,6 @@
 ﻿using BLL.Services.MailingService.Interfaces;
 using BLL.Services.MailingService.MailMessageBuilders;
+using BLL.Services.PersonageService;
 using BLL.Services.ReportService.Abstract;
 using BLL.Services.ReportService.Pdf;
 using BLL.Services.ReportService.Word;
@@ -7,7 +8,7 @@ using IDAL;
 using IDAL.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BLL.Services.ReportService
@@ -18,7 +19,7 @@ namespace BLL.Services.ReportService
     public sealed class ReportSender
     {
         #region Private
-        private string _adminEmail;
+        private PersonManager<Admin> _adminManager;
 
         private IMailingService _mailService;
 
@@ -27,12 +28,12 @@ namespace BLL.Services.ReportService
         private List<Page> _pages;
         #endregion
 
-        public ReportSender(IMailingService mailService, Employee empl, List<Page> pages)
+        public ReportSender(IMailingService mailService, PersonManager<Admin> admManager, Employee empl, List<Page> pages)
         {
             _mailService = mailService;
             _employee = empl;
             _pages = pages;
-            _adminEmail = ConfigurationManager.AppSettings["adminMail"];
+            _adminManager = admManager;
         }
 
         #region Send mail
@@ -78,8 +79,11 @@ namespace BLL.Services.ReportService
         {
             var adminMail = new ReportCompltdAdminMessageBuilder(_employee);
             var employerMail = new ReportCompltdEmplMessageBuilder(_employee);
+            var admins = await _adminManager.GetAll();
 
-            var result = await _mailService.SendMailAsync(adminMail.Body, adminMail.Subject, word, wordName, _adminEmail);
+            var result = 
+                await _mailService.SendMailAsync(adminMail.Body, adminMail.Subject, word, wordName,
+                    admins.Select(a => a.User.Email).ToArray());
 
             if (!result.HasError)
                 result = await _mailService.SendMailAsync(employerMail.Body, employerMail.Subject, pdf, pdfName, _employee.Employer.User.Email);

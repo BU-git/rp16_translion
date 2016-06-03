@@ -2,6 +2,7 @@
 using BLL.Services.ReportService.Abstract;
 using BLL.Services.ReportService.Factories;
 using IDAL.Models;
+using System.Linq;
 
 namespace BLL.Services.ReportService.Templates
 {
@@ -16,12 +17,37 @@ namespace BLL.Services.ReportService.Templates
 
         public override void AddParagraph(DesignerFactory desFactory)
         {
-            StringBuilder builder = new StringBuilder();
+            var designer = desFactory.GetDesigner(_name);
 
-            foreach (var answer in _question.Answers)
-                builder.Append($"{answer.Name}    ");
+            foreach (var answer in PrepareAnswers(_question))
+                designer.Draw(answer);
+        }
 
-            desFactory.GetDesigner(_name).Draw(builder.ToString());
+        private string[] PrepareAnswers(Question question)
+        {
+            int splitBy = 5; //default - complicated type 1;
+
+            if (question.TypeAnswer.Contains("3"))
+                splitBy = 2;
+            else if (question.TypeAnswer.Contains("2"))
+                splitBy = 4;
+
+            var answers = new string[question.Answers.Count / splitBy];
+            var qAnswers = question.Answers.ToArray();
+            StringBuilder answer;
+
+            for (int i = 0; i < answers.Length; i++)
+            {
+                answer = new StringBuilder();
+
+                for (int j = i * splitBy; j < (i + 1) * splitBy; j++)
+                    answer.Append(qAnswers[j].Name + "   ");
+
+                //answers
+                answers[i] = answer.ToString();
+            }
+
+            return answers;
         }
     }
 }

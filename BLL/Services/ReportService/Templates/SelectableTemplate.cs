@@ -1,6 +1,8 @@
 ﻿using BLL.Services.ReportService.Abstract;
 using BLL.Services.ReportService.Factories;
 using IDAL.Models;
+using System.Linq;
+using System.Text;
 
 namespace BLL.Services.ReportService.Templates
 {
@@ -20,5 +22,6 @@ namespace BLL.Services.ReportService.Templates
             foreach (var answer in _question.Answers)
                 designer.Draw(answer.Name);
         }
+
     }
 }

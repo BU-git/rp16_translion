@@ -171,7 +171,7 @@ namespace Web.Controllers
                     };
                     await _alertManager.CreateAsync(alert);
 
-                    await SendEmail(identityUser.Id, new RegistrationMailMessageBuilder(model.UserName));
+                    await SendEmail(identityUser, new RegistrationMailMessageBuilder(model.UserName));
                     await SignInAsync(identityUser, true);
                     return View("AccountConfirmation");
                 }
@@ -197,10 +197,7 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var admin = new Admin
-                {
-                    Name = model.Name
-                };
+                
 
                 var user = new IdentityUser
                 {
@@ -208,6 +205,11 @@ namespace Web.Controllers
                     Email = model.EmailAdress
                 };
 
+                var admin = new Admin
+                {
+                    AdminId = user.Id,
+                    Name = model.Name
+                };
                 //TODO: delete password field from CreateAdminViewModel. Use instead randomly generated password. Then send it to the admin e-mail
                 //var password = Membership.GeneratePassword(12, 4);
 
@@ -215,7 +217,7 @@ namespace Web.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user.Id, "Admin");
-
+                    var res = await _adminManager.Create(admin);
                     //var user = await 
                     //await SendEmail(user.Id, new RegistrationMailMessageBuilder(model.Username));
 
@@ -273,7 +275,7 @@ namespace Web.Controllers
                             var callbackUrl = Url.Action("PasswordRecovery", "Account",
                                 new {userId = user.Id, token = passResetToken}, Request.Url.Scheme); //sets recovery url
 
-                            await SendEmail(user.Id, new ForgotPasswordMailMessageBuilder(callbackUrl));
+                            await SendEmail(user, new ForgotPasswordMailMessageBuilder(callbackUrl));
                         }
 
                         return View("ForgotPasswordEnd"); //succeeded
@@ -314,7 +316,7 @@ namespace Web.Controllers
                     ModelState.AddModelError(nameof(unameForgot.Email), "Uw emailadres is incorrect, controleer dit aub");
                 else
                 {
-                    await SendEmail(user.Id, new ForgotUsernameMailMessageBuilder(user.UserName));
+                    await SendEmail(user, new ForgotUsernameMailMessageBuilder(user.UserName));
                     return View("ForgotUserNameEnd"); //succeeded
                 }
             }
@@ -384,9 +386,9 @@ namespace Web.Controllers
             AuthenticationManager.SignIn(new AuthenticationProperties {IsPersistent = isPersistent}, identity);
         }
 
-        private async Task SendEmail(Guid userId, MailMessageBuilder mailMessageBuilder)
+        private async Task SendEmail(IdentityUser user, MailMessageBuilder mailMessageBuilder)
         {
-            await _userManager.SendEmailAsync(userId, mailMessageBuilder.Subject, mailMessageBuilder.Body);
+            await _mailingService.SendMailAsync(mailMessageBuilder.Subject, mailMessageBuilder.Body, user.Email);
         }
 
         private Employer RegistrationEmployerViewModel(RegistrationEmployerViewModel model)

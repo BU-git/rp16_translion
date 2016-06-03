@@ -150,7 +150,7 @@ namespace Web.Controllers
                 return View("ReportResult", false);
             }
 
-            var sender = new ReportSender(mailingService, employee, pages);
+            var sender = new ReportSender(mailingService, adminManager, employee, pages);
 
             var result = await sender.SendMailsToRecieversAsync();
             if (result == WorkResult.Success())

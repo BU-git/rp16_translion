@@ -29,7 +29,7 @@ namespace Web.ViewModels
         [Display(Name = "Tussenvoesgsen")]
         [StringLength(5, ErrorMessage = "Too long prefix")]
         [RegularExpression("[a-zA-Z]+",
-            ErrorMessage = "Veld klopt niet, controleer dit aub. Nummers, symbolen en spaties zijn niet toegestaan")]
+            ErrorMessage = "Veld klopt niet, controleer dit aub. Nummers, symbolen zijn niet toegestaan")]
         public String Prefix { get; set; }
     }
 }
