@@ -22,6 +22,8 @@ namespace Web.Controllers
         private readonly PersonManager<Employer> _employerManager;
         private readonly IMailingService _mailingService;
         private readonly UserManager<IdentityUser, Guid> _userManager;
+        private readonly string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
+        private readonly string EMAILADDRESS_IS_IN_USE_ERROR = "Email is used";
 
         public AccountController(UserManager<IdentityUser, Guid> userManager,
             PersonManager<Admin> adminManager,
@@ -190,6 +192,23 @@ namespace Web.Controllers
                     UserName = model.LoginName,
                     Email = model.EmailAdress
                 };
+
+                var usr = await _userManager.FindByEmailAsync(model.EmailAdress);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", EMAILADDRESS_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
+                usr = await _userManager.FindByNameAsync(model.LoginName);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", USERNAME_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
                 var result = await _userManager.CreateAsync(identityUser, model.UserPassword);
 
                 if (result.Succeeded)

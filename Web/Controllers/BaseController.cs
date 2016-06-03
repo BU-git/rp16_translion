@@ -27,6 +27,7 @@ namespace Web.Controllers
         internal const string SERVER_ERROR = "Server probleem(Probeer a.u.b.later)";
         internal const string USERNAME_IS_IN_USE_ERROR = "Uw gebruikersnaam is incorrect, controleer dit aub.(In use)";
         internal const string ADVISOR_ROLE = "Advisor";
+        internal const string EMAILADDRESS_IS_IN_USE_ERROR = "Email is used";
 
         #endregion
 
@@ -163,6 +164,23 @@ namespace Web.Controllers
                     UserName = model.LoginName,
                     Email = model.EmailAdress
                 };
+
+                var usr = await userManager.FindByEmailAsync(model.EmailAdress);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", EMAILADDRESS_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
+                usr = await userManager.FindByNameAsync(model.LoginName);
+
+                if (usr != null)
+                {
+                    ModelState.AddModelError("", USERNAME_IS_IN_USE_ERROR);
+                    return View(model);
+                }
+
 
                 var result = await userManager.CreateAsync(identityUser, password);
 

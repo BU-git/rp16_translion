@@ -182,14 +182,14 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
                 return View(advisorInfo);
 
-            User user = await adminManager.GetBaseUserByName(advisorInfo.Username);
+            User usr = await adminManager.GetBaseUserByName(advisorInfo.Username);
 
-            if (user != null)
+            if (usr != null)
             {
                 ModelState.AddModelError(nameof(advisorInfo.Username), USERNAME_IS_IN_USE_ERROR);
                 return View(advisorInfo);
             }
-            
+
             IdentityUser identityUser = new IdentityUser
             {
                 Id = Guid.NewGuid(),
