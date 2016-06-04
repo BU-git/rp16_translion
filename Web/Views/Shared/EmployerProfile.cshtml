@@ -1,10 +1,8 @@
 ﻿@model Web.ViewModels.EmployerViewModel
-
 @{
     ViewBag.Title = "Employer Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="row">
     <div class="col-md-4 col-centered">
         <table class="table table-striped">
@@ -49,13 +47,20 @@
         </table>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-2 col-md-offset-4">
         @Html.ActionLink("Gegevens bewerken", "EditEmployer", null, new { id = @Model.EmployerId }, new { @class = "btn btn-warning" })
     </div>
     <div class="col-md-6">
-        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer",null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
+        @Html.ActionLink("Profiel verwijderen", "DeleteEmployer", null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
+    </div>
+</div>
+<div class="row tUPRowWithMargin">
+    <div class="col-md-4 col-centered">
+        @using (Html.BeginForm("PasswordReset", "Account", new { id = Model.EmployerId }))
+        {
+            <input type="submit" class="btn btn-primary col-md-offset-3" value="Nieuwe wachtwoord" />
+        }
     </div>
 </div>
 <section id="tlr-usr-section">
@@ -65,11 +70,11 @@
             <h3>Werknemers</h3>
         </div>
         <div class="col-sm-offset-1 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-3 col-lg-3">
-            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", null, new {id = @Model.EmployerId}, new {@class = "btn btn-default" })
+            @Html.ActionLink("Werknemer toevoegen", "AddEmployee", null, new { id = @Model.EmployerId }, new { @class = "btn btn-default" })
         </div>
         <div class="col-sm-4 col-md-3 col-lg-3">
             <span class="glyphicon glyphicon-search tlr-usr-search-img"></span>
-            <input type="search" id="emplSearch" placeholder="search" autofocus/>
+            <input type="search" id="emplSearch" placeholder="search" autofocus />
         </div>
     </div>
     <!--Main panel with users-->
@@ -99,7 +104,6 @@
 </section>
 <div id="delEmployee" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -116,7 +120,5 @@
         </div>
     </div>
 </div>
-
-
 
 

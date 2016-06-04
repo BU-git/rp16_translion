@@ -610,3 +610,7 @@ section.borderedSection {
 .logoImg {
     width: 150px;
 }
+
+.tUPRowWithMargin {
+    margin: 20px 0 60px 0;
+}
