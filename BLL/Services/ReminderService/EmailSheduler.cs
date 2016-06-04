@@ -25,7 +25,7 @@ namespace BLL.Services.ReminderService
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger", "remind_group")
                 .StartNow()
-                .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
+                .WithSimpleSchedule(x => x.WithIntervalInHours(24).RepeatForever())
                 .Build();
 
             scheduler.ScheduleJob(job, trigger);
