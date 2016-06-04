@@ -3,7 +3,10 @@ function expandSlick(elem, slick) {
     var elemHeight = elem.outerHeight(true);
     slick.css('height', slick.height() + elemHeight + 'px');
 }
-
+function narrowSlick(elem, slick) {
+    var elemHeight = elem.outerHeight(true);
+    slick.css('height', slick.height() - elemHeight + 'px');
+}
 
 jQuery.fn.outerHTML = function () {
     return jQuery('<div />').append(this.eq(0).clone()).html();
@@ -59,8 +62,12 @@ $(document).ready(function () {
 
     $('.delAnswerLineBtn').click(function () {
         var nChildren = $(this).closest('.questionComplicated').find('#answersContainer').children().length;
-        if (nChildren > 1)
-            $(this).closest('.questionComplicated').find('.answerLine:last').remove();
+        if (nChildren > 1) {
+            var elemToDelete = $(this).closest('.questionComplicated').find('.answerLine:last');
+            narrowSlick(elemToDelete, $('.slick-list'));
+            elemToDelete.remove();
+        }
+            
     });
 
     $('.datepicker').datepicker({
