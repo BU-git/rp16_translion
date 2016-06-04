@@ -216,6 +216,7 @@
     <Compile Include="Infrastructure\HtmlHelpers\CreateQuestionHelpers.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AdminAlertPanelViewModel.cs" />
+    <Compile Include="ViewModels\AdminResetEmployerPasswordViewModel.cs" />
     <Compile Include="ViewModels\AnonymousRegistrationEmployerVM.cs" />
     <Compile Include="ViewModels\CreateAdminViewModel.cs" />
     <Compile Include="ViewModels\CreateAdvisorViewModel.cs" />
@@ -290,6 +291,7 @@
     <Content Include="Views\Shared\PasswordChanged.cshtml" />
     <Content Include="Views\Report\QuestionsPartial\_SingleLine.cshtml" />
     <Content Include="Views\Report\QuestionsPartial\_DatepickerSimple.cshtml" />
+    <Content Include="Views\Account\PasswordReset.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

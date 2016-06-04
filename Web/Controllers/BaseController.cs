@@ -376,7 +376,42 @@ namespace Web.Controllers
         #endregion
 
         #region Employee
-        
+
+
+        #region Recover employee
+        public async Task<ActionResult> RecoverEmployee(Guid? id)
+        {
+            if (id == null || id.Value == Guid.Empty)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var employee = await adminManager.GetEmployee(id.Value);
+
+            if (employee == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            employee.IsDeleted = false;
+
+            var updResult = await employerManager.UpdateEmployee(employee);
+
+            if (!updResult.Succeeded)
+                return RedirectToAction("Index");
+
+            var employer = employee.Employer;
+
+            var message
+                = new RecoverEmployeeMailMessageBuilder($"{employee.FirstName} {employee.Prefix} {employee.LastName}",
+                   $"{employer.FirstName} {employer.Prefix} {employer.LastName}");
+
+            await mailingService.SendMailAsync(message.Body, message.Subject, employer.User.Email);
+
+            return RedirectToAction("EmployeeInfo", new { id = id });
+        }
+        #endregion
+
         #region Employee Info
 
         [HttpGet]
@@ -400,7 +435,8 @@ namespace Web.Controllers
             {
                 Id = employee.EmployeeId,
                 FullName = $"{employee.FirstName} {employee.Prefix} {employee.LastName}",
-                Reports = reports
+                Reports = reports,
+                IsDeleted = employee.IsDeleted
             };
 
             return View(employeeInfo);

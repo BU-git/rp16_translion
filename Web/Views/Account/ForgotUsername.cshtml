@@ -9,7 +9,7 @@
 
         @Html.ValidationSummary(true, "", new {@class = "text-danger col-centered"})
         <div class="row">
-            <div class="col-md-12 col-centered lb-forgot">
+            <div class="col-md-7 col-centered lb-forgot">
                 Vult u alstublieft uw e-mailadres in en wij sturen u uw gebruikersnaam toe.
             </div>
         </div>
@@ -23,11 +23,10 @@
         <br/>
         <div class="row">
             <div class="col-md-5">
-                @Html.ActionLink("Annuleren", "Login", "Account", null, new {@class = "btn btn-danger pull-right"})
-                <!--<input type="submit" value="Annuleren" class="btn btn-danger pull-right"/>-->
+                @Html.ActionLink("Annuleren", "Login", "Account", null, new {@class = "btn btn-warning pull-right"})
             </div>
             <div class="col-md-6 col-md-offset-1 tb-forgot">
-                <input type="submit" value="Verzenden" class="btn btn-success"/>
+                <input type="submit" value="Verzenden" class="btn btn-primary"/>
             </div>
         </div>
     }

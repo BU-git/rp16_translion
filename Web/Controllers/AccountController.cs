@@ -390,6 +390,43 @@ namespace Web.Controllers
 
         #endregion
 
+        #region Password reset
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> PasswordReset(Guid? id)
+        {
+            IdentityUser user;
+
+            if (id == null || id.Value == Guid.Empty
+                || (user = await _userManager.FindByIdAsync(id.Value)) == null)
+            {
+                return View(new AdminResetEmployerPasswordViewModel
+                {
+                    ResultMessage = "Can't find user!"
+                });
+            }
+                
+            var token = await _userManager.GeneratePasswordResetTokenAsync(id.Value);
+
+            if (String.IsNullOrWhiteSpace(token))
+            {
+                return View(new AdminResetEmployerPasswordViewModel
+                {
+                    ResultMessage = "Server probleem"
+                });
+            }
+                
+            var url = Url.Action("PasswordRecovery", "Account", new { userId = id.Value, token = token }, Request.Url.Scheme);
+            var message = new ForgotPasswordMailMessageBuilder(url);
+            var result = await _mailingService.SendMailAsync(message.Body, message.Subject, user.Email);
+
+            return View(new AdminResetEmployerPasswordViewModel
+            {
+                ResultMessage = result.HasError ? "Can't send email. Try later or check an email" : "Successfully sent an email"
+            });
+        }
+        #endregion
+
         #region Helper
 
         private async Task SignInAsync(IdentityUser user, bool isPersistent)
@@ -401,7 +438,7 @@ namespace Web.Controllers
 
         private async Task SendEmail(IdentityUser user, MailMessageBuilder mailMessageBuilder)
         {
-            await _mailingService.SendMailAsync(mailMessageBuilder.Subject, mailMessageBuilder.Body, user.Email);
+            await _mailingService.SendMailAsync(mailMessageBuilder.Body, mailMessageBuilder.Subject, user.Email);
         }
         
 

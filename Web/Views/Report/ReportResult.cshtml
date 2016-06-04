@@ -11,7 +11,7 @@
     @if (Model.Passed)
     {
         <span>
-            Successfully sent a report!
+            Het rapport is succesvol verzonden!
         </span>
     }
     else
@@ -21,6 +21,6 @@
     }
     <br />
     <br />
-    @Html.ActionLink("Werkenemer profile", "EmployeeInfo", new { id = Model.EmployeeId }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Terug naar werknemer profiel", "EmployeeInfo", new { id = Model.EmployeeId }, new { @class = "btn btn-default" })
 </div>
 
