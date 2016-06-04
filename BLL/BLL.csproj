@@ -108,6 +108,7 @@
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotPasswordMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\MailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\RecoverEmployeeMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\RegistrationMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdAdminMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdEmplMessageBuilder.cs" />

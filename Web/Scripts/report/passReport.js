@@ -1,4 +1,11 @@
-﻿jQuery.fn.outerHTML = function () {
+﻿/*Changes size of current slick after adding answer*/
+function expandSlick(elem, slick) {
+    var elemHeight = elem.outerHeight(true);
+    slick.css('height', slick.height() + elemHeight + 'px');
+}
+
+
+jQuery.fn.outerHTML = function () {
     return jQuery('<div />').append(this.eq(0).clone()).html();
 };
 
@@ -14,7 +21,7 @@ $(document).ready(function () {
     $('.addAnswerLineBtn').click(function () {
         var regAnswerName = /p[0-9]+q[0-9]+t[0-9]l[0-9]+/g;
         var html = $("<div />").append($(this).closest('.questionComplicated').find('.answerLine:last').clone()).html();
-
+       
         function nameReplacer(match) {
             var reg = /l(.*)/;
             var len = match.length;
@@ -29,6 +36,9 @@ $(document).ready(function () {
         html = html.replace(regAnswerName, nameReplacer);
 
         $(this).closest('.questionComplicated').find('#answersContainer').append(html);
+
+        var newAnswer = $(this).closest('.questionComplicated').find('.answerLine:last');
+        expandSlick(newAnswer, $('.slick-list'));
 
         $('.ui-datepicker-trigger').each(function() {
                 $(this).remove();
