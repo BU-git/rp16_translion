@@ -97,7 +97,7 @@ namespace Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof(HttpAntiForgeryException), View = "AntiForgeryError")]
-        public async override Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel, string id)
+        public override async Task<ActionResult> AddEmployee(AddEmployeeViewModel employeeViewModel, string id)
         {
             if (!ModelState.IsValid)
                 return View(employeeViewModel);

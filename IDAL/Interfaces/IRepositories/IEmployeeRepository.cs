@@ -8,6 +8,7 @@ namespace IDAL.Interfaces.IRepositories
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {
+        Task<List<Employee>> GetAllEmployees();
         Task<List<Employee>> GetAllEmployees(Guid employerId);
         Task<List<Employee>> GetAllEmployees(CancellationToken cancellationToken, Guid employerId);
     }

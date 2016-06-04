@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=3.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.0.0\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.0.0.19\lib\net40\DocX.dll</HintPath>
       <Private>True</Private>
@@ -49,6 +57,10 @@
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Quartz, Version=2.3.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.2.3.3\lib\net40\Quartz.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -109,6 +121,7 @@
     <Compile Include="Services\MailingService\MailMessageBuilders\ForgotUsernameMailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\MailMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\RegistrationMailMessageBuilder.cs" />
+    <Compile Include="Services\MailingService\MailMessageBuilders\RemindReportMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdAdminMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailMessageBuilders\ReportCompltdEmplMessageBuilder.cs" />
     <Compile Include="Services\MailingService\MailQueue.cs" />
@@ -119,6 +132,8 @@
     <Compile Include="Services\PersonageService\AdvisorManager.cs" />
     <Compile Include="Services\PersonageService\PersonManager.cs" />
     <Compile Include="Services\PersonageService\EmployerManager.cs" />
+    <Compile Include="Services\ReminderService\EmailSheduler.cs" />
+    <Compile Include="Services\ReminderService\Reminder.cs" />
     <Compile Include="Services\ReportService\Abstract\Designer.cs" />
     <Compile Include="Services\ReportService\Abstract\Document.cs" />
     <Compile Include="Services\ReportService\Abstract\ElementTemplate.cs" />
@@ -169,6 +184,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="job_scheduling_data_2_0.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

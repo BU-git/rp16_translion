@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using IDAL.Interfaces.IRepositories;
 using IDAL.Models;
@@ -15,6 +14,12 @@ namespace DAL.Repositories
             : base(context)
         {
            
+        }
+
+        public async Task<Report> GetLastEmployeeReport(Guid? employeeId)
+        {
+            var reports = await GetReportsByEmployeeId(employeeId);
+            return reports?.Aggregate((i, j) => i.CreatedDate > j.CreatedDate ? i : j);
         }
 
         public async Task<List<Report>> GetReportsByEmployeeId(Guid? employeeId)

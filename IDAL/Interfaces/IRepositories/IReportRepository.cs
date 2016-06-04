@@ -7,6 +7,7 @@ namespace IDAL.Interfaces.IRepositories
 {
     public interface IReportRepository : IRepository<Report>
     {
+        Task<Report> GetLastEmployeeReport(Guid? employeeId);
         Task<List<Report>> GetReportsByEmployeeId(Guid? employeeId);
     }
 }

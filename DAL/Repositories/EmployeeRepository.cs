@@ -15,19 +15,23 @@ namespace DAL.Repositories
             : base(context)
         {
         }
+
         public Employee FindById(Guid employeeId)
         {
             return Set.FirstOrDefault(x => x.EmployeeId == employeeId);
         }
 
+        public async Task<List<Employee>> GetAllEmployees()
+        {
+            return await (from employees in Set select employees).ToListAsync();
+        }
+
         public async Task<List<Employee>> GetAllEmployees(Guid employerId)
         {
-
             return await (from employee in Set
                 where employee.Employer.EmployerId == employerId
                 select employee).ToListAsync();
         }
-
 
         public async Task<List<Employee>> GetAllEmployees(CancellationToken cancellationToken, Guid employerId)
         {

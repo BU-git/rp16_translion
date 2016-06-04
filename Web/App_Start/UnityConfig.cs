@@ -74,7 +74,7 @@ namespace Web
             return userManager;
         }
 
-        private static IMailingService GetMailingService()
+        internal static IMailingService GetMailingService()
         {
             string from = ConfigurationManager.AppSettings["mailFrom"];
             string password = ConfigurationManager.AppSettings["mailPass"];
