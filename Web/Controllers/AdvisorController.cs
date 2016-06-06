@@ -58,11 +58,17 @@ namespace Web.Controllers
         {
             var EmployeeName = "n.v.t";
             var alertToShow = alertManager.GetAlert(alert.AlertId);
-
             if (alertToShow.EmployeeId != null)
             {
                 var emp = await alertManager.FindEmployeeAsync(alert);
-                EmployeeName = emp.LastName + " " + emp.FirstName;
+                if (emp != null)
+                {
+                    EmployeeName = emp.LastName + " " + emp.FirstName;
+                }
+                else
+                {
+                    EmployeeName = "";
+                }
             }
 
             Employer employer = await alertManager.FindEmployerAsync(alert);
@@ -70,11 +76,17 @@ namespace Web.Controllers
             var AlertData = new AdminAlertPanelViewModel
             {
                 alert = alert,
-                EmployerName = employer.LastName + " " + employer.FirstName,
-                Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
-                AlertType = alert.AlertType.ToString()
+                Company = "",
+                EmployerName = "",
+                AlertType = alert.AlertType.ToString(),
             };
+
+            if (employer != null)
+            {
+                AlertData.EmployerName = employer.LastName + " " + employer.FirstName;
+                AlertData.Company = employer.CompanyName;
+            }
 
             return AlertData;
         }

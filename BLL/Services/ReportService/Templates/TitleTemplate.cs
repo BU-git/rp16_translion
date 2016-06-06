@@ -8,7 +8,7 @@ namespace BLL.Services.ReportService.Templates
     /// </summary>
     internal sealed class TitleTemplate : ElementTemplate
     {
-        private const string TITLE_DOC = "Trans Lion medewerker rapport";
+        private const string TITLE_DOC = "Poortwachtersloket medewerker rapport";
 
         public TitleTemplate() : base("Title")
         {

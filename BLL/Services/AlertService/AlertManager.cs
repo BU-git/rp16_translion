@@ -137,8 +137,11 @@ namespace BLL.Services.AlertService
             if (alert.AlertType==AlertType.Employee_Add)
             {
                 Employee employee = await this.FindEmployeeAsync(alert);
-                employee.IsApprove = true;
-                _unitOfWork.EmployeeRepository.Update(employee);
+                if (employee != null)
+                {
+                    employee.IsApprove = true;
+                    _unitOfWork.EmployeeRepository.Update(employee);
+                }
             }
             alert.AlertIsDeleted = true;
             alert.AlertUpdateTS = DateTime.Now;

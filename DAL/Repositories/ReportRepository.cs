@@ -19,7 +19,11 @@ namespace DAL.Repositories
         public async Task<Report> GetLastEmployeeReport(Guid? employeeId)
         {
             var reports = await GetReportsByEmployeeId(employeeId);
-            return reports?.Aggregate((i, j) => i.CreatedDate > j.CreatedDate ? i : j);
+            if (reports.Count > 0)
+            {
+                return reports?.Aggregate((i, j) => i.CreatedDate > j.CreatedDate ? i : j);
+            }
+            return new Report();
         }
 
         public async Task<List<Report>> GetReportsByEmployeeId(Guid? employeeId)

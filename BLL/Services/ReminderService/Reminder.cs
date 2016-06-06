@@ -11,7 +11,7 @@ namespace BLL.Services.ReminderService
 {
     public class Reminder : IJob
     {
-        private const int maxExpiration = 20; // in days
+        private const int maxExpiration = 30; // in days
 
         public async void Execute(IJobExecutionContext context)
         {

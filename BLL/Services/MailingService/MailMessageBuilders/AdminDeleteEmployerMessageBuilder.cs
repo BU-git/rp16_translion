@@ -9,7 +9,7 @@ namespace BLL.Services.MailingService.MailMessageBuilders
     public class AdminDeleteEmployerMessageBuilder : MailMessageBuilder
     {
         private readonly string _body = "Your account have been deleted";
-        private readonly string _subject = "Account was deleted by Trans Lion";
+        private readonly string _subject = "Account was deleted by Poortwachtersloket";
 
         public AdminDeleteEmployerMessageBuilder()
         {

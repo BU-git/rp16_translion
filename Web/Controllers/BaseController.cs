@@ -314,6 +314,8 @@ namespace Web.Controllers
 
                 await employerManager.Update(employer);
 
+                model.Employees = employer.Employees;
+
                 var modUser = await adminManager.GetBaseUserByName(User.Identity.Name);
                 var alert = new Alert();
                 {

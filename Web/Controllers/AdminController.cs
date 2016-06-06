@@ -56,7 +56,7 @@ namespace Web.Controllers
             if (user != null)
                 return View(user.Advisor);
 
-            return RedirectToAction("AdvisorsList");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -89,7 +89,7 @@ namespace Web.Controllers
                 return View("Settings");
             }
 
-            return RedirectToAction("AdvisorsList");
+            return RedirectToAction("Index");
         }
 
         #endregion
@@ -151,7 +151,14 @@ namespace Web.Controllers
             if (alertToShow.EmployeeId != null)
             {
                 var emp = await alertManager.FindEmployeeAsync(alert);
-                EmployeeName = emp.LastName + " " + emp.FirstName;
+                if (emp != null)
+                {
+                    EmployeeName = emp.LastName + " " + emp.FirstName;
+                }
+                else
+                {
+                    EmployeeName = "";
+                }
             }
 
             Employer employer = await alertManager.FindEmployerAsync(alert);
@@ -159,11 +166,18 @@ namespace Web.Controllers
             var AlertData = new AdminAlertPanelViewModel
             {
                 alert = alert,
-                EmployerName = employer.LastName + " " + employer.FirstName,
-                Company = employer.CompanyName,
                 EmployeeName = EmployeeName,
+                Company = "",
+                EmployerName = "",
                 AlertType = alert.AlertType.ToString(),
             };
+
+            if (employer != null)
+            {
+                AlertData.EmployerName = employer.LastName + " " + employer.FirstName;
+                AlertData.Company = employer.CompanyName;
+            }
+
 
             return AlertData;
         }
@@ -233,7 +247,7 @@ namespace Web.Controllers
             var user = await GetUserIfAdvisorAsync(id);
 
             if (user == null)
-                return RedirectToAction("AdvisorsList");
+                return RedirectToAction("Index");
 
             return View(new AdvisorChangeNameViewModel
             {
